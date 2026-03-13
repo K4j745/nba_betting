@@ -1,0 +1,11 @@
+echo "nba_betting.db
+backups/
+logs/
+models/
+__pycache__/
+*.pkl
+*.pyc
+.pytest_cache/
+.coverage
+coupon_*.json
+smoke_test.db" > .gitignore

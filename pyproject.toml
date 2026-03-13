@@ -1,0 +1,22 @@
+# nba_betting/pyproject.toml
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths  = ["tests"]
+markers    = [
+    "slow: testy wymagające treningu modelu (Optuna)",
+]
+
+[tool.coverage.run]
+source = ["data_fetcher", "odds_fetcher", "features", "model", "tracker"]
+omit   = ["tests/*", "main.py"]
+
+[tool.coverage.report]
+fail_under   = 70
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "except ImportError",
+]
