@@ -1,0 +1,147 @@
+name: NBA Betting Pipeline
+
+on:
+  schedule:
+    # Pipeline dzienny — 20:00 CEST = 18:00 UTC (letni), 19:00 UTC (zimowy)
+    - cron: '0 18 * * *'
+    # Weryfikacja — 09:00 CEST = 07:00 UTC
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Tryb uruchomienia'
+        required: true
+        default: pipeline
+        type: choice
+        options:
+          - pipeline   # generuje kupon + dashboard_data.json
+          - verify     # weryfikuje wczorajsze wyniki + retrain
+
+# Zapobiega równoległym uruchomieniom — jeden job na raz
+concurrency:
+  group: nba-pipeline
+  cancel-in-progress: false
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 1: Uruchomienie pipeline i commit danych do repo
+  # ────────────────────────────────────────────────────────────────────────────
+  pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # git push z danymi
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # fetch-depth 0 potrzebny do push'a z historią
+          fetch-depth: 0
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── Pipeline dzienny (20:00 CEST) ──────────────────────────────────────
+      - name: Run pipeline — generuj kupon
+        if: >-
+          github.event.schedule == '0 18 * * *' ||
+          (github.event_name == 'workflow_dispatch' && inputs.mode == 'pipeline')
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python main.py --run-now
+
+      # ── Weryfikacja (09:00 CEST) ───────────────────────────────────────────
+      - name: Run verify — weryfikuj wczoraj + retrain
+        if: >-
+          github.event.schedule == '0 7 * * *' ||
+          (github.event_name == 'workflow_dispatch' && inputs.mode == 'verify')
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python main.py --verify-only
+
+      # ── Commit danych z powrotem do repo ────────────────────────────────────
+      - name: Commit updated data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Force-add pliki które mogły być w .gitignore wcześniej
+          git add -f nba_betting.db             2>/dev/null || true
+          git add -f models/regressor_v*.pkl    2>/dev/null || true
+          git add -f models/classifier_v*.pkl   2>/dev/null || true
+          git add    dashboard_data.json        2>/dev/null || true
+          git add    "coupon_*.json"            2>/dev/null || true
+
+          # Commit tylko jeśli są zmiany; [skip ci] zapobiega pętli
+          if ! git diff --staged --quiet; then
+            git commit -m "data: pipeline $(date -u +'%Y-%m-%dT%H:%M')Z [skip ci]"
+            git push
+          else
+            echo "Brak zmian do commitowania."
+          fi
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # Job 2: Deploy dashboardu na GitHub Pages
+  # ────────────────────────────────────────────────────────────────────────────
+  deploy:
+    needs: pipeline
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repo (po commit danych)
+        uses: actions/checkout@v4
+        with:
+          ref: main    # pobierz najnowszy main z nowym dashboard_data.json
+
+      - name: Przygotuj katalog _site
+        run: |
+          mkdir -p _site
+
+          # Dashboard HTML
+          cp dashboard.html _site/
+
+          # Dane — jeśli nie ma (pierwsza iteracja), wstaw placeholder
+          if [ -f dashboard_data.json ]; then
+            cp dashboard_data.json _site/
+          else
+            echo '{"generated_at":"","kpi":{},"today_coupon":null,"bet_history":[],"bankroll_curve":[],"calibration":{},"win_rate_by_team":[],"model_stats":{}}' \
+              > _site/dashboard_data.json
+          fi
+
+          # index.html → przekierowanie do dashboardu
+          cat > _site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html><head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0;url=dashboard.html">
+            <title>NBA Betting Dashboard</title>
+          </head><body>
+            <a href="dashboard.html">Przejdź do dashboardu →</a>
+          </body></html>
+          EOF
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

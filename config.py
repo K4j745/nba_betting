@@ -7,7 +7,7 @@ import os
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 # ── API Keys ──────────────────────────────────────────────
-ODDS_API_KEY = os.getenv("932f5bb78fb5c5f5f2a410e8c77a898c", "6bd33386a07cadc44863240776b4ec1f") # klucze api do oodds api
+ODDS_API_KEY = os.getenv("ODDS_API_KEY", "")  # ustaw jako GitHub Secret: ODDS_API_KEY
 
 # ── Betting Parameters ────────────────────────────────────
 ODDS_MIN            = 1.40

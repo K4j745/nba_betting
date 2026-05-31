@@ -416,6 +416,8 @@ def run_daily_pipeline(game_date: str | None = None):
         coupon["total_picks"], game_date,
     )
 
+    export_dashboard_data(db_path=DB_PATH)
+
 
 def run_verify_and_report():
     """
@@ -441,6 +443,7 @@ def run_verify_and_report():
 
     step_verify_and_report(tracker, predictor, yesterday)
     step_backup_db()
+    export_dashboard_data(db_path=DB_PATH)
 
     logger.info("KONIEC WERYFIKACJI")
 
@@ -476,6 +479,216 @@ def run_scheduler():
 # ─────────────────────────────────────────────────────────────────────────────
 # Print helper
 # ─────────────────────────────────────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Dashboard export
+# ─────────────────────────────────────────────────────────────────────────────
+
+def export_dashboard_data(
+    db_path: str = DB_PATH,
+    output_path: str = "dashboard_data.json",
+) -> dict:
+    """
+    Buduje dashboard_data.json z bazy SQLite.
+    Wywoływane automatycznie po każdym uruchomieniu pipeline i weryfikacji.
+    """
+    import json as _json
+    import sqlite3 as _sqlite3
+    from collections import defaultdict
+    from datetime import datetime as _dt, date as _date, timedelta as _td
+    import math as _math
+
+    today     = _date.today().isoformat()
+    since_30d = (_date.today() - _td(days=30)).isoformat()
+    since_90d = (_date.today() - _td(days=90)).isoformat()
+
+    try:
+        import pandas as _pd
+    except ImportError:
+        logger.error("pandas niedostępne — pomijam eksport dashboardu")
+        return {}
+
+    def _safe(v):
+        if v is None:
+            return None
+        try:
+            if isinstance(v, float) and _math.isnan(v):
+                return None
+        except Exception:
+            pass
+        if hasattr(v, "item"):
+            return v.item()
+        return v
+
+    conn = _sqlite3.connect(db_path)
+
+    # ── 1. Dzisiejszy kupon ─────────────────────────────────────────
+    row = conn.execute(
+        "SELECT coupon_json FROM coupons WHERE date = ? ORDER BY created_at DESC LIMIT 1",
+        (today,),
+    ).fetchone()
+    today_coupon = _json.loads(row[0]) if row else None
+
+    if today_coupon and today_coupon.get("picks"):
+        for pick in today_coupon["picks"]:
+            p = pick["p_over"] if pick["bet"] == "over" else (1.0 - pick["p_over"])
+            pick["ev"] = round(p * pick["odds"] - 1.0, 4)
+        today_coupon["picks"].sort(key=lambda x: x.get("ev", 0), reverse=True)
+
+    # ── 2. KPI ──────────────────────────────────────────────────────
+    df_all = _pd.read_sql_query(
+        "SELECT result, simulated_profit FROM results WHERE result IN ('WIN','LOSS')",
+        conn,
+    )
+    df_30d = _pd.read_sql_query(
+        "SELECT result, simulated_profit FROM results "
+        "WHERE result IN ('WIN','LOSS') AND game_date >= ?",
+        conn, params=(since_30d,),
+    )
+
+    total     = len(df_all)
+    wins      = int((df_all["result"] == "WIN").sum()) if not df_all.empty else 0
+    win_rate  = round(wins / total, 4) if total > 0 else 0.0
+    pnl_total = round(float(df_all["simulated_profit"].sum()), 2) if not df_all.empty else 0.0
+    stake_30d = len(df_30d) * STAKE_PER_PICK
+    roi_30d   = (
+        round(float(df_30d["simulated_profit"].sum()) / stake_30d, 4)
+        if stake_30d > 0 else 0.0
+    )
+
+    # ── 3. Bankroll curve (90d) ─────────────────────────────────────
+    df_pnl = _pd.read_sql_query(
+        "SELECT game_date, simulated_profit FROM results "
+        "WHERE result IN ('WIN','LOSS') AND game_date >= ? ORDER BY game_date, id",
+        conn, params=(since_90d,),
+    )
+    cum = 0.0
+    bankroll_curve = []
+    for _, r in df_pnl.iterrows():
+        cum += float(r["simulated_profit"])
+        bankroll_curve.append({"date": r["game_date"], "cumulative_pnl": round(cum, 2)})
+
+    # ── 4. Win rate per drużyna ─────────────────────────────────────
+    df_games = _pd.read_sql_query(
+        "SELECT game, result, simulated_profit FROM results WHERE result IN ('WIN','LOSS')",
+        conn,
+    )
+    team_agg: dict = defaultdict(lambda: {"wins": 0, "total": 0, "profit": 0.0})
+    for _, r in df_games.iterrows():
+        game   = str(r.get("game", ""))
+        result = str(r.get("result", ""))
+        profit = float(r.get("simulated_profit", 0))
+        sep = " vs " if " vs " in game else (" VS " if " VS " in game else None)
+        if sep is None:
+            continue
+        parts = [p.strip() for p in game.split(sep, 1) if p.strip()]
+        share = profit / max(len(parts), 1)
+        for team in parts:
+            team_agg[team]["total"] += 1
+            team_agg[team]["wins"]  += 1 if result == "WIN" else 0
+            team_agg[team]["profit"] += share
+
+    win_rate_by_team = sorted(
+        [
+            {
+                "team":     team,
+                "n":        s["total"],
+                "win_rate": round(s["wins"] / s["total"], 4),
+                "profit":   round(s["profit"], 2),
+            }
+            for team, s in team_agg.items()
+            if s["total"] >= 3
+        ],
+        key=lambda x: x["win_rate"],
+        reverse=True,
+    )[:15]
+
+    # ── 5. Kalibracja modelu ────────────────────────────────────────
+    df_cal = _pd.read_sql_query(
+        "SELECT p_over, bet, result FROM results "
+        "WHERE result IN ('WIN','LOSS') AND p_over IS NOT NULL",
+        conn,
+    )
+    calibration: dict = {"prob_pred": [], "prob_true": [], "n_samples": 0}
+    if len(df_cal) >= 10:
+        try:
+            from sklearn.calibration import calibration_curve as _cc
+            df_cal["y_true"] = (
+                ((df_cal["bet"] == "over")  & (df_cal["result"] == "WIN")) |
+                ((df_cal["bet"] == "under") & (df_cal["result"] == "LOSS"))
+            ).astype(int)
+            prob_true, prob_pred = _cc(
+                df_cal["y_true"], df_cal["p_over"], n_bins=5, strategy="quantile",
+            )
+            calibration = {
+                "prob_pred": [round(float(p), 3) for p in prob_pred],
+                "prob_true": [round(float(p), 3) for p in prob_true],
+                "n_samples": len(df_cal),
+            }
+        except Exception as exc:
+            logger.warning("Kalibracja w eksporcie dashboardu nie powiodła się: %s", exc)
+
+    # ── 6. Historia zakładów ────────────────────────────────────────
+    df_hist = _pd.read_sql_query(
+        "SELECT game_date, player_name, game, bet, line, odds, p_over, "
+        "confidence, actual_pts, result, simulated_profit "
+        "FROM results ORDER BY game_date DESC, id DESC LIMIT 200",
+        conn,
+    )
+    bet_history = [
+        {
+            "date":       r["game_date"],
+            "player":     r["player_name"],
+            "game":       r["game"],
+            "bet":        r["bet"],
+            "line":       _safe(r["line"]),
+            "odds":       _safe(r["odds"]),
+            "p_over":     _safe(r["p_over"]),
+            "confidence": int(r["confidence"]) if _pd.notna(r.get("confidence")) else None,
+            "actual_pts": _safe(r["actual_pts"]),
+            "result":     r["result"],
+            "profit":     round(float(r["simulated_profit"]), 2),
+        }
+        for _, r in df_hist.iterrows()
+    ]
+
+    # ── 7. Statystyki modelu ────────────────────────────────────────
+    mrow = conn.execute(
+        "SELECT version, trained_at, regressor_mae, classifier_auc "
+        "FROM model_history ORDER BY version DESC LIMIT 1"
+    ).fetchone()
+    model_stats = {
+        "version":    mrow[0] if mrow else None,
+        "trained_at": mrow[1] if mrow else None,
+        "cv_mae":     mrow[2] if mrow else None,
+        "cv_auc":     mrow[3] if mrow else None,
+    }
+
+    conn.close()
+
+    data = {
+        "generated_at": _dt.now().isoformat(),
+        "today_coupon": today_coupon,
+        "kpi": {
+            "win_rate":    win_rate,
+            "roi_30d":     roi_30d,
+            "pnl_total":   pnl_total,
+            "total_picks": total,
+            "total_wins":  wins,
+        },
+        "bankroll_curve":   bankroll_curve,
+        "win_rate_by_team": win_rate_by_team,
+        "calibration":      calibration,
+        "bet_history":      bet_history,
+        "model_stats":      model_stats,
+    }
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        _json.dump(data, f, indent=2, ensure_ascii=False, default=str)
+
+    logger.info("Dashboard data → %s", output_path)
+    return data
+
 
 def _print_coupon(coupon: dict):
     print("\n" + "=" * 60)

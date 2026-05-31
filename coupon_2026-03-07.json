@@ -1,0 +1,41 @@
+{
+  "date": "2026-03-07",
+  "model_version": 1,
+  "picks": [
+    {
+      "game": "SAS vs PHI",
+      "player": "Wembanyama",
+      "bet": "under",
+      "line": 25.5,
+      "odds": 1.87,
+      "pts_predicted": 23.9,
+      "p_over": 0.024,
+      "confidence": 70,
+      "top_features": [
+        "line",
+        "opp_pace",
+        "pts_avg_vs_opponent"
+      ],
+      "reasoning": "avg 24.2 last 10, trend ↑2.8, opp DEF_RTG=113.8, model=23.9pts, market disagrees"
+    },
+    {
+      "game": "BOS vs MIL",
+      "player": "Tatum",
+      "bet": "under",
+      "line": 25.5,
+      "odds": 1.87,
+      "pts_predicted": 23.9,
+      "p_over": 0.024,
+      "confidence": 70,
+      "top_features": [
+        "line",
+        "opp_pace",
+        "pts_avg_vs_opponent"
+      ],
+      "reasoning": "avg 24.2 last 10, trend ↑2.8, opp DEF_RTG=113.8, model=23.9pts, market disagrees"
+    }
+  ],
+  "total_picks": 2,
+  "simulated_stake_per_pick": 10.0,
+  "simulated_total_stake": 20.0
+}

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBA Betting Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+/* ── Design Tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --radius:    12px;
+  --radius-sm: 6px;
+  --duration:  180ms;
+  --font:      -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+[data-theme="dark"] {
+  --bg:           #0f1117;
+  --surface:      #16192a;
+  --surface-2:    #1e2235;
+  --surface-3:    #262b40;
+  --text:         #e8ecf4;
+  --muted:        #8891a6;
+  --green:        #00d26a;
+  --green-dim:    rgba(0, 210, 106, 0.12);
+  --red:          #ff4757;
+  --red-dim:      rgba(255, 71, 87, 0.12);
+  --yellow:       #ffa502;
+  --yellow-dim:   rgba(255, 165, 2, 0.12);
+  --blue:         #748ffc;
+  --border:       rgba(255, 255, 255, 0.07);
+  --shadow:       0 4px 32px rgba(0, 0, 0, 0.5);
+  --chart-grid:   rgba(255, 255, 255, 0.05);
+}
+[data-theme="light"] {
+  --bg:           #f0f2f8;
+  --surface:      #ffffff;
+  --surface-2:    #eef1fb;
+  --surface-3:    #dde3f5;
+  --text:         #0d1219;
+  --muted:        #6b7280;
+  --green:        #059669;
+  --green-dim:    rgba(5, 150, 105, 0.10);
+  --red:          #C9082A;
+  --red-dim:      rgba(201, 8, 42, 0.10);
+  --yellow:       #d97706;
+  --yellow-dim:   rgba(217, 119, 6, 0.10);
+  --blue:         #1D428A;
+  --border:       rgba(0, 0, 0, 0.08);
+  --shadow:       0 4px 32px rgba(0, 0, 0, 0.08);
+  --chart-grid:   rgba(0, 0, 0, 0.05);
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  transition: background var(--duration), color var(--duration);
+  min-height: 100vh;
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────────── */
+.container  { max-width: 1320px; margin: 0 auto; padding: 0 20px; }
+.section    { margin-bottom: 32px; }
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -.01em;
+}
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--red) 0%, var(--blue) 100%);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+.logo-sub { font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.updated-at {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  transition: background var(--duration);
+}
+.btn-icon:hover { background: var(--surface-3); }
+
+/* ── Main Content ──────────────────────────────────────────────────────────── */
+main { padding: 28px 0 60px; }
+
+/* ── KPI Cards ─────────────────────────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+@media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .kpi-grid { grid-template-columns: 1fr; } }
+
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+.kpi-label { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.kpi-value { font-size: 32px; font-weight: 700; letter-spacing: -.02em; margin: 6px 0 4px; font-family: var(--font-mono); }
+.kpi-sub   { font-size: 12px; color: var(--muted); }
+.text-green  { color: var(--green); }
+.text-red    { color: var(--red); }
+.text-yellow { color: var(--yellow); }
+.text-blue   { color: var(--blue); }
+
+/* ── Coupon Table ──────────────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface-2); }
+.player-name { font-weight: 600; }
+.game-label  { font-size: 11px; color: var(--muted); }
+
+.badge-bet {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.badge-over  { background: var(--green-dim); color: var(--green); }
+.badge-under { background: var(--red-dim);   color: var(--red);   }
+
+.badge-result {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+.badge-win  { background: var(--green-dim); color: var(--green); }
+.badge-loss { background: var(--red-dim);   color: var(--red);   }
+.badge-push { background: var(--surface-3); color: var(--muted); }
+
+.ev-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.ev-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ev-green  { color: var(--green); }
+.ev-yellow { color: var(--yellow); }
+.ev-red    { color: var(--red); }
+.dot-green  { background: var(--green); }
+.dot-yellow { background: var(--yellow); }
+.dot-red    { background: var(--red); }
+
+.conf-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.conf-bar {
+  height: 4px;
+  width: 60px;
+  background: var(--surface-3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.conf-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+}
+.conf-num { font-size: 11px; color: var(--muted); font-family: var(--font-mono); min-width: 28px; }
+
+/* ── Charts Grid ───────────────────────────────────────────────────────────── */
+.chart-grid-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.chart-grid-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .chart-grid-main, .chart-grid-bottom { grid-template-columns: 1fr; }
+}
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.chart-card h3 { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 16px; }
+.chart-container { position: relative; }
+.no-data { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+/* ── History Filters ───────────────────────────────────────────────────────── */
+.history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.filter-group { display: flex; gap: 4px; }
+.filter-btn {
+  padding: 5px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all var(--duration);
+}
+.filter-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+.filter-btn:hover:not(.active) { background: var(--surface-3); color: var(--text); }
+
+.pnl-pos { color: var(--green); font-family: var(--font-mono); font-size: 12px; }
+.pnl-neg { color: var(--red);   font-family: var(--font-mono); font-size: 12px; }
+.mono    { font-family: var(--font-mono); font-size: 12px; }
+
+/* ── Empty State ───────────────────────────────────────────────────────────── */
+.empty-state { padding: 48px; text-align: center; color: var(--muted); }
+.empty-icon  { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.empty-body  { font-size: 13px; line-height: 1.6; }
+
+/* ── Error Banner ──────────────────────────────────────────────────────────── */
+.error-banner {
+  background: var(--red-dim);
+  border: 1px solid var(--red);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: 24px;
+  display: none;
+}
+.error-banner code { font-family: var(--font-mono); background: rgba(0,0,0,.2); padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+
+<body>
+<!-- Header -->
+<header>
+  <div class="container header-inner">
+    <div class="logo">
+      <div class="logo-icon">🏀</div>
+      <div>
+        <div>NBA Betting</div>
+        <div class="logo-sub">ML-powered player props</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="updated-at" id="updatedAt">—</span>
+      <button class="btn-icon" id="themeToggle" title="Zmień motyw">🌙</button>
+      <button class="btn-icon" id="refreshBtn" title="Odśwież dane" onclick="loadData()">↻</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+  <div class="error-banner" id="errorBanner">
+    <strong>Nie można załadować danych.</strong><br>
+    Uruchom serwer lokalny: <code>python -m http.server 8080</code>
+    i otwórz <code>http://localhost:8080/dashboard.html</code>
+  </div>
+
+  <!-- KPI -->
+  <section class="section">
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="kWinRate">—</div><div class="kpi-sub" id="kWinSub">picks ogółem</div></div>
+      <div class="kpi-card"><div class="kpi-label">ROI (30d)</div><div class="kpi-value" id="kRoi30">—</div><div class="kpi-sub" id="kRoiSub">ostatnie 30 dni</div></div>
+      <div class="kpi-card"><div class="kpi-label">P&amp;L Total</div><div class="kpi-value" id="kPnl">—</div><div class="kpi-sub" id="kPnlSub">skumulowany wynik</div></div>
+      <div class="kpi-card"><div class="kpi-label">Model</div><div class="kpi-value text-blue" id="kModel">—</div><div class="kpi-sub" id="kModelSub">wersja · metryki</div></div>
+    </div>
+  </section>
+
+  <!-- Today's Coupon -->
+  <section class="section">
+    <div class="section-title" id="couponTitle">Kupon Dnia</div>
+    <div class="card" id="couponCard">
+      <div class="empty-state">
+        <div class="empty-icon">🔄</div>
+        <div class="empty-title">Ładowanie…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="section">
+    <div class="section-title">Wykresy</div>
+    <div class="chart-grid-main">
+      <div class="chart-card">
+        <h3>Bankroll Curve · 90d</h3>
+        <div class="chart-container" style="height:240px">
+          <canvas id="bankrollChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Win Rate per Drużyna</h3>
+        <div class="chart-container" style="height:240px">
+          <canvas id="teamChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="chart-grid-bottom">
+      <div class="chart-card">
+        <h3>Kalibracja Modelu</h3>
+        <div class="chart-container" style="height:220px">
+          <canvas id="calibrationChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Rozkład EV · Kupon Dnia</h3>
+        <div class="chart-container" style="height:220px">
+          <canvas id="evChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- History -->
+  <section class="section">
+    <div class="history-header">
+      <div class="section-title" style="margin-bottom:0">Historia Zakładów</div>
+      <div class="filter-group">
+        <button class="filter-btn" data-days="7"  onclick="setFilter(7)">7d</button>
+        <button class="filter-btn active" data-days="30" onclick="setFilter(30)">30d</button>
+        <button class="filter-btn" data-days="90" onclick="setFilter(90)">90d</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-wrap" id="historyWrap">
+        <div class="empty-state">
+          <div class="empty-icon">🔄</div>
+          <div class="empty-title">Ładowanie historii…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+</main>
+
+<script>
+/* ── State ─────────────────────────────────────────────────────────────────── */
+let _data      = null;
+let _filterDays = 30;
+let _charts    = {};
+
+const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+
+/* ── Theme ─────────────────────────────────────────────────────────────────── */
+(function initTheme() {
+  const saved = localStorage.getItem('nba-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').textContent = saved === 'dark' ? '☀️' : '🌙';
+})();
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = isDark() ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('nba-theme', next);
+  document.getElementById('themeToggle').textContent = next === 'dark' ? '☀️' : '🌙';
+  if (_data) renderCharts(_data);
+});
+
+/* ── Helpers ────────────────────────────────────────────────────────────────── */
+const pct   = (v, decimals=1) => v == null ? '—' : `${(v*100).toFixed(decimals)}%`;
+const plnFmt = v => v == null ? '—' : (v >= 0 ? `+${v.toFixed(2)}` : v.toFixed(2)) + ' PLN';
+const clrVal = (v, thr=0) => v == null ? '' : (v > thr ? 'text-green' : v < thr ? 'text-red' : '');
+
+function evBadge(ev) {
+  if (ev == null) return '<span class="mono">—</span>';
+  const cls = ev > 0.05 ? 'green' : ev >= 0 ? 'yellow' : 'red';
+  const sign = ev >= 0 ? '+' : '';
+  return `<span class="ev-badge ev-${cls}"><span class="ev-dot dot-${cls}"></span>${sign}${(ev*100).toFixed(1)}%</span>`;
+}
+
+function confBar(c) {
+  if (c == null) return '—';
+  const pct = Math.min(Math.max(c, 0), 100);
+  return `<div class="conf-bar-wrap"><div class="conf-bar"><div class="conf-fill" style="width:${pct}%"></div></div><span class="conf-num">${c}</span></div>`;
+}
+
+function betBadge(bet) {
+  return bet === 'over'
+    ? '<span class="badge-bet badge-over">OVER</span>'
+    : '<span class="badge-bet badge-under">UNDER</span>';
+}
+
+function resultBadge(r) {
+  if (r === 'WIN')  return '<span class="badge-result badge-win">WIN</span>';
+  if (r === 'LOSS') return '<span class="badge-result badge-loss">LOSS</span>';
+  return '<span class="badge-result badge-push">PUSH</span>';
+}
+
+function daysAgo(dateStr, days) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  return new Date(dateStr) >= cutoff;
+}
+
+/* ── CSS var reader ─────────────────────────────────────────────────────────── */
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/* ── Data Load ──────────────────────────────────────────────────────────────── */
+async function loadData() {
+  try {
+    const r = await fetch('dashboard_data.json?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    _data = await r.json();
+    document.getElementById('errorBanner').style.display = 'none';
+    render(_data);
+  } catch(e) {
+    console.error('Dashboard load error:', e);
+    document.getElementById('errorBanner').style.display = 'block';
+  }
+}
+
+/* ── Main Render ────────────────────────────────────────────────────────────── */
+function render(d) {
+  const ts = d.generated_at ? d.generated_at.replace('T', ' ').slice(0, 16) : '—';
+  document.getElementById('updatedAt').textContent = 'Aktualizacja: ' + ts;
+  renderKPI(d);
+  renderCoupon(d.today_coupon);
+  renderCharts(d);
+  renderHistory(d.bet_history, _filterDays);
+}
+
+/* ── KPI ─────────────────────────────────────────────────────────────────────── */
+function renderKPI(d) {
+  const k = d.kpi || {};
+  const ms = d.model_stats || {};
+
+  const wr = k.win_rate;
+  document.getElementById('kWinRate').textContent = pct(wr, 1);
+  document.getElementById('kWinRate').className   = 'kpi-value ' + clrVal(wr - 0.5);
+  document.getElementById('kWinSub').textContent  = `${k.total_wins ?? 0}W / ${(k.total_picks - k.total_wins) ?? 0}L · ${k.total_picks ?? 0} picks`;
+
+  const roi = k.roi_30d;
+  document.getElementById('kRoi30').textContent  = pct(roi, 2);
+  document.getElementById('kRoi30').className    = 'kpi-value ' + clrVal(roi);
+  document.getElementById('kRoiSub').textContent = 'zwrot na wkładzie · 30d';
+
+  const pnl = k.pnl_total;
+  document.getElementById('kPnl').textContent  = plnFmt(pnl);
+  document.getElementById('kPnl').className    = 'kpi-value ' + clrVal(pnl);
+  document.getElementById('kPnlSub').textContent = 'symulowany P&L';
+
+  const ver = ms.version ?? '—';
+  document.getElementById('kModel').textContent = 'v' + ver;
+  const mae = ms.cv_mae != null ? ms.cv_mae.toFixed(2) : '—';
+  const auc = ms.cv_auc != null ? ms.cv_auc.toFixed(3) : '—';
+  document.getElementById('kModelSub').textContent = `MAE ${mae} · AUC ${auc}`;
+}
+
+/* ── Coupon ──────────────────────────────────────────────────────────────────── */
+function renderCoupon(coupon) {
+  const today = new Date().toISOString().slice(0, 10);
+  const dateLabel = (coupon && coupon.date) ? coupon.date : today;
+  document.getElementById('couponTitle').textContent = `Kupon Dnia · ${dateLabel}`;
+
+  const card = document.getElementById('couponCard');
+
+  if (!coupon || !coupon.picks || coupon.picks.length === 0) {
+    card.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">Brak kuponu na dziś</div>
+      <div class="empty-body">Pipeline nie wygenerował picków spełniających kryteria filtrowania.<br>Uruchom: <code>python main.py --run-now</code></div>
+    </div>`;
+    return;
+  }
+
+  const picks = coupon.picks;
+  const rows = picks.map(p => `
+    <tr>
+      <td>${evBadge(p.ev)}</td>
+      <td><div class="player-name">${p.player}</div><div class="game-label">${p.game}</div></td>
+      <td>${betBadge(p.bet)}</td>
+      <td class="mono">${p.line}</td>
+      <td class="mono">${p.odds}</td>
+      <td class="mono">${p.p_over != null ? pct(p.bet==='over' ? p.p_over : 1-p.p_over) : '—'}</td>
+      <td>${confBar(p.confidence)}</td>
+      <td class="mono" style="font-size:11px;color:var(--muted);max-width:220px">${p.reasoning||'—'}</td>
+    </tr>`).join('');
+
+  card.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>P(win)</th><th>Confidence</th><th>Reasoning</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--muted)">
+      ${picks.length} pick${picks.length>1?'i':''} · Stake: ${coupon.simulated_total_stake ?? '—'} PLN · Model v${coupon.model_version ?? '?'}
+    </div>`;
+}
+
+/* ── Charts ──────────────────────────────────────────────────────────────────── */
+function destroyChart(id) {
+  if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; }
+}
+
+function renderCharts(d) {
+  renderBankrollChart(d.bankroll_curve || []);
+  renderTeamChart(d.win_rate_by_team || []);
+  renderCalibrationChart(d.calibration || {});
+  renderEvChart(d.today_coupon);
+}
+
+function chartColors() {
+  return {
+    green:     cssVar('--green'),
+    red:       cssVar('--red'),
+    blue:      cssVar('--blue'),
+    yellow:    cssVar('--yellow'),
+    muted:     cssVar('--muted'),
+    grid:      cssVar('--chart-grid'),
+    surface:   cssVar('--surface-2'),
+    text:      cssVar('--text'),
+  };
+}
+
+function baseOptions(colors) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        grid: { color: colors.grid },
+        ticks: { color: colors.muted, font: { size: 10 } },
+      },
+      y: {
+        grid: { color: colors.grid },
+        ticks: { color: colors.muted, font: { size: 10 } },
+      },
+    },
+  };
+}
+
+/* Bankroll Curve */
+function renderBankrollChart(curve) {
+  destroyChart('bankroll');
+  const el = document.getElementById('bankrollChart');
+  if (!curve.length) {
+    el.parentElement.innerHTML = '<div class="no-data">Za mało danych (uruchom pipeline)</div>';
+    return;
+  }
+  const colors = chartColors();
+  const labels = curve.map(r => r.date.slice(5));  // MM-DD
+  const values = curve.map(r => r.cumulative_pnl);
+  const finalVal = values[values.length - 1];
+  const lineColor = finalVal >= 0 ? colors.green : colors.red;
+
+  const ctx = el.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 240);
+  grad.addColorStop(0, lineColor + '33');
+  grad.addColorStop(1, lineColor + '00');
+
+  _charts['bankroll'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        borderColor: lineColor,
+        backgroundColor: grad,
+        fill: true,
+        tension: 0.35,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        borderWidth: 2,
+      }],
+    },
+    options: {
+      ...baseOptions(colors),
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `P&L: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y.toFixed(2)} PLN`,
+          },
+        },
+      },
+      scales: {
+        x: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, maxTicksLimit: 10 } },
+        y: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => (v>=0?'+':'')+v+' PLN' } },
+      },
+    },
+  });
+}
+
+/* Win Rate by Team */
+function renderTeamChart(teams) {
+  destroyChart('team');
+  const el = document.getElementById('teamChart');
+  if (!teams.length) {
+    el.parentElement.innerHTML = '<div class="no-data">Za mało danych (min. 3 typy per drużyna)</div>';
+    return;
+  }
+  const colors = chartColors();
+  const top = teams.slice(0, 12);
+  const labels = top.map(t => t.team.length > 20 ? t.team.slice(0, 18) + '…' : t.team);
+  const values = top.map(t => +(t.win_rate * 100).toFixed(1));
+  const bgColors = values.map(v => v > 52 ? colors.green + 'bb' : colors.red + 'bb');
+
+  _charts['team'] = new Chart(document.getElementById('teamChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: values, backgroundColor: bgColors, borderRadius: 4 }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.parsed.x}% win rate (n=${top[c.dataIndex].n})` } } },
+      scales: {
+        x: { min: 0, max: 100, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => v + '%' } },
+        y: { grid: { display: false }, ticks: { color: colors.text, font: { size: 10 } } },
+      },
+    },
+  });
+}
+
+/* Calibration */
+function renderCalibrationChart(cal) {
+  destroyChart('cal');
+  const el = document.getElementById('calibrationChart');
+  if (!cal.prob_pred || cal.prob_pred.length < 2) {
+    el.parentElement.innerHTML = `<div class="no-data">Za mało danych (min. 10 zweryfikowanych)</div>`;
+    return;
+  }
+  const colors = chartColors();
+  const perfect = cal.prob_pred.map((_, i) => ({ x: cal.prob_pred[i], y: cal.prob_pred[i] }));
+  const actual  = cal.prob_pred.map((p, i) => ({ x: p, y: cal.prob_true[i] }));
+
+  _charts['cal'] = new Chart(document.getElementById('calibrationChart'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { label: 'Idealna', data: perfect, borderColor: colors.muted + '88', borderDash: [4, 4], showLine: true, pointRadius: 0, borderWidth: 1.5 },
+        { label: `Model (n=${cal.n_samples})`, data: actual, borderColor: colors.blue, backgroundColor: colors.blue, showLine: true, pointRadius: 5, borderWidth: 2, tension: 0 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { color: colors.muted, font: { size: 11 }, boxWidth: 16 } } },
+      scales: {
+        x: { min: 0, max: 1, title: { display: true, text: 'P(over) przewidziane', color: colors.muted, font: { size: 10 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => (v*100).toFixed(0)+'%' } },
+        y: { min: 0, max: 1, title: { display: true, text: 'Faktyczny win rate', color: colors.muted, font: { size: 10 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => (v*100).toFixed(0)+'%' } },
+      },
+    },
+  });
+}
+
+/* EV Distribution */
+function renderEvChart(coupon) {
+  destroyChart('ev');
+  const el = document.getElementById('evChart');
+  if (!coupon || !coupon.picks || coupon.picks.length === 0) {
+    el.parentElement.innerHTML = '<div class="no-data">Brak kuponu na dziś</div>';
+    return;
+  }
+  const colors  = chartColors();
+  const picks   = coupon.picks;
+  const labels  = picks.map(p => p.player.split(' ').pop());
+  const evVals  = picks.map(p => p.ev != null ? +(p.ev * 100).toFixed(2) : 0);
+  const bgColors = evVals.map(v => v > 5 ? colors.green + 'cc' : v >= 0 ? colors.yellow + 'cc' : colors.red + 'cc');
+
+  _charts['ev'] = new Chart(document.getElementById('evChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ data: evVals, backgroundColor: bgColors, borderRadius: 6 }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `EV: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y}%` } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: colors.text, font: { size: 11 } } },
+        y: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => v + '%' } },
+      },
+    },
+  });
+}
+
+/* ── History ─────────────────────────────────────────────────────────────────── */
+function setFilter(days) {
+  _filterDays = days;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', +b.dataset.days === days);
+  });
+  if (_data) renderHistory(_data.bet_history || [], days);
+}
+
+function renderHistory(history, days) {
+  const wrap = document.getElementById('historyWrap');
+  if (!history || history.length === 0) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">Brak historii zakładów</div><div class="empty-body">Wyniki pojawią się po pierwszej weryfikacji.</div></div>`;
+    return;
+  }
+  const filtered = history.filter(r => daysAgo(r.date, days));
+  if (filtered.length === 0) {
+    wrap.innerHTML = `<div class="no-data">Brak wyników w ostatnich ${days} dniach</div>`;
+    return;
+  }
+  const rows = filtered.slice(0, 100).map(r => {
+    const profitCls = (r.profit || 0) >= 0 ? 'pnl-pos' : 'pnl-neg';
+    const pnlStr = r.profit != null ? (r.profit >= 0 ? '+' : '') + r.profit.toFixed(2) + ' PLN' : '—';
+    return `<tr>
+      <td class="mono">${r.date}</td>
+      <td><div class="player-name">${r.player}</div><div class="game-label">${r.game||''}</div></td>
+      <td>${betBadge(r.bet)}</td>
+      <td class="mono">${r.line ?? '—'}</td>
+      <td class="mono">${r.odds ?? '—'}</td>
+      <td class="mono">${r.actual_pts != null ? r.actual_pts : '—'}</td>
+      <td>${resultBadge(r.result)}</td>
+      <td class="${profitCls}">${pnlStr}</td>
+    </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `<table>
+    <thead><tr>
+      <th>Data</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>Faktyczne</th><th>Wynik</th><th>P&amp;L</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div style="padding:10px 12px;font-size:11px;color:var(--muted)">${filtered.length} wyników · pokazuję ${Math.min(filtered.length,100)}</div>`;
+}
+
+/* ── Init ─────────────────────────────────────────────────────────────────────── */
+loadData();
+</script>
+</body>
+</html>

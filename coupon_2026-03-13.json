@@ -1,0 +1,25 @@
+{
+  "date": "2026-03-13",
+  "model_version": 1,
+  "picks": [
+    {
+      "game": "?",
+      "player": "James Harden",
+      "bet": "over",
+      "line": 20.5,
+      "odds": 1.71,
+      "pts_predicted": 27.7,
+      "p_over": 0.987,
+      "confidence": 84,
+      "top_features": [
+        "line",
+        "pts_avg_10",
+        "opp_pace"
+      ],
+      "reasoning": "avg 32.2 last 10, trend ↓4.9, opp DEF_RTG=114.1, model=27.7pts, market confirms"
+    }
+  ],
+  "total_picks": 1,
+  "simulated_stake_per_pick": 10.0,
+  "simulated_total_stake": 10.0
+}

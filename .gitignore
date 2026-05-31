@@ -1,11 +1,17 @@
-echo "nba_betting.db
-backups/
-logs/
-models/
+# Python
 __pycache__/
-*.pkl
 *.pyc
+*.pyo
 .pytest_cache/
 .coverage
-coupon_*.json
-smoke_test.db" > .gitignore
+htmlcov/
+
+# Local only — nie wchodzą do repo
+backups/
+logs/
+smoke_test.db
+.env
+*.env.local
+
+# --- nba_betting.db, models/, coupon_*.json, dashboard_data.json ---
+# SĄ śledzone — GitHub Actions potrzebuje ich do persystencji między runami.
