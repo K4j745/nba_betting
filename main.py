@@ -686,7 +686,7 @@ def export_dashboard_data(
     with open(output_path, "w", encoding="utf-8") as f:
         _json.dump(data, f, indent=2, ensure_ascii=False, default=str)
 
-    logger.info("Dashboard data → %s", output_path)
+    logger.info("Dashboard data -> %s", output_path)
     return data
 
 

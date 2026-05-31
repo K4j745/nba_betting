@@ -90,6 +90,22 @@ class ResultTracker:
                     notes        TEXT
                 );
             """)
+            # Migrate old schema: add any columns missing from early versions
+            existing = {row[1] for row in conn.execute("PRAGMA table_info(results)")}
+            migrations = {
+                "player_name":     "TEXT NOT NULL DEFAULT ''",
+                "game":            "TEXT",
+                "odds":            "REAL NOT NULL DEFAULT 0",
+                "pts_predicted":   "REAL",
+                "p_over":          "REAL",
+                "confidence":      "INTEGER",
+                "top_feature":     "TEXT",
+                "verified_at":     "TEXT DEFAULT (datetime('now'))",
+            }
+            for col, dtype in migrations.items():
+                if col not in existing:
+                    conn.execute(f"ALTER TABLE results ADD COLUMN {col} {dtype}")
+                    logger.info("DB migration: added column results.%s", col)
         logger.debug("ResultTracker DB initialized")
 
     # ── Weryfikacja wyników ───────────────────────────────────────────────────
