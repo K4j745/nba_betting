@@ -15,22 +15,22 @@
   --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }
 [data-theme="dark"] {
-  --bg:           #0f1117;
-  --surface:      #16192a;
-  --surface-2:    #1e2235;
-  --surface-3:    #262b40;
-  --text:         #e8ecf4;
-  --muted:        #8891a6;
-  --green:        #00d26a;
-  --green-dim:    rgba(0, 210, 106, 0.12);
-  --red:          #ff4757;
-  --red-dim:      rgba(255, 71, 87, 0.12);
-  --yellow:       #ffa502;
-  --yellow-dim:   rgba(255, 165, 2, 0.12);
-  --blue:         #748ffc;
-  --border:       rgba(255, 255, 255, 0.07);
-  --shadow:       0 4px 32px rgba(0, 0, 0, 0.5);
-  --chart-grid:   rgba(255, 255, 255, 0.05);
+  --bg:           #08101e;
+  --surface:      #0d1829;
+  --surface-2:    #112038;
+  --surface-3:    #162849;
+  --text:         #f0f4ff;
+  --muted:        #6b7fa3;
+  --green:        #00c853;
+  --green-dim:    rgba(0, 200, 83, 0.14);
+  --red:          #C9082A;
+  --red-dim:      rgba(201, 8, 42, 0.16);
+  --yellow:       #ffab00;
+  --yellow-dim:   rgba(255, 171, 0, 0.14);
+  --blue:         #1D428A;
+  --border:       rgba(29, 66, 138, 0.20);
+  --shadow:       0 4px 24px rgba(0, 0, 0, 0.6);
+  --chart-grid:   rgba(29, 66, 138, 0.12);
 }
 [data-theme="light"] {
   --bg:           #f0f2f8;
@@ -292,7 +292,19 @@ tr:hover td { background: var(--surface-2); }
 .empty-state { padding: 48px; text-align: center; color: var(--muted); }
 .empty-icon  { font-size: 48px; margin-bottom: 12px; }
 .empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.empty-body  { font-size: 13px; line-height: 1.6; }
+.empty-body  { font-size: 13px; line-height: 1.6; max-width: 460px; margin: 0 auto; }
+.empty-reason {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
 
 /* ── Error Banner ──────────────────────────────────────────────────────────── */
 .error-banner {
@@ -497,7 +509,7 @@ function render(d) {
   const ts = d.generated_at ? d.generated_at.replace('T', ' ').slice(0, 16) : '—';
   document.getElementById('updatedAt').textContent = 'Aktualizacja: ' + ts;
   renderKPI(d);
-  renderCoupon(d.today_coupon);
+  renderCoupon(d.today_coupon, d.status_message, d.no_games_reason);
   renderCharts(d);
   renderHistory(d.bet_history, _filterDays);
 }
@@ -530,18 +542,25 @@ function renderKPI(d) {
 }
 
 /* ── Coupon ──────────────────────────────────────────────────────────────────── */
-function renderCoupon(coupon) {
-  const today = new Date().toISOString().slice(0, 10);
+function renderCoupon(coupon, statusMessage, reason) {
+  const today = (_data && _data.game_date) ? _data.game_date : new Date().toISOString().slice(0, 10);
   const dateLabel = (coupon && coupon.date) ? coupon.date : today;
   document.getElementById('couponTitle').textContent = `Kupon Dnia · ${dateLabel}`;
 
   const card = document.getElementById('couponCard');
 
   if (!coupon || !coupon.picks || coupon.picks.length === 0) {
+    // Komunikat z backendu (status_message / no_games_reason) tłumaczy DLACZEGO
+    // kupon jest pusty: brak meczów, brak propsów, brak picków po filtrach itd.
+    const body = statusMessage
+      ? statusMessage
+      : 'Pipeline nie wygenerował picków spełniających kryteria filtrowania.';
+    const tag = reason ? `<div class="empty-reason mono">${reason}</div>` : '';
     card.innerHTML = `<div class="empty-state">
       <div class="empty-icon">📋</div>
       <div class="empty-title">Brak kuponu na dziś</div>
-      <div class="empty-body">Pipeline nie wygenerował picków spełniających kryteria filtrowania.<br>Uruchom: <code>python main.py --run-now</code></div>
+      <div class="empty-body">${body}</div>
+      ${tag}
     </div>`;
     return;
   }

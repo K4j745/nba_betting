@@ -1,6 +1,9 @@
 {
-  "generated_at": "2026-06-03T11:51:01.090090",
+  "generated_at": "2026-06-03T17:52:54.746225",
+  "game_date": "2026-06-03",
   "today_coupon": null,
+  "no_games_reason": "no_props_today",
+  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,

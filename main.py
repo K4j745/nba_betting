@@ -21,7 +21,7 @@ import shutil
 import sqlite3
 import sys
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import schedule
@@ -50,6 +50,47 @@ logging.basicConfig(
     ],
 )
 logger = logging.getLogger("main")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Powody pustego kuponu (trafiają do dashboard_data.json jako `no_games_reason`)
+# ─────────────────────────────────────────────────────────────────────────────
+
+REASON_OK            = "ok"
+REASON_NO_PLAYERS    = "player_lookup_failed"
+REASON_NO_MODEL      = "model_missing"
+REASON_NO_PROPS      = "no_props_today"
+REASON_NO_FEATURES   = "no_features_built"
+REASON_NO_PICKS      = "no_picks_passed_filters"
+
+# Czytelne komunikaty pokazywane na dashboardzie (pole `status_message`).
+_REASON_MESSAGES: dict[str, str] = {
+    REASON_OK:          "",
+    REASON_NO_PLAYERS:  "Nie udało się pobrać listy zawodników NBA (problem z nba_api).",
+    REASON_NO_MODEL:    "Brak wytrenowanego modelu — uruchom `python train.py`.",
+    REASON_NO_PROPS:    "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+    REASON_NO_FEATURES: "Są propsy, ale nie udało się zbudować feature vectorów (prawdopodobnie nba_api zablokowane na runnerze CI).",
+    REASON_NO_PICKS:    "Są mecze, ale żaden pick nie przeszedł filtrów (kurs 1.40–1.90 + pewność ≥ 60%).",
+}
+
+
+def _nba_today() -> str:
+    """
+    Zwraca "dzień meczowy" NBA jako ISO date w strefie US/Eastern.
+
+    BUG (przed poprawką): używaliśmy `date.today()`, które na runnerze GitHub
+    Actions (UTC) zwraca już JUTRZEJSZĄ datę dla wieczornych meczów NBA. Cron
+    odpalał się 18:00 UTC → kupon zapisywany pod datą ET, a eksport czytał kupon
+    pod datą UTC. Te dwie daty się rozjeżdżały po północy UTC i `today_coupon`
+    zawsze wychodził null. FIX: liczymy datę meczową w strefie America/New_York,
+    tak samo przy zapisie i przy odczycie kuponu.
+    """
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/New_York")).date().isoformat()
+    except Exception:
+        # Fallback gdy brak bazy tz (np. Windows bez tzdata): ET ≈ UTC-4/-5.
+        return (datetime.now(timezone.utc) - timedelta(hours=4)).date().isoformat()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -361,8 +402,10 @@ def run_daily_pipeline(game_date: str | None = None):
       2. Zbuduj feature vectory
       3. Wygeneruj kupon
     """
+    # Dzień meczowy NBA liczymy w strefie ET (patrz _nba_today) — spójnie
+    # przy zapisie kuponu i przy odczycie w export_dashboard_data.
     if game_date is None:
-        game_date = date.today().isoformat()
+        game_date = _nba_today()
 
     logger.info("=" * 60)
     logger.info("START PIPELINE DZIENNEGO — %s", game_date)
@@ -375,6 +418,7 @@ def run_daily_pipeline(game_date: str | None = None):
 
     if not player_lookup:
         logger.error("Brak player_lookup — przerywam pipeline")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PLAYERS)
         return
 
     # Pobierz listę graczy do OddsFetcher
@@ -396,27 +440,38 @@ def run_daily_pipeline(game_date: str | None = None):
             "Brak wytrenowanego modelu — kupon nie zostanie wygenerowany. "
             "Uruchom najpierw trening: python train.py"
         )
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_MODEL)
         return
 
-    # Kroki pipeline
-    props    = step_fetch_props(odds_fetcher, player_lookup)
+    # Kroki pipeline — z diagnostyką ilościową (ile propsów → features → picków).
+    props = step_fetch_props(odds_fetcher, player_lookup)
+    logger.info("DIAG: propsów z API = %d", len(props))
     if not props:
         logger.warning("Brak propsów — pipeline zakończony bez kuponu")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
         return
 
     enriched = step_build_features(props, fetcher, team_lookup)
+    logger.info("DIAG: feature vectorów zbudowanych = %d / %d propsów", len(enriched), len(props))
     if not enriched:
         logger.warning("Brak feature vectorów — pipeline zakończony bez kuponu")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_FEATURES)
         return
 
     coupon = step_generate_coupon(enriched, predictor, game_date)
+    logger.info(
+        "DIAG: picków po filtrach (kurs %.2f–%.2f, pewność ≥ %d) = %d / %d kandydatów",
+        ODDS_MIN, ODDS_MAX, CONFIDENCE_THRESHOLD, coupon["total_picks"], len(enriched),
+    )
+
+    reason = REASON_OK if coupon["total_picks"] > 0 else REASON_NO_PICKS
 
     logger.info(
         "KONIEC PIPELINE — %d picków wygenerowanych dla %s",
         coupon["total_picks"], game_date,
     )
 
-    export_dashboard_data(db_path=DB_PATH)
+    export_dashboard_data(db_path=DB_PATH, reason=reason)
 
 
 def run_verify_and_report():
@@ -487,10 +542,13 @@ def run_scheduler():
 def export_dashboard_data(
     db_path: str = DB_PATH,
     output_path: str = "dashboard_data.json",
+    reason: str = REASON_OK,
 ) -> dict:
     """
     Buduje dashboard_data.json z bazy SQLite.
-    Wywoływane automatycznie po każdym uruchomieniu pipeline i weryfikacji.
+    Wywoływane automatycznie przy KAŻDYM wyjściu z pipeline (również gdy nie ma
+    meczów/propsów) oraz po weryfikacji. `reason` mówi dashboardowi, dlaczego
+    `today_coupon` jest pusty (mapowane na czytelny `status_message`).
     """
     import json as _json
     import sqlite3 as _sqlite3
@@ -498,9 +556,10 @@ def export_dashboard_data(
     from datetime import datetime as _dt, date as _date, timedelta as _td
     import math as _math
 
-    today     = _date.today().isoformat()
-    since_30d = (_date.today() - _td(days=30)).isoformat()
-    since_90d = (_date.today() - _td(days=90)).isoformat()
+    # Dzień meczowy w ET — ten sam co przy zapisie kuponu (patrz _nba_today).
+    today     = _nba_today()
+    since_30d = (_date.fromisoformat(today) - _td(days=30)).isoformat()
+    since_90d = (_date.fromisoformat(today) - _td(days=90)).isoformat()
 
     try:
         import pandas as _pd
@@ -529,11 +588,21 @@ def export_dashboard_data(
     ).fetchone()
     today_coupon = _json.loads(row[0]) if row else None
 
-    if today_coupon and today_coupon.get("picks"):
+    has_picks = bool(today_coupon and today_coupon.get("picks"))
+    if has_picks:
         for pick in today_coupon["picks"]:
             p = pick["p_over"] if pick["bet"] == "over" else (1.0 - pick["p_over"])
             pick["ev"] = round(p * pick["odds"] - 1.0, 4)
         today_coupon["picks"].sort(key=lambda x: x.get("ev", 0), reverse=True)
+        reason = REASON_OK
+    elif reason == REASON_OK:
+        # Wywołano bez jawnego powodu (np. z weryfikacji), a kuponu brak —
+        # rozróżnij "kupon istnieje ale pusty" od "w ogóle brak meczów".
+        reason = REASON_NO_PICKS if today_coupon is not None else REASON_NO_PROPS
+
+    # today_coupon eksportujemy tylko gdy ma realne picki — inaczej null + reason.
+    if not has_picks:
+        today_coupon = None
 
     # ── 2. KPI ──────────────────────────────────────────────────────
     df_all = _pd.read_sql_query(
@@ -667,8 +736,11 @@ def export_dashboard_data(
     conn.close()
 
     data = {
-        "generated_at": _dt.now().isoformat(),
-        "today_coupon": today_coupon,
+        "generated_at":    _dt.now().isoformat(),
+        "game_date":       today,
+        "today_coupon":    today_coupon,
+        "no_games_reason": None if reason == REASON_OK else reason,
+        "status_message":  _REASON_MESSAGES.get(reason, ""),
         "kpi": {
             "win_rate":    win_rate,
             "roi_30d":     roi_30d,
