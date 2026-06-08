@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-08T11:49:20.831755",
+  "generated_at": "2026-06-08T21:12:05.712416",
   "game_date": "2026-06-08",
   "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "no_games_reason": "no_features_built",
+  "status_message": "Są propsy, ale nie udało się zbudować feature vectorów (prawdopodobnie nba_api zablokowane na runnerze CI).",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
