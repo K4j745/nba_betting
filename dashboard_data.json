@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-22T22:57:49.442882",
-  "game_date": "2026-10-22",
+  "generated_at": "2026-10-23T12:15:42.206243",
+  "game_date": "2026-10-23",
   "today_coupon": null,
-  "no_games_reason": "no_features_built",
-  "status_message": "Są propsy, ale nie udało się zbudować feature vectorów (prawdopodobnie nba_api zablokowane na runnerze CI).",
+  "no_games_reason": "no_props_today",
+  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
