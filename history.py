@@ -39,6 +39,8 @@ FIRST_SEASON  = 2021          # 2021-22: pierwszy pełny sezon po skróconych 20
 # Okna rolling
 TEAM_WINDOW   = 15            # mecze drużyny do DEF_RTG / pace
 REST_CAP      = 10            # dni odpoczynku obcinamy (przerwa między sezonami ≠ informacja)
+ABSENCE_DAYS  = 14            # nieobecny = grał dla drużyny w ostatnich 14 dniach, a dziś go nie ma
+ROTATION_MIN  = 15.0          # … i średnio ≥ 15 min w ostatnich 10 meczach (zawodnik rotacji)
 
 
 def season_str(start_year: int) -> str:
@@ -205,6 +207,20 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     df["pts_avg_vs_opp"] = gh["PTS"].transform(lambda s: s.shift(1).rolling(5, min_periods=1).mean())
     df["h2h_games"]      = gh.cumcount().clip(upper=5)
 
+    # ── Absencje kolegów z rotacji (bff / no_bff — wersja drużynowa)
+    for col in ("MIN", "PTS", "FGA"):
+        df[f"_{col}_post"] = g[col].transform(lambda s: s.rolling(10, min_periods=3).mean())
+    df = df.merge(team_absences(df), on=["GAME_ID", "TEAM_ID"], how="left")
+    for col in ABSENCE_COLS:
+        df[col] = df[col].fillna(0.0)
+    df = df.sort_values(["PLAYER_ID", "GAME_DATE", "GAME_ID"]).reset_index(drop=True)
+    g = df.groupby("PLAYER_ID", group_keys=False)
+    # różnica względem ostatnich 5 meczów zawodnika: >0 = dziś brakuje więcej niż ostatnio,
+    # <0 = ktoś wraca, więc średnie zawodnika z ostatnich meczów mogą być zawyżone
+    df["vac_pts_delta"] = df["vac_pts"] - _roll_mean(g, "vac_pts", 5)
+    df["vac_min_delta"] = df["vac_min"] - _roll_mean(g, "vac_min", 5)
+    df = df.drop(columns=[c for c in df.columns if c.endswith("_post")])
+
     # ── Rywal i własna drużyna: stan sprzed dnia meczu
     form = team_form(team_games)
     df = df.sort_values("GAME_DATE")
@@ -216,7 +232,47 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     return df.sort_values(["GAME_DATE", "GAME_ID", "PLAYER_ID"]).reset_index(drop=True)
 
 
-FEATURE_COLS = [
+ABSENCE_COLS = ["n_out", "vac_min", "vac_pts", "vac_fga"]
+
+
+def team_absences(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Dla każdego meczu drużyny: kto z rotacji nie zagrał i ile minut/punktów/rzutów po nim zostaje.
+
+    Kandydaci = zawodnicy, którzy grali dla tej drużyny w ostatnich ABSENCE_DAYS dniach
+    (wartości _*_post z ich ostatniego meczu przed dniem meczu — tylko przeszłość).
+    Nieobecny = kandydat z _MIN_post ≥ ROTATION_MIN, którego nie ma w tym meczu.
+    Zawodnik wymieniony do innej drużyny przez 14 dni liczy się jako brak w starej —
+    to zgodne z rzeczywistością (jego minuty trzeba rozdzielić).
+    """
+    apps = df[["TEAM_ID", "SEASON", "PLAYER_ID", "GAME_DATE", "_MIN_post", "_PTS_post", "_FGA_post"]] \
+        .dropna(subset=["_MIN_post"])
+    games = df[["TEAM_ID", "SEASON", "GAME_ID", "GAME_DATE"]].drop_duplicates()
+    present = set(zip(df["GAME_ID"], df["PLAYER_ID"]))
+    window = pd.Timedelta(days=ABSENCE_DAYS)
+
+    out = []
+    for (team, season), tg in games.groupby(["TEAM_ID", "SEASON"]):
+        ta = apps[(apps["TEAM_ID"] == team) & (apps["SEASON"] == season)]
+        m = tg.merge(ta.drop(columns=["TEAM_ID", "SEASON"]), how="cross", suffixes=("", "_app"))
+        m = m[(m["GAME_DATE_app"] < m["GAME_DATE"]) & (m["GAME_DATE_app"] >= m["GAME_DATE"] - window)]
+        if m.empty:
+            continue
+        m = m.sort_values("GAME_DATE_app").drop_duplicates(["GAME_ID", "PLAYER_ID"], keep="last")
+        m = m[m["_MIN_post"] >= ROTATION_MIN]
+        m = m[[(gid, pid) not in present for gid, pid in zip(m["GAME_ID"], m["PLAYER_ID"])]]
+        if m.empty:
+            continue
+        out.append(m.groupby(["GAME_ID", "TEAM_ID"]).agg(
+            n_out=("PLAYER_ID", "size"), vac_min=("_MIN_post", "sum"),
+            vac_pts=("_PTS_post", "sum"), vac_fga=("_FGA_post", "sum"),
+        ).reset_index())
+    if not out:
+        return pd.DataFrame(columns=["GAME_ID", "TEAM_ID", *ABSENCE_COLS])
+    return pd.concat(out, ignore_index=True)
+
+
+BASE_FEATURE_COLS = [
     "pts_avg_3", "pts_avg_5", "pts_avg_10", "pts_avg_20", "pts_ewm", "pts_std_10", "pts_trend",
     "min_avg_5", "min_avg_10", "min_last", "pts_per36_10",
     "fga_avg_10", "fta_avg_10", "fg3a_avg_10", "usg_avg_10",
@@ -225,6 +281,8 @@ FEATURE_COLS = [
     "pts_avg_vs_opp", "h2h_games",
     "opp_def_rtg", "opp_pace", "team_pace",
 ]
+ABSENCE_FEATURE_COLS = [*ABSENCE_COLS, "vac_pts_delta", "vac_min_delta"]
+FEATURE_COLS = BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS
 
 
 def build_dataset(refresh_current: bool = False) -> pd.DataFrame:

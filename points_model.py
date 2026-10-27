@@ -43,9 +43,10 @@ class PointsModel:
     sigma_a: float
     sigma_b: float
     cutoff: pd.Timestamp
+    features: list[str]
 
     def mu(self, X: pd.DataFrame) -> np.ndarray:
-        return np.clip(self.reg.predict(X[FEATURE_COLS]), 0, None)
+        return np.clip(self.reg.predict(X[self.features]), 0, None)
 
     def sigma(self, mu: np.ndarray) -> np.ndarray:
         return np.clip(self.sigma_a + self.sigma_b * mu, 1.5, None)
@@ -64,21 +65,22 @@ def _fit_sigma(mu: np.ndarray, resid: np.ndarray) -> tuple[float, float]:
     return float(a), float(b)
 
 
-def train_points_model(df: pd.DataFrame, cutoff) -> PointsModel:
+def train_points_model(df: pd.DataFrame, cutoff, features: list[str] = FEATURE_COLS) -> PointsModel:
     """Trenuje na meczach przed `cutoff` (walidacja = ostatnie VALID_ROWS meczów przed cutoff)."""
     cutoff = pd.Timestamp(cutoff)
+    features = list(features)
     hist = df[(df["GAME_DATE"] < cutoff) & df["PTS"].notna()].sort_values("GAME_DATE")
     valid_start = hist["GAME_DATE"].iloc[-VALID_ROWS]
     tr, va = hist[hist["GAME_DATE"] < valid_start], hist[hist["GAME_DATE"] >= valid_start]
 
     reg = XGBRegressor(**XGB_PARAMS)
-    reg.fit(tr[FEATURE_COLS], tr["PTS"], eval_set=[(va[FEATURE_COLS], va["PTS"])], verbose=False)
+    reg.fit(tr[features], tr["PTS"], eval_set=[(va[features], va["PTS"])], verbose=False)
 
-    mu_va = np.clip(reg.predict(va[FEATURE_COLS]), 0, None)
+    mu_va = np.clip(reg.predict(va[features]), 0, None)
     a, b = _fit_sigma(mu_va, va["PTS"].to_numpy() - mu_va)
     mae = float(np.mean(np.abs(va["PTS"] - mu_va)))
     logger.info(
-        "PointsModel cutoff=%s: train=%d valid=%d trees=%d valid_MAE=%.2f σ=%.2f+%.3f·μ",
-        cutoff.date(), len(tr), len(va), reg.best_iteration + 1, mae, a, b,
+        "PointsModel cutoff=%s cech=%d: train=%d valid=%d trees=%d valid_MAE=%.3f σ=%.2f+%.3f·μ",
+        cutoff.date(), len(features), len(tr), len(va), reg.best_iteration + 1, mae, a, b,
     )
-    return PointsModel(reg=reg, sigma_a=a, sigma_b=b, cutoff=cutoff)
+    return PointsModel(reg=reg, sigma_a=a, sigma_b=b, cutoff=cutoff, features=features)

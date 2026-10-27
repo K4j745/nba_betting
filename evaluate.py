@@ -27,7 +27,7 @@ import pandas as pd
 
 from config import DB_PATH
 from features import remove_overround
-from history import load_dataset
+from history import BASE_FEATURE_COLS, FEATURE_COLS, load_dataset
 from points_model import train_points_model
 
 logger = logging.getLogger(__name__)
@@ -36,6 +36,11 @@ REPORT_DIR    = Path("reports")
 EV_THRESHOLDS = (0.0, 0.03, 0.05, 0.10)
 N_BOOT        = 2000
 EPS           = 1e-6
+# Zestawy cech porównywane w ablacji (każdy nowy krok 4 = nowy wpis)
+FEATURE_SETS  = {
+    "base":    BASE_FEATURE_COLS,
+    "absence": FEATURE_COLS,
+}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -103,12 +108,14 @@ def attach_games(lines: pd.DataFrame, games: pd.DataFrame) -> tuple[pd.DataFrame
 # Predykcje walk-forward
 # ─────────────────────────────────────────────────────────────────────────────
 def walk_forward_p(matched: pd.DataFrame, dataset: pd.DataFrame) -> pd.DataFrame:
+    """Kolumny mu_<zestaw>, p_<zestaw> — model trenowany osobno na każdy dzień i zestaw cech."""
     out = []
     for d, block in matched.groupby("game_date"):
-        model = train_points_model(dataset, cutoff=d)
         block = block.copy()
-        block["mu"]      = model.mu(block)
-        block["p_model"] = model.p_over(block, block["line"])
+        for name, cols in FEATURE_SETS.items():
+            model = train_points_model(dataset, cutoff=d, features=cols)
+            block[f"mu_{name}"] = model.mu(block)
+            block[f"p_{name}"]  = model.p_over(block, block["line"])
         out.append(block)
     return pd.concat(out, ignore_index=True)
 
@@ -127,10 +134,10 @@ def _boot_ci(values: np.ndarray, rng, stat=np.mean) -> tuple[float, float]:
     return float(np.percentile(s, 2.5)), float(np.percentile(s, 97.5))
 
 
-def score_book(df: pd.DataFrame, rng) -> dict:
+def score_book(df: pd.DataFrame, p_col: str, mu_col: str, rng) -> dict:
     y = df["y_over"].to_numpy()
-    ll_m, ll_k = _logloss(df["p_model"].to_numpy(), y), _logloss(df["p_market"].to_numpy(), y)
-    br_m, br_k = (df["p_model"] - y) ** 2, (df["p_market"] - y) ** 2
+    ll_m, ll_k = _logloss(df[p_col].to_numpy(), y), _logloss(df["p_market"].to_numpy(), y)
+    br_m, br_k = (df[p_col] - y) ** 2, (df["p_market"] - y) ** 2
     diff = ll_m - ll_k     # < 0 → model lepszy od rynku
     lo, hi = _boot_ci(diff, rng)
     return {
@@ -142,9 +149,22 @@ def score_book(df: pd.DataFrame, rng) -> dict:
         "logloss_diff_ci95": [round(lo, 4), round(hi, 4)],
         "brier_model": round(float(br_m.mean()), 4),
         "brier_market": round(float(br_k.mean()), 4),
-        "mae_points": round(float((df["PTS"] - df["mu"]).abs().mean()), 2),
-        "mae_line": round(float((df["PTS"] - df["line"]).abs().mean()), 2),
+        "mae_points": round(float((df["PTS"] - df[mu_col]).abs().mean()), 3),
+        "mae_line": round(float((df["PTS"] - df["line"]).abs().mean()), 3),
         "avg_margin": round(float(df["margin"].mean()), 4),
+    }
+
+
+def compare_sets(df: pd.DataFrame, a: str, b: str, rng) -> dict:
+    """Sparowana różnica log-loss zestawu b względem a (< 0 → b lepszy)."""
+    y = df["y_over"].to_numpy()
+    diff = _logloss(df[f"p_{b}"].to_numpy(), y) - _logloss(df[f"p_{a}"].to_numpy(), y)
+    mae_diff = (df["PTS"] - df[f"mu_{b}"]).abs() - (df["PTS"] - df[f"mu_{a}"]).abs()
+    lo, hi = _boot_ci(diff, rng)
+    mlo, mhi = _boot_ci(mae_diff.to_numpy(), rng)
+    return {
+        "logloss_diff": round(float(diff.mean()), 4), "logloss_diff_ci95": [round(lo, 4), round(hi, 4)],
+        "mae_diff": round(float(mae_diff.mean()), 3), "mae_diff_ci95": [round(mlo, 3), round(mhi, 3)],
     }
 
 
@@ -194,17 +214,26 @@ def run(db_path: str = DB_PATH) -> dict:
 
     report = {
         "generated": date.today().isoformat(),
+        "feature_sets": {k: len(v) for k, v in FEATURE_SETS.items()},
         "lines_total": int(len(lines)),
         "lines_matched": int(len(matched)),
         "lines_unmatched": int(len(unmatched)),
         "game_dates": sorted(d.date().isoformat() for d in pred["game_date"].unique()),
         "books": {},
+        "ablation": {},
     }
+    names = list(FEATURE_SETS)
     for book, df in pred.groupby("bookmaker"):
         report["books"][book] = {
-            "scores": score_book(df, rng),
-            "bets_model": simulate_bets(df, "p_model", rng),
-            "calibration_model": calibration_table(df, "p_model"),
+            name: {
+                "scores": score_book(df, f"p_{name}", f"mu_{name}", rng),
+                "bets": simulate_bets(df, f"p_{name}", rng),
+                "calibration": calibration_table(df, f"p_{name}"),
+            }
+            for name in names
+        }
+        report["ablation"][book] = {
+            f"{b}_vs_{names[0]}": compare_sets(df, names[0], b, rng) for b in names[1:]
         }
 
     # Line shopping: Pinnacle bez marży jako „model” dla Unibetu (ta sama linia)

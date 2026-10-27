@@ -1,5 +1,9 @@
 {
   "generated": "2026-10-27",
+  "feature_sets": {
+    "base": 26,
+    "absence": 32
+  },
   "lines_total": 1545,
   "lines_matched": 1489,
   "lines_unmatched": 56,
@@ -20,224 +24,478 @@
   ],
   "books": {
     "pinnacle": {
-      "scores": {
-        "n": 710,
-        "over_rate": 0.486,
-        "logloss_model": 0.724,
-        "logloss_market": 0.6909,
-        "logloss_diff": 0.0331,
-        "logloss_diff_ci95": [
-          0.011,
-          0.0551
+      "base": {
+        "scores": {
+          "n": 710,
+          "over_rate": 0.486,
+          "logloss_model": 0.724,
+          "logloss_market": 0.6909,
+          "logloss_diff": 0.0331,
+          "logloss_diff_ci95": [
+            0.011,
+            0.0551
+          ],
+          "brier_model": 0.2625,
+          "brier_market": 0.2489,
+          "mae_points": 5.288,
+          "mae_line": 5.051,
+          "avg_margin": 0.0667
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 546,
+            "hit_rate": 0.518,
+            "roi": -0.0241,
+            "roi_ci95": [
+              -0.1063,
+              0.0578
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 481,
+            "hit_rate": 0.507,
+            "roi": -0.0422,
+            "roi_ci95": [
+              -0.1243,
+              0.0395
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 435,
+            "hit_rate": 0.524,
+            "roi": -0.0102,
+            "roi_ci95": [
+              -0.0952,
+              0.0783
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 317,
+            "hit_rate": 0.511,
+            "roi": -0.0294,
+            "roi_ci95": [
+              -0.1392,
+              0.0747
+            ]
+          }
         ],
-        "brier_model": 0.2625,
-        "brier_market": 0.2489,
-        "mae_points": 5.29,
-        "mae_line": 5.05,
-        "avg_margin": 0.0667
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 67,
+            "p_mean": 0.223,
+            "over_freq": 0.537
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 118,
+            "p_mean": 0.359,
+            "over_freq": 0.373
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 84,
+            "p_mean": 0.426,
+            "over_freq": 0.56
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 119,
+            "p_mean": 0.474,
+            "over_freq": 0.429
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 113,
+            "p_mean": 0.525,
+            "over_freq": 0.549
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 114,
+            "p_mean": 0.574,
+            "over_freq": 0.509
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 77,
+            "p_mean": 0.637,
+            "over_freq": 0.506
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 18,
+            "p_mean": 0.748,
+            "over_freq": 0.444
+          }
+        ]
       },
-      "bets_model": [
-        {
-          "ev_threshold": 0.0,
-          "bets": 546,
-          "hit_rate": 0.518,
-          "roi": -0.0241,
-          "roi_ci95": [
-            -0.1063,
-            0.0578
-          ]
+      "absence": {
+        "scores": {
+          "n": 710,
+          "over_rate": 0.486,
+          "logloss_model": 0.731,
+          "logloss_market": 0.6909,
+          "logloss_diff": 0.0401,
+          "logloss_diff_ci95": [
+            0.0172,
+            0.0635
+          ],
+          "brier_model": 0.2655,
+          "brier_market": 0.2489,
+          "mae_points": 5.3,
+          "mae_line": 5.051,
+          "avg_margin": 0.0667
         },
-        {
-          "ev_threshold": 0.03,
-          "bets": 481,
-          "hit_rate": 0.507,
-          "roi": -0.0422,
-          "roi_ci95": [
-            -0.1243,
-            0.0395
-          ]
-        },
-        {
-          "ev_threshold": 0.05,
-          "bets": 435,
-          "hit_rate": 0.524,
-          "roi": -0.0102,
-          "roi_ci95": [
-            -0.0952,
-            0.0783
-          ]
-        },
-        {
-          "ev_threshold": 0.1,
-          "bets": 317,
-          "hit_rate": 0.511,
-          "roi": -0.0294,
-          "roi_ci95": [
-            -0.1392,
-            0.0747
-          ]
-        }
-      ],
-      "calibration_model": [
-        {
-          "bin": "(0.0, 0.3]",
-          "n": 67,
-          "p_mean": 0.223,
-          "over_freq": 0.537
-        },
-        {
-          "bin": "(0.3, 0.4]",
-          "n": 118,
-          "p_mean": 0.359,
-          "over_freq": 0.373
-        },
-        {
-          "bin": "(0.4, 0.45]",
-          "n": 84,
-          "p_mean": 0.426,
-          "over_freq": 0.56
-        },
-        {
-          "bin": "(0.45, 0.5]",
-          "n": 119,
-          "p_mean": 0.474,
-          "over_freq": 0.429
-        },
-        {
-          "bin": "(0.5, 0.55]",
-          "n": 113,
-          "p_mean": 0.525,
-          "over_freq": 0.549
-        },
-        {
-          "bin": "(0.55, 0.6]",
-          "n": 114,
-          "p_mean": 0.574,
-          "over_freq": 0.509
-        },
-        {
-          "bin": "(0.6, 0.7]",
-          "n": 77,
-          "p_mean": 0.637,
-          "over_freq": 0.506
-        },
-        {
-          "bin": "(0.7, 1.0]",
-          "n": 18,
-          "p_mean": 0.748,
-          "over_freq": 0.444
-        }
-      ]
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 574,
+            "hit_rate": 0.505,
+            "roi": -0.0493,
+            "roi_ci95": [
+              -0.1304,
+              0.0267
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 493,
+            "hit_rate": 0.519,
+            "roi": -0.0211,
+            "roi_ci95": [
+              -0.1045,
+              0.0631
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 455,
+            "hit_rate": 0.523,
+            "roi": -0.0126,
+            "roi_ci95": [
+              -0.1051,
+              0.0737
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 331,
+            "hit_rate": 0.511,
+            "roi": -0.033,
+            "roi_ci95": [
+              -0.1324,
+              0.071
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 71,
+            "p_mean": 0.216,
+            "over_freq": 0.507
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 135,
+            "p_mean": 0.352,
+            "over_freq": 0.444
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 77,
+            "p_mean": 0.427,
+            "over_freq": 0.403
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 116,
+            "p_mean": 0.476,
+            "over_freq": 0.552
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 115,
+            "p_mean": 0.526,
+            "over_freq": 0.496
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 98,
+            "p_mean": 0.576,
+            "over_freq": 0.449
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 83,
+            "p_mean": 0.638,
+            "over_freq": 0.554
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 15,
+            "p_mean": 0.746,
+            "over_freq": 0.467
+          }
+        ]
+      }
     },
     "unibet": {
-      "scores": {
-        "n": 779,
-        "over_rate": 0.492,
-        "logloss_model": 0.7235,
-        "logloss_market": 0.6932,
-        "logloss_diff": 0.0303,
-        "logloss_diff_ci95": [
-          0.0102,
-          0.0518
+      "base": {
+        "scores": {
+          "n": 779,
+          "over_rate": 0.492,
+          "logloss_model": 0.7235,
+          "logloss_market": 0.6932,
+          "logloss_diff": 0.0303,
+          "logloss_diff_ci95": [
+            0.0103,
+            0.0519
+          ],
+          "brier_model": 0.2621,
+          "brier_market": 0.25,
+          "mae_points": 5.216,
+          "mae_line": 4.979,
+          "avg_margin": 0.0715
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 612,
+            "hit_rate": 0.521,
+            "roi": -0.0252,
+            "roi_ci95": [
+              -0.1022,
+              0.0513
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 532,
+            "hit_rate": 0.53,
+            "roi": -0.0092,
+            "roi_ci95": [
+              -0.0866,
+              0.0685
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 470,
+            "hit_rate": 0.547,
+            "roi": 0.0228,
+            "roi_ci95": [
+              -0.0611,
+              0.104
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 362,
+            "hit_rate": 0.555,
+            "roi": 0.0383,
+            "roi_ci95": [
+              -0.0587,
+              0.1326
+            ]
+          }
         ],
-        "brier_model": 0.2621,
-        "brier_market": 0.25,
-        "mae_points": 5.22,
-        "mae_line": 4.98,
-        "avg_margin": 0.0715
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 76,
+            "p_mean": 0.223,
+            "over_freq": 0.526
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 120,
+            "p_mean": 0.36,
+            "over_freq": 0.4
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 99,
+            "p_mean": 0.426,
+            "over_freq": 0.525
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 123,
+            "p_mean": 0.473,
+            "over_freq": 0.463
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 121,
+            "p_mean": 0.526,
+            "over_freq": 0.496
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 119,
+            "p_mean": 0.574,
+            "over_freq": 0.529
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 98,
+            "p_mean": 0.641,
+            "over_freq": 0.51
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 23,
+            "p_mean": 0.745,
+            "over_freq": 0.565
+          }
+        ]
       },
-      "bets_model": [
-        {
-          "ev_threshold": 0.0,
-          "bets": 612,
-          "hit_rate": 0.521,
-          "roi": -0.0252,
-          "roi_ci95": [
-            -0.0939,
-            0.049
-          ]
+      "absence": {
+        "scores": {
+          "n": 779,
+          "over_rate": 0.492,
+          "logloss_model": 0.7299,
+          "logloss_market": 0.6932,
+          "logloss_diff": 0.0367,
+          "logloss_diff_ci95": [
+            0.015,
+            0.0588
+          ],
+          "brier_model": 0.2649,
+          "brier_market": 0.25,
+          "mae_points": 5.239,
+          "mae_line": 4.979,
+          "avg_margin": 0.0715
         },
-        {
-          "ev_threshold": 0.03,
-          "bets": 532,
-          "hit_rate": 0.53,
-          "roi": -0.0092,
-          "roi_ci95": [
-            -0.09,
-            0.0652
-          ]
-        },
-        {
-          "ev_threshold": 0.05,
-          "bets": 470,
-          "hit_rate": 0.547,
-          "roi": 0.0228,
-          "roi_ci95": [
-            -0.0625,
-            0.108
-          ]
-        },
-        {
-          "ev_threshold": 0.1,
-          "bets": 362,
-          "hit_rate": 0.555,
-          "roi": 0.0383,
-          "roi_ci95": [
-            -0.0566,
-            0.1361
-          ]
-        }
-      ],
-      "calibration_model": [
-        {
-          "bin": "(0.0, 0.3]",
-          "n": 76,
-          "p_mean": 0.223,
-          "over_freq": 0.526
-        },
-        {
-          "bin": "(0.3, 0.4]",
-          "n": 120,
-          "p_mean": 0.36,
-          "over_freq": 0.4
-        },
-        {
-          "bin": "(0.4, 0.45]",
-          "n": 99,
-          "p_mean": 0.426,
-          "over_freq": 0.525
-        },
-        {
-          "bin": "(0.45, 0.5]",
-          "n": 123,
-          "p_mean": 0.473,
-          "over_freq": 0.463
-        },
-        {
-          "bin": "(0.5, 0.55]",
-          "n": 121,
-          "p_mean": 0.526,
-          "over_freq": 0.496
-        },
-        {
-          "bin": "(0.55, 0.6]",
-          "n": 119,
-          "p_mean": 0.574,
-          "over_freq": 0.529
-        },
-        {
-          "bin": "(0.6, 0.7]",
-          "n": 98,
-          "p_mean": 0.641,
-          "over_freq": 0.51
-        },
-        {
-          "bin": "(0.7, 1.0]",
-          "n": 23,
-          "p_mean": 0.745,
-          "over_freq": 0.565
-        }
-      ]
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 616,
+            "hit_rate": 0.518,
+            "roi": -0.0315,
+            "roi_ci95": [
+              -0.1042,
+              0.0433
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 545,
+            "hit_rate": 0.528,
+            "roi": -0.0121,
+            "roi_ci95": [
+              -0.094,
+              0.063
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 497,
+            "hit_rate": 0.529,
+            "roi": -0.0107,
+            "roi_ci95": [
+              -0.0929,
+              0.0728
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 375,
+            "hit_rate": 0.539,
+            "roi": 0.0091,
+            "roi_ci95": [
+              -0.0908,
+              0.1008
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 79,
+            "p_mean": 0.219,
+            "over_freq": 0.532
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 143,
+            "p_mean": 0.355,
+            "over_freq": 0.434
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 94,
+            "p_mean": 0.428,
+            "over_freq": 0.436
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 109,
+            "p_mean": 0.475,
+            "over_freq": 0.532
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 119,
+            "p_mean": 0.525,
+            "over_freq": 0.487
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 116,
+            "p_mean": 0.574,
+            "over_freq": 0.491
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 98,
+            "p_mean": 0.639,
+            "over_freq": 0.541
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 21,
+            "p_mean": 0.747,
+            "over_freq": 0.571
+          }
+        ]
+      }
+    }
+  },
+  "ablation": {
+    "pinnacle": {
+      "absence_vs_base": {
+        "logloss_diff": 0.007,
+        "logloss_diff_ci95": [
+          -0.0023,
+          0.0157
+        ],
+        "mae_diff": 0.012,
+        "mae_diff_ci95": [
+          -0.051,
+          0.071
+        ]
+      }
+    },
+    "unibet": {
+      "absence_vs_base": {
+        "logloss_diff": 0.0064,
+        "logloss_diff_ci95": [
+          -0.0022,
+          0.0153
+        ],
+        "mae_diff": 0.023,
+        "mae_diff_ci95": [
+          -0.035,
+          0.081
+        ]
+      }
     }
   },
   "unibet_vs_pinnacle_fair": {
@@ -249,8 +507,8 @@
         "hit_rate": 0.54,
         "roi": 0.0213,
         "roi_ci95": [
-          -0.194,
-          0.26
+          -0.2131,
+          0.2613
         ]
       },
       {
@@ -259,8 +517,8 @@
         "hit_rate": 0.421,
         "roi": -0.2047,
         "roi_ci95": [
-          -0.6026,
-          0.2011
+          -0.6079,
+          0.2038
         ]
       },
       {

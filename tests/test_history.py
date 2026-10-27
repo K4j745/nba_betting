@@ -76,3 +76,17 @@ def test_future_rows_get_features():
     out = make_features(games, tg).set_index("GAME_ID")
     assert out.loc["0022599999", "pts_avg_3"] == pytest.approx(30.0)
     assert out.loc["0022599999", "days_rest"] == 2
+
+
+def test_absent_rotation_teammate_is_counted():
+    """Kolega z rotacji (30 min) gra w meczach 1–3, w 4. go nie ma → vac_min > 0 tylko w meczu 4."""
+    p, t = _logs()
+    mate = p.iloc[:3].copy()
+    mate["PLAYER_ID"], mate["PLAYER_NAME"], mate["PTS"] = 8, "Teammate", 20
+    tg = team_game_table(t)
+    f = make_features(player_game_table(pd.concat([p, mate]), tg), tg)
+    me = f[f["PLAYER_ID"] == 7].sort_values("GAME_DATE").reset_index(drop=True)
+    assert list(me["n_out"]) == [0, 0, 0, 1]
+    assert me.loc[3, "vac_min"] == pytest.approx(30.0)
+    assert me.loc[3, "vac_pts"] == pytest.approx(20.0)
+    assert me.loc[3, "vac_pts_delta"] == pytest.approx(20.0)
