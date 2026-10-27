@@ -4,6 +4,8 @@ __pycache__/
 *.pyo
 .pytest_cache/
 .coverage
+.venv/
+models_synthetic/
 htmlcov/
 
 # Local only — nie wchodzą do repo

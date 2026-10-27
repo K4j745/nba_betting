@@ -2,6 +2,7 @@
 import asyncio
 import sys
 import os
+from datetime import date
 
 # Windows fix dla asyncio + Playwright
 if sys.platform == "win32":
@@ -26,7 +27,16 @@ TTL_TEAM_DEF   = 24 * 3600
 TTL_BOX_SCORE  = 24 * 3600   # permanentne po pobraniu
 
 # ── nba_api ───────────────────────────────────────────────
-CURRENT_SEASON    = "2025-26"
+def season_for_date(d) -> str:
+    """Sezon NBA dla daty, np. 2026-10-27 → "2026-27", 2026-03-13 → "2025-26".
+    Nowy sezon liczymy od 1 października (preseason/start regularnego ~ koniec paź.)."""
+    start = d.year if d.month >= 10 else d.year - 1
+    return f"{start}-{str(start + 1)[-2:]}"
+
+
+# Sezon wyliczany z daty — wcześniej był wpisany na sztywno i się zestarzał.
+# Można nadpisać zmienną środowiskową NBA_SEASON (np. do testów historycznych).
+CURRENT_SEASON    = os.getenv("NBA_SEASON") or season_for_date(date.today())
 SEASON_TYPE       = "Regular Season"
 REQUEST_DELAY_MIN = 0.6
 REQUEST_DELAY_MAX = 1.0

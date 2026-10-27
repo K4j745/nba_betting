@@ -62,6 +62,7 @@ REASON_NO_MODEL      = "model_missing"
 REASON_NO_PROPS      = "no_props_today"
 REASON_NO_FEATURES   = "no_features_built"
 REASON_NO_PICKS      = "no_picks_passed_filters"
+REASON_NBA_API_DOWN  = "nba_api_unreachable"
 
 # Czytelne komunikaty pokazywane na dashboardzie (pole `status_message`).
 _REASON_MESSAGES: dict[str, str] = {
@@ -71,6 +72,7 @@ _REASON_MESSAGES: dict[str, str] = {
     REASON_NO_PROPS:    "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
     REASON_NO_FEATURES: "Są propsy, ale nie udało się zbudować feature vectorów (prawdopodobnie nba_api zablokowane na runnerze CI).",
     REASON_NO_PICKS:    "Są mecze, ale żaden pick nie przeszedł filtrów (kurs 1.40–1.90 + pewność ≥ 60%).",
+    REASON_NBA_API_DOWN: "stats.nba.com nie odpowiada z tego serwera (blokada IP runnera CI) — kursy zapisane, kupon pominięty.",
 }
 
 
@@ -91,6 +93,22 @@ def _nba_today() -> str:
     except Exception:
         # Fallback gdy brak bazy tz (np. Windows bez tzdata): ET ≈ UTC-4/-5.
         return (datetime.now(timezone.utc) - timedelta(hours=4)).date().isoformat()
+
+
+def nba_stats_reachable(timeout: float = 15.0) -> bool:
+    """Jedno lekkie zapytanie do stats.nba.com; False przy timeoucie/błędzie."""
+    try:
+        from nba_api.stats.endpoints import leaguegamelog
+        from config import CURRENT_SEASON
+        leaguegamelog.LeagueGameLog(
+            season=CURRENT_SEASON,
+            player_or_team_abbreviation="T",
+            timeout=timeout,
+        ).get_data_frames()
+        return True
+    except Exception as e:
+        logger.warning("Probe stats.nba.com nieudany: %s", e)
+        return False
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -429,6 +447,16 @@ def run_daily_pipeline(game_date: str | None = None):
         db_path=DB_PATH,
     )
 
+    # Kroki pipeline — z diagnostyką ilościową (ile propsów → features → picków).
+    # Propsy pobieramy PRZED sprawdzeniem modelu: zapis do odds_history to
+    # zbiór do ewaluacji, który ma rosnąć także wtedy, gdy kuponu nie ma.
+    props = step_fetch_props(odds_fetcher, player_lookup)
+    logger.info("DIAG: propsów z API = %d", len(props))
+    if not props:
+        logger.warning("Brak propsów — pipeline zakończony bez kuponu")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
+        return
+
     predictor = PropPredictor(db_path=DB_PATH, model_dir=MODEL_DIR)
 
     # Załaduj model (jeśli istnieje) lub poinformuj o braku
@@ -443,12 +471,11 @@ def run_daily_pipeline(game_date: str | None = None):
         export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_MODEL)
         return
 
-    # Kroki pipeline — z diagnostyką ilościową (ile propsów → features → picków).
-    props = step_fetch_props(odds_fetcher, player_lookup)
-    logger.info("DIAG: propsów z API = %d", len(props))
-    if not props:
-        logger.warning("Brak propsów — pipeline zakończony bez kuponu")
-        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
+    # Szybki test stats.nba.com — na runnerach CI bywa zablokowane, a wtedy
+    # każdy prop czekał na timeouty (~4 h runu). Lepiej przerwać od razu.
+    if not nba_stats_reachable():
+        logger.error("stats.nba.com nieosiągalne — pomijam budowanie features")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NBA_API_DOWN)
         return
 
     enriched = step_build_features(props, fetcher, team_lookup)
