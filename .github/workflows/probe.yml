@@ -1,0 +1,22 @@
+name: Probe NBA data sources
+
+# Diagnostyka dostępu do stats.nba.com z runnera GitHub Actions.
+# Odpala się przy pushu zmian w skrypcie (na dowolnym branchu) albo ręcznie.
+on:
+  push:
+    paths:
+      - scripts/probe_nba_api.py
+      - .github/workflows/probe.yml
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install nba_api==1.10.2
+      - run: PYTHONPATH=. python scripts/probe_nba_api.py

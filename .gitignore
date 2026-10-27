@@ -4,6 +4,8 @@ __pycache__/
 *.pyo
 .pytest_cache/
 .coverage
+.venv/
+models_synthetic/
 htmlcov/
 
 # Local only — nie wchodzą do repo
@@ -15,3 +17,5 @@ smoke_test.db
 
 # --- nba_betting.db, models/, coupon_*.json, dashboard_data.json ---
 # SĄ śledzone — GitHub Actions potrzebuje ich do persystencji między runami.
+data/
+artifacts/

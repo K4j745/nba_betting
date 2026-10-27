@@ -62,6 +62,7 @@ REASON_NO_MODEL      = "model_missing"
 REASON_NO_PROPS      = "no_props_today"
 REASON_NO_FEATURES   = "no_features_built"
 REASON_NO_PICKS      = "no_picks_passed_filters"
+REASON_NBA_API_DOWN  = "nba_api_unreachable"
 
 # Czytelne komunikaty pokazywane na dashboardzie (pole `status_message`).
 _REASON_MESSAGES: dict[str, str] = {
@@ -71,6 +72,7 @@ _REASON_MESSAGES: dict[str, str] = {
     REASON_NO_PROPS:    "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
     REASON_NO_FEATURES: "Są propsy, ale nie udało się zbudować feature vectorów (prawdopodobnie nba_api zablokowane na runnerze CI).",
     REASON_NO_PICKS:    "Są mecze, ale żaden pick nie przeszedł filtrów (kurs 1.40–1.90 + pewność ≥ 60%).",
+    REASON_NBA_API_DOWN: "stats.nba.com nie odpowiada z tego serwera (blokada IP runnera CI) — kursy zapisane, kupon pominięty.",
 }
 
 
@@ -91,6 +93,22 @@ def _nba_today() -> str:
     except Exception:
         # Fallback gdy brak bazy tz (np. Windows bez tzdata): ET ≈ UTC-4/-5.
         return (datetime.now(timezone.utc) - timedelta(hours=4)).date().isoformat()
+
+
+def nba_stats_reachable(timeout: float = 15.0) -> bool:
+    """Jedno lekkie zapytanie do stats.nba.com; False przy timeoucie/błędzie."""
+    try:
+        from nba_api.stats.endpoints import leaguegamelog
+        from config import CURRENT_SEASON
+        leaguegamelog.LeagueGameLog(
+            season=CURRENT_SEASON,
+            player_or_team_abbreviation="T",
+            timeout=timeout,
+        ).get_data_frames()
+        return True
+    except Exception as e:
+        logger.warning("Probe stats.nba.com nieudany: %s", e)
+        return False
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -429,6 +447,16 @@ def run_daily_pipeline(game_date: str | None = None):
         db_path=DB_PATH,
     )
 
+    # Kroki pipeline — z diagnostyką ilościową (ile propsów → features → picków).
+    # Propsy pobieramy PRZED sprawdzeniem modelu: zapis do odds_history to
+    # zbiór do ewaluacji, który ma rosnąć także wtedy, gdy kuponu nie ma.
+    props = step_fetch_props(odds_fetcher, player_lookup)
+    logger.info("DIAG: propsów z API = %d", len(props))
+    if not props:
+        logger.warning("Brak propsów — pipeline zakończony bez kuponu")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
+        return
+
     predictor = PropPredictor(db_path=DB_PATH, model_dir=MODEL_DIR)
 
     # Załaduj model (jeśli istnieje) lub poinformuj o braku
@@ -443,12 +471,11 @@ def run_daily_pipeline(game_date: str | None = None):
         export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_MODEL)
         return
 
-    # Kroki pipeline — z diagnostyką ilościową (ile propsów → features → picków).
-    props = step_fetch_props(odds_fetcher, player_lookup)
-    logger.info("DIAG: propsów z API = %d", len(props))
-    if not props:
-        logger.warning("Brak propsów — pipeline zakończony bez kuponu")
-        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
+    # Szybki test stats.nba.com — na runnerach CI bywa zablokowane, a wtedy
+    # każdy prop czekał na timeouty (~4 h runu). Lepiej przerwać od razu.
+    if not nba_stats_reachable():
+        logger.error("stats.nba.com nieosiągalne — pomijam budowanie features")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NBA_API_DOWN)
         return
 
     enriched = step_build_features(props, fetcher, team_lookup)
@@ -538,6 +565,34 @@ def run_scheduler():
 # ─────────────────────────────────────────────────────────────────────────────
 # Dashboard export
 # ─────────────────────────────────────────────────────────────────────────────
+
+def _latest_research_summary(report_dir: str = "reports") -> dict | None:
+    """Skrót najnowszego raportu evaluate.py (model vs rynek) dla dashboardu."""
+    import json as _json
+    reports = sorted(p for p in Path(report_dir).glob("eval_*.json"))
+    if not reports:
+        return None
+    r = _json.loads(reports[-1].read_text(encoding="utf-8"))
+    rows = []
+    for book, sets in r.get("books", {}).items():
+        for name, v in sets.items():
+            sc = v["scores"]
+            bet5 = next((b for b in v["bets"] if b["ev_threshold"] == 0.05), {})
+            rows.append({
+                "book": book, "features": name, "n": sc["n"],
+                "logloss_model": sc["logloss_model"], "logloss_market": sc["logloss_market"],
+                "logloss_diff_ci95": sc["logloss_diff_ci95"],
+                "mae_model": sc["mae_points"], "mae_line": sc["mae_line"],
+                "bets_ev5": bet5.get("bets", 0), "roi_ev5": bet5.get("roi"),
+                "roi_ev5_ci95": bet5.get("roi_ci95"),
+            })
+    return {
+        "report": reports[-1].name,
+        "generated": r.get("generated"),
+        "game_dates": r.get("game_dates", []),
+        "rows": rows,
+    }
+
 
 def export_dashboard_data(
     db_path: str = DB_PATH,
@@ -726,6 +781,10 @@ def export_dashboard_data(
         "SELECT version, trained_at, regressor_mae, classifier_auc "
         "FROM model_history ORDER BY version DESC LIMIT 1"
     ).fetchone()
+    # Pokazuj tylko model, którego pliki istnieją — w model_history zostaje
+    # wpis o usuniętym modelu v1 trenowanym na danych syntetycznych.
+    if mrow and not (Path(MODEL_DIR) / f"regressor_v{mrow[0]}.pkl").exists():
+        mrow = None
     model_stats = {
         "version":    mrow[0] if mrow else None,
         "trained_at": mrow[1] if mrow else None,
@@ -753,6 +812,7 @@ def export_dashboard_data(
         "calibration":      calibration,
         "bet_history":      bet_history,
         "model_stats":      model_stats,
+        "research":         _latest_research_summary(),
     }
 
     with open(output_path, "w", encoding="utf-8") as f:

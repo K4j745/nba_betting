@@ -370,6 +370,27 @@ tr:hover td { background: var(--surface-2); }
     </div>
   </section>
 
+  <!-- Research: model vs rynek -->
+  <section class="section" id="researchSection" style="display:none">
+    <div class="section-title">Model vs rynek (ewaluacja walk-forward)</div>
+    <div class="card">
+      <div class="kpi-sub" id="researchMeta" style="margin-bottom:10px"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Bukmacher</th><th>Cechy</th><th>n</th>
+            <th>Log-loss model / rynek</th><th>Δ CI95</th>
+            <th>MAE model / linia</th><th>Zakłady EV&gt;5%</th><th>ROI (CI95)</th>
+          </tr></thead>
+          <tbody id="researchBody"></tbody>
+        </table>
+      </div>
+      <div class="kpi-sub" style="margin-top:10px">
+        Δ log-loss &gt; 0 → model gorszy od kursów bez marży. Przewaga istnieje tylko, gdy cały przedział CI95 jest poniżej zera.
+      </div>
+    </div>
+  </section>
+
   <!-- Charts -->
   <section class="section">
     <div class="section-title">Wykresy</div>
@@ -512,6 +533,31 @@ function render(d) {
   renderCoupon(d.today_coupon, d.status_message, d.no_games_reason);
   renderCharts(d);
   renderHistory(d.bet_history, _filterDays);
+  renderResearch(d.research);
+}
+
+/* ── Research (evaluate.py) ─────────────────────────────────────────────────── */
+function renderResearch(r) {
+  const sec = document.getElementById('researchSection');
+  if (!r || !r.rows || !r.rows.length) { sec.style.display = 'none'; return; }
+  sec.style.display = '';
+  const dates = r.game_dates || [];
+  document.getElementById('researchMeta').textContent =
+    `Raport ${r.generated} · ${dates.length} dni meczowych (${dates[0] ?? '—'} → ${dates[dates.length - 1] ?? '—'})`;
+  const ci = c => c ? `[${c[0] >= 0 ? '+' : ''}${c[0].toFixed(3)}; ${c[1] >= 0 ? '+' : ''}${c[1].toFixed(3)}]` : '—';
+  const ciPct = c => c ? `[${(c[0] * 100).toFixed(1)}%; ${(c[1] * 100).toFixed(1)}%]` : '';
+  document.getElementById('researchBody').innerHTML = r.rows.map(x => {
+    const better = x.logloss_diff_ci95 && x.logloss_diff_ci95[1] < 0;
+    const worse  = x.logloss_diff_ci95 && x.logloss_diff_ci95[0] > 0;
+    const cls = better ? 'text-green' : (worse ? 'text-red' : '');
+    const roi = x.roi_ev5 == null ? '—' : `${(x.roi_ev5 * 100).toFixed(1)}% ${ciPct(x.roi_ev5_ci95)}`;
+    return `<tr>
+      <td>${x.book}</td><td>${x.features}</td><td>${x.n}</td>
+      <td>${x.logloss_model.toFixed(3)} / ${x.logloss_market.toFixed(3)}</td>
+      <td class="${cls}">${ci(x.logloss_diff_ci95)}</td>
+      <td>${x.mae_model.toFixed(2)} / ${x.mae_line.toFixed(2)}</td>
+      <td>${x.bets_ev5}</td><td>${roi}</td></tr>`;
+  }).join('');
 }
 
 /* ── KPI ─────────────────────────────────────────────────────────────────────── */

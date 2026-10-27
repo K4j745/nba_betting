@@ -101,8 +101,13 @@ def main():
     else:
         df = load_from_db(DB_PATH)
         if df.empty:
-            logger.warning("Brak danych w DB — używam syntetycznych")
-            df = generate_synthetic_data(300)
+            # Wcześniej był tu cichy fallback na dane syntetyczne — tak powstał
+            # model v1 bez żadnej wartości predykcyjnej. Teraz przerywamy.
+            logger.error(
+                "Brak danych treningowych w DB. Nie trenuję na danych syntetycznych "
+                "bez wyraźnej flagi --synthetic."
+            )
+            sys.exit(1)
 
     logger.info("Dane treningowe: %d wierszy", len(df))
 
@@ -117,7 +122,10 @@ def main():
         sys.exit(1)
 
     # Trening
-    predictor = PropPredictor(db_path=DB_PATH, model_dir=MODEL_DIR)
+    # Model syntetyczny służy tylko do testów architektury — nigdy nie trafia
+    # do models/, z którego pipeline ładuje model produkcyjny.
+    model_dir = "models_synthetic" if args.synthetic else MODEL_DIR
+    predictor = PropPredictor(db_path=DB_PATH, model_dir=model_dir)
     X, y_reg, y_clf = PropPredictor.prepare_training_data(df)
 
     logger.info("Trening z %d próbami Optuna...", args.trials)
