@@ -1,0 +1,78 @@
+# tests/test_history.py
+"""Cechy z history.py muszą korzystać wyłącznie z meczów sprzed danego dnia."""
+import numpy as np
+import pandas as pd
+import pytest
+
+from history import TEAM_ABBR_TO_ID, team_game_table, player_game_table, make_features
+
+LAL, BOS = TEAM_ABBR_TO_ID["LAL"], TEAM_ABBR_TO_ID["BOS"]
+
+
+def _logs():
+    """LAL vs BOS, 4 mecze co 2 dni, 1 zawodnik LAL z PTS 10, 20, 30, 40."""
+    dates = pd.to_datetime(["2025-01-01", "2025-01-03", "2025-01-05", "2025-01-07"])
+    team_rows, player_rows = [], []
+    for i, d in enumerate(dates):
+        gid = f"00225{i:05d}"
+        for tid, opp, home in ((LAL, BOS, True), (BOS, LAL, False)):
+            abbr = {LAL: "LAL", BOS: "BOS"}
+            team_rows.append(dict(
+                SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, TEAM_ID=tid,
+                TEAM_ABBREVIATION=abbr[tid],
+                MATCHUP=f"{abbr[tid]} {'vs.' if home else '@'} {abbr[opp]}",
+                MIN=240, FGA=80, FTA=20, OREB=10, TOV=12,
+                PTS=100 + 10 * i if tid == BOS else 100,
+            ))
+        player_rows.append(dict(
+            SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, PLAYER_ID=7,
+            PLAYER_NAME="Test Player", TEAM_ID=LAL, TEAM_ABBREVIATION="LAL",
+            MATCHUP="LAL vs. BOS", MIN=30, PTS=10 * (i + 1), FGA=15, FTA=4, FG3A=5, TOV=2,
+        ))
+    return pd.DataFrame(player_rows), pd.DataFrame(team_rows)
+
+
+@pytest.fixture
+def feats():
+    p, t = _logs()
+    tg = team_game_table(t)
+    return make_features(player_game_table(p, tg), tg).sort_values("GAME_DATE").reset_index(drop=True)
+
+
+def test_first_game_has_no_history(feats):
+    assert np.isnan(feats.loc[0, "pts_avg_3"])
+    assert feats.loc[0, "days_rest"] == 10
+
+
+def test_rolling_uses_only_previous_games(feats):
+    # mecz 3 (PTS=30): poprzednie 10, 20 → średnia 15, nie 20
+    assert feats.loc[2, "pts_avg_3"] == pytest.approx(15.0)
+    assert feats.loc[3, "pts_avg_3"] == pytest.approx(20.0)
+    assert feats.loc[3, "min_last"] == 30
+    assert feats.loc[1, "days_rest"] == 2
+
+
+def test_h2h_excludes_current_game(feats):
+    assert np.isnan(feats.loc[0, "pts_avg_vs_opp"])
+    assert feats.loc[1, "pts_avg_vs_opp"] == pytest.approx(10.0)
+
+
+def test_opponent_form_excludes_same_day(feats):
+    # rolling drużyny wymaga min. 3 meczów → dopiero 4. mecz zawodnika ma wartość,
+    # i to z meczów 1–3 (rywal BBB zdobył 100, 110, 120 przy 100 punktach drużyny AAA)
+    assert feats["opp_def_rtg"].isna().sum() == 3
+    assert not np.isnan(feats.loc[3, "opp_def_rtg"])
+
+
+def test_future_rows_get_features():
+    p, t = _logs()
+    future = p.iloc[[-1]].copy()
+    future["GAME_ID"] = "0022599999"
+    future["GAME_DATE"] = pd.Timestamp("2025-01-09")
+    for c in ("MIN", "PTS", "FGA", "FTA", "FG3A", "TOV"):
+        future[c] = np.nan
+    tg = team_game_table(t)
+    games = player_game_table(pd.concat([p, future]), tg)
+    out = make_features(games, tg).set_index("GAME_ID")
+    assert out.loc["0022599999", "pts_avg_3"] == pytest.approx(30.0)
+    assert out.loc["0022599999", "days_rest"] == 2
