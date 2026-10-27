@@ -566,6 +566,34 @@ def run_scheduler():
 # Dashboard export
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _latest_research_summary(report_dir: str = "reports") -> dict | None:
+    """Skrót najnowszego raportu evaluate.py (model vs rynek) dla dashboardu."""
+    import json as _json
+    reports = sorted(p for p in Path(report_dir).glob("eval_*.json"))
+    if not reports:
+        return None
+    r = _json.loads(reports[-1].read_text(encoding="utf-8"))
+    rows = []
+    for book, sets in r.get("books", {}).items():
+        for name, v in sets.items():
+            sc = v["scores"]
+            bet5 = next((b for b in v["bets"] if b["ev_threshold"] == 0.05), {})
+            rows.append({
+                "book": book, "features": name, "n": sc["n"],
+                "logloss_model": sc["logloss_model"], "logloss_market": sc["logloss_market"],
+                "logloss_diff_ci95": sc["logloss_diff_ci95"],
+                "mae_model": sc["mae_points"], "mae_line": sc["mae_line"],
+                "bets_ev5": bet5.get("bets", 0), "roi_ev5": bet5.get("roi"),
+                "roi_ev5_ci95": bet5.get("roi_ci95"),
+            })
+    return {
+        "report": reports[-1].name,
+        "generated": r.get("generated"),
+        "game_dates": r.get("game_dates", []),
+        "rows": rows,
+    }
+
+
 def export_dashboard_data(
     db_path: str = DB_PATH,
     output_path: str = "dashboard_data.json",
@@ -753,6 +781,10 @@ def export_dashboard_data(
         "SELECT version, trained_at, regressor_mae, classifier_auc "
         "FROM model_history ORDER BY version DESC LIMIT 1"
     ).fetchone()
+    # Pokazuj tylko model, którego pliki istnieją — w model_history zostaje
+    # wpis o usuniętym modelu v1 trenowanym na danych syntetycznych.
+    if mrow and not (Path(MODEL_DIR) / f"regressor_v{mrow[0]}.pkl").exists():
+        mrow = None
     model_stats = {
         "version":    mrow[0] if mrow else None,
         "trained_at": mrow[1] if mrow else None,
@@ -780,6 +812,7 @@ def export_dashboard_data(
         "calibration":      calibration,
         "bet_history":      bet_history,
         "model_stats":      model_stats,
+        "research":         _latest_research_summary(),
     }
 
     with open(output_path, "w", encoding="utf-8") as f:
