@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T08:53:43.483634",
+  "generated_at": "2026-10-30T09:34:51.764781",
   "game_date": "2026-10-30",
   "today_coupon": null,
   "no_games_reason": "no_props_today",
@@ -26,8 +26,8 @@
     "cv_auc": null
   },
   "research": {
-    "report": "eval_2026-10-27.json",
-    "generated": "2026-10-27",
+    "report": "eval_2026-10-30.json",
+    "generated": "2026-10-30",
     "game_dates": [
       "2026-03-13",
       "2026-06-03",
@@ -41,83 +41,124 @@
       "2026-10-23",
       "2026-10-24",
       "2026-10-25",
-      "2026-10-26"
+      "2026-10-26",
+      "2026-10-27",
+      "2026-10-28",
+      "2026-10-29"
     ],
     "rows": [
       {
         "book": "pinnacle",
         "features": "base",
-        "n": 710,
-        "logloss_model": 0.724,
-        "logloss_market": 0.6909,
+        "n": 905,
+        "logloss_model": 0.7267,
+        "logloss_market": 0.6914,
         "logloss_diff_ci95": [
-          0.011,
-          0.0551
+          0.0163,
+          0.0554
         ],
-        "mae_model": 5.288,
-        "mae_line": 5.051,
-        "bets_ev5": 435,
-        "roi_ev5": -0.0102,
+        "mae_model": 5.378,
+        "mae_line": 5.132,
+        "bets_ev5": 546,
+        "roi_ev5": -0.04,
         "roi_ev5_ci95": [
-          -0.0952,
-          0.0783
+          -0.12,
+          0.0431
         ]
       },
       {
         "book": "pinnacle",
         "features": "absence",
-        "n": 710,
-        "logloss_model": 0.731,
-        "logloss_market": 0.6909,
+        "n": 905,
+        "logloss_model": 0.7289,
+        "logloss_market": 0.6914,
         "logloss_diff_ci95": [
-          0.0172,
-          0.0635
+          0.0187,
+          0.0561
         ],
-        "mae_model": 5.3,
-        "mae_line": 5.051,
-        "bets_ev5": 455,
-        "roi_ev5": -0.0126,
+        "mae_model": 5.354,
+        "mae_line": 5.132,
+        "bets_ev5": 558,
+        "roi_ev5": -0.0222,
         "roi_ev5_ci95": [
-          -0.1051,
-          0.0737
+          -0.1039,
+          0.0567
+        ]
+      },
+      {
+        "book": "pinnacle",
+        "features": "efficiency",
+        "n": 905,
+        "logloss_model": 0.7246,
+        "logloss_market": 0.6914,
+        "logloss_diff_ci95": [
+          0.0154,
+          0.052
+        ],
+        "mae_model": 5.353,
+        "mae_line": 5.132,
+        "bets_ev5": 536,
+        "roi_ev5": -0.0067,
+        "roi_ev5_ci95": [
+          -0.0899,
+          0.0705
         ]
       },
       {
         "book": "unibet",
         "features": "base",
-        "n": 779,
-        "logloss_model": 0.7235,
-        "logloss_market": 0.6932,
+        "n": 1011,
+        "logloss_model": 0.727,
+        "logloss_market": 0.6927,
         "logloss_diff_ci95": [
-          0.0103,
-          0.0519
+          0.0174,
+          0.0528
         ],
-        "mae_model": 5.216,
-        "mae_line": 4.979,
-        "bets_ev5": 470,
-        "roi_ev5": 0.0228,
+        "mae_model": 5.304,
+        "mae_line": 5.049,
+        "bets_ev5": 602,
+        "roi_ev5": -0.0101,
         "roi_ev5_ci95": [
-          -0.0611,
-          0.104
+          -0.0885,
+          0.0656
         ]
       },
       {
         "book": "unibet",
         "features": "absence",
-        "n": 779,
-        "logloss_model": 0.7299,
-        "logloss_market": 0.6932,
+        "n": 1011,
+        "logloss_model": 0.7288,
+        "logloss_market": 0.6927,
         "logloss_diff_ci95": [
-          0.015,
-          0.0588
+          0.0172,
+          0.0545
         ],
-        "mae_model": 5.239,
-        "mae_line": 4.979,
-        "bets_ev5": 497,
-        "roi_ev5": -0.0107,
+        "mae_model": 5.288,
+        "mae_line": 5.049,
+        "bets_ev5": 620,
+        "roi_ev5": -0.0333,
         "roi_ev5_ci95": [
-          -0.0929,
-          0.0728
+          -0.1086,
+          0.0393
+        ]
+      },
+      {
+        "book": "unibet",
+        "features": "efficiency",
+        "n": 1011,
+        "logloss_model": 0.7244,
+        "logloss_market": 0.6927,
+        "logloss_diff_ci95": [
+          0.0136,
+          0.0501
+        ],
+        "mae_model": 5.279,
+        "mae_line": 5.049,
+        "bets_ev5": 605,
+        "roi_ev5": -0.0103,
+        "roi_ev5_ci95": [
+          -0.0886,
+          0.0663
         ]
       }
     ]
