@@ -44,6 +44,23 @@ TEAM_WINDOW   = 15            # mecze drużyny do DEF_RTG / pace
 REST_CAP      = 10            # dni odpoczynku obcinamy (przerwa między sezonami ≠ informacja)
 ABSENCE_DAYS  = 14            # nieobecny = grał dla drużyny w ostatnich 14 dniach, a dziś go nie ma
 ROTATION_MIN  = 15.0          # … i średnio ≥ 15 min w ostatnich 10 meczach (zawodnik rotacji)
+HOME_COURT    = 2.0           # przewaga własnego parkietu w punktach (do oczekiwanej różnicy)
+
+# Hale: (szer., dł., przesunięcie UTC w czasie zimowym). Mecze na neutralnym terenie
+# (Meksyk, Paryż, finał NBA Cup w Las Vegas) liczą się jak u gospodarza — rzadkie, pomijam.
+ARENAS = {
+    "ATL": (33.757, -84.396, -5), "BOS": (42.366, -71.062, -5), "BKN": (40.683, -73.976, -5),
+    "CHA": (35.225, -80.839, -5), "CHI": (41.881, -87.674, -6), "CLE": (41.496, -81.688, -5),
+    "DAL": (32.790, -96.810, -6), "DEN": (39.749, -105.008, -7), "DET": (42.341, -83.055, -5),
+    "GSW": (37.768, -122.388, -8), "HOU": (29.751, -95.362, -6), "IND": (39.764, -86.156, -5),
+    "LAC": (33.945, -118.343, -8), "LAL": (34.043, -118.267, -8), "MEM": (35.138, -90.051, -6),
+    "MIA": (25.781, -80.188, -5), "MIL": (43.045, -87.917, -6), "MIN": (44.979, -93.276, -6),
+    "NOP": (29.949, -90.082, -6), "NYK": (40.751, -73.993, -5), "OKC": (35.463, -97.515, -6),
+    "ORL": (28.539, -81.384, -5), "PHI": (39.901, -75.172, -5), "PHX": (33.446, -112.071, -7),
+    "POR": (45.532, -122.667, -8), "SAC": (38.580, -121.500, -8), "SAS": (29.427, -98.438, -6),
+    "TOR": (43.643, -79.379, -5), "UTA": (40.768, -111.901, -7), "WAS": (38.898, -77.021, -5),
+}
+ALTITUDE_TEAMS = {"DEN", "UTA"}
 
 
 def norm_name(name: str) -> str:
@@ -142,6 +159,7 @@ def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
     out = team_games[["TEAM_ID", "GAME_DATE"]].copy()
     roll = lambda col: g[col].transform(lambda s: s.rolling(TEAM_WINDOW, min_periods=3).sum())
     out["def_rtg"] = 100 * roll("PTS_ALLOWED") / roll("GAME_POSS")
+    out["off_rtg"] = 100 * roll("PTS") / roll("GAME_POSS")
     out["pace"] = g["GAME_POSS"].transform(lambda s: s.rolling(TEAM_WINDOW, min_periods=3).mean())
     return out.sort_values("GAME_DATE")
 
@@ -244,6 +262,10 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     df["days_rest"] = (df["GAME_DATE"] - prev_date).dt.days.clip(upper=REST_CAP).fillna(REST_CAP)
     df["is_b2b"]    = (df["days_rest"] == 1).astype(int)
 
+    # ── Zmęczenie i podróże (krok 4c)
+    df = _fatigue_features(df)
+    g = df.groupby("PLAYER_ID", group_keys=False)
+
     # ── H2H: ostatnie 5 meczów przeciwko temu rywalowi
     gh = df.groupby(["PLAYER_ID", "OPP_ID"], group_keys=False)
     df["pts_avg_vs_opp"] = gh["PTS"].transform(lambda s: s.shift(1).rolling(5, min_periods=1).mean())
@@ -266,12 +288,84 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     # ── Rywal i własna drużyna: stan sprzed dnia meczu
     form = team_form(team_games)
     df = df.sort_values("GAME_DATE")
-    opp = form.rename(columns={"TEAM_ID": "OPP_ID", "def_rtg": "opp_def_rtg", "pace": "opp_pace"})
+    opp = form.rename(columns={"TEAM_ID": "OPP_ID", "def_rtg": "opp_def_rtg", "pace": "opp_pace",
+                               "off_rtg": "opp_off_rtg"})
     df = pd.merge_asof(df, opp, on="GAME_DATE", by="OPP_ID", allow_exact_matches=False)
-    own = form.rename(columns={"def_rtg": "_own_def", "pace": "team_pace"}).drop(columns="_own_def")
+    own = form.rename(columns={"def_rtg": "team_def_rtg", "pace": "team_pace", "off_rtg": "team_off_rtg"})
     df = pd.merge_asof(df, own, on="GAME_DATE", by="TEAM_ID", allow_exact_matches=False)
 
+    # ── Kontekst meczu (krok 4c): oczekiwany wynik z ratingów drużyn — zastępstwo
+    # spreadu i totalu z rynku, których historii nie mamy
+    exp_pace = (df["team_pace"] + df["opp_pace"]) / 2
+    df["team_exp_pts"] = (df["team_off_rtg"] + df["opp_def_rtg"]) / 2 * exp_pace / 100
+    opp_exp_pts = (df["opp_off_rtg"] + df["team_def_rtg"]) / 2 * exp_pace / 100
+    df["exp_total"]  = df["team_exp_pts"] + opp_exp_pts
+    df["exp_margin"] = df["team_exp_pts"] - opp_exp_pts + HOME_COURT * (2 * df["IS_HOME"] - 1)
+    df["abs_margin"] = df["exp_margin"].abs()     # ryzyko „blowoutu” = mniej minut dla starterów
+
     return df.sort_values(["GAME_DATE", "GAME_ID", "PLAYER_ID"]).reset_index(drop=True)
+
+
+def _haversine_km(lat1, lon1, lat2, lon2):
+    lat1, lon1, lat2, lon2 = map(np.radians, (lat1, lon1, lat2, lon2))
+    a = np.sin((lat2 - lat1) / 2) ** 2 + np.cos(lat1) * np.cos(lat2) * np.sin((lon2 - lon1) / 2) ** 2
+    return 6371 * 2 * np.arcsin(np.sqrt(a))
+
+
+def _fatigue_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cechy z kalendarza zawodnika, wyłącznie z meczów PRZED bieżącym:
+      games_7d / min_7d — mecze i minuty w 7 dniach przed meczem
+      is_3in4           — dziś trzeci mecz w czterech dniach
+      travel_km, tz_shift — podróż od poprzedniego meczu (hala gospodarza); tz_shift > 0 = na wschód
+      road_trip         — który z rzędu mecz wyjazdowy (0 = dom)
+      at_altitude       — mecz w Denver / Salt Lake City
+    df musi być posortowany po (PLAYER_ID, GAME_DATE).
+    """
+    id_to_abbr = {v: k for k, v in TEAM_ABBR_TO_ID.items()}
+    loc = df["TEAM_ID"].where(df["IS_HOME"] == 1, df["OPP_ID"]).map(id_to_abbr)
+    arena = loc.map(ARENAS)
+    lat = arena.str[0].astype(float)
+    lon = arena.str[1].astype(float)
+    tz = arena.str[2].astype(float)
+    df["at_altitude"] = loc.isin(ALTITUDE_TEAMS).astype(int)
+
+    g = df.groupby("PLAYER_ID", group_keys=False)
+    prev_lat, prev_lon, prev_tz = (s.groupby(df["PLAYER_ID"]).shift(1) for s in (lat, lon, tz))
+    new_stint = df["days_rest"] >= REST_CAP          # początek sezonu / długa przerwa
+    df["travel_km"] = _haversine_km(prev_lat, prev_lon, lat, lon).where(~new_stint, 0).fillna(0)
+    df["tz_shift"] = (tz - prev_tz).where(~new_stint, 0).fillna(0)
+
+    days = df["GAME_DATE"].values.astype("datetime64[D]").astype(np.int64)
+    mins = df["MIN"].fillna(0).to_numpy(float)
+    away = (df["IS_HOME"] == 0).to_numpy()
+    season = df["SEASON"].to_numpy()
+    n = len(df)
+    games_7d, min_7d, games_3d, road = (np.zeros(n) for _ in range(4))
+    for idx in g.indices.values():
+        idx = np.sort(idx)
+        d = days[idx]
+        cmin = np.concatenate([[0.0], np.cumsum(mins[idx])])
+        pos = np.arange(len(idx))
+        l7 = np.searchsorted(d, d - 7, side="left")
+        l3 = np.searchsorted(d, d - 3, side="left")
+        games_7d[idx] = pos - l7
+        min_7d[idx] = cmin[pos] - cmin[l7]
+        games_3d[idx] = pos - l3
+        streak = 0
+        for k, i in enumerate(idx):
+            if not away[i]:
+                streak = 0
+            elif k > 0 and away[idx[k - 1]] and season[idx[k - 1]] == season[i] and d[k] - d[k - 1] < REST_CAP:
+                streak += 1
+            else:
+                streak = 1
+            road[i] = streak
+    df["games_7d"] = games_7d
+    df["min_7d"] = min_7d
+    df["is_3in4"] = (games_3d >= 2).astype(int)
+    df["road_trip"] = road
+    return df
 
 
 ABSENCE_COLS = ["n_out", "vac_min", "vac_pts", "vac_fga"]
@@ -325,7 +419,10 @@ BASE_FEATURE_COLS = [
 ]
 ABSENCE_FEATURE_COLS = [*ABSENCE_COLS, "vac_pts_delta", "vac_min_delta"]
 EFFICIENCY_FEATURE_COLS = ["ts_10", "ts_season", "gmsc_avg_10"]
-FEATURE_COLS = BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS + EFFICIENCY_FEATURE_COLS
+FATIGUE_FEATURE_COLS = ["games_7d", "min_7d", "is_3in4", "travel_km", "tz_shift", "road_trip", "at_altitude"]
+GAME_CONTEXT_FEATURE_COLS = ["team_exp_pts", "exp_total", "exp_margin", "abs_margin"]
+FEATURE_COLS = (BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS + EFFICIENCY_FEATURE_COLS
+                + FATIGUE_FEATURE_COLS + GAME_CONTEXT_FEATURE_COLS)
 
 
 def build_dataset(refresh_current: bool = False, offline: bool = False) -> pd.DataFrame:

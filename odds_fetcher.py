@@ -25,6 +25,7 @@ SPORT           = "basketball_nba"
 REGIONS         = "eu"          # kursy w formacie dziesiętnym (1.83 etc.)
 MARKETS         = "player_points"
 BOOKMAKERS      = "bet365,unibet,pinnacle"  # kolejność priorytetu
+GAME_MARKETS    = "spreads,totals"          # krok 4c: kontekst meczu (koszt: 2 kredyty na zapytanie)
 FUZZY_THRESHOLD = 80            # min. score dla dopasowania nazwy gracza
 
 # Znane strony z propsami — scraping jako opcja pierwsza
@@ -336,6 +337,37 @@ class OddsAPIClient:
         logger.info("Odds API: pobrano %d raw outcomes", len(all_props))
         return all_props
 
+    def get_game_lines_raw(self, sport: str = SPORT) -> list[dict]:
+        """
+        Spread i total wszystkich nadchodzących meczów — JEDNO zapytanie zbiorcze
+        (koszt = liczba rynków × regionów = 2 kredyty). Jeden wiersz na mecz × bukmachera × rynek.
+        """
+        data = self._get(
+            f"/sports/{sport}/odds",
+            {"regions": REGIONS, "markets": GAME_MARKETS,
+             "bookmakers": BOOKMAKERS, "oddsFormat": "decimal"},
+        )
+        rows = []
+        for event in data or []:
+            home, away = event["home_team"], event["away_team"]
+            for bookmaker in event.get("bookmakers", []):
+                for market in bookmaker.get("markets", []):
+                    out = {o["name"]: o for o in market.get("outcomes", [])}
+                    if market["key"] == "spreads" and home in out and away in out:
+                        a, b = out[home], out[away]      # point = spread gospodarza (np. -6.5)
+                    elif market["key"] == "totals" and "Over" in out and "Under" in out:
+                        a, b = out["Over"], out["Under"]
+                    else:
+                        continue
+                    rows.append({
+                        "home_team": home, "away_team": away, "game_time": event["commence_time"],
+                        "bookmaker": bookmaker["key"], "market": market["key"],
+                        "point": float(a.get("point", 0)),
+                        "price_a": float(a["price"]), "price_b": float(b["price"]),
+                    })
+        logger.info("Odds API: %d linii meczowych (spread/total)", len(rows))
+        return rows
+
 
 # ── Normalizacja: łączenie over/under w jeden rekord ──────────────────────
 @staticmethod
@@ -444,7 +476,32 @@ class OddsFetcher:
                         f"ALTER TABLE odds_history ADD COLUMN {col} {col_type}"
                     )
                     logger.info("Migracja DB: dodano kolumnę odds_history.%s", col)
+            # spread / total meczów (krok 4c) — historia do przyszłego treningu i ewaluacji;
+            # price_a = gospodarz (spreads) albo over (totals)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS game_lines (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    home_team TEXT, away_team TEXT, game_time TEXT,
+                    bookmaker TEXT, market TEXT, point REAL,
+                    price_a REAL, price_b REAL,
+                    fetched_at TEXT DEFAULT (datetime('now'))
+                )
+            """)
             conn.commit()
+
+    def fetch_game_lines(self) -> int:
+        """Pobiera spread/total i zapisuje do game_lines. Zwraca liczbę wierszy."""
+        rows = self.api_client.get_game_lines_raw()
+        if rows:
+            with self._conn() as conn:
+                conn.executemany(
+                    """INSERT INTO game_lines (home_team, away_team, game_time, bookmaker,
+                       market, point, price_a, price_b)
+                       VALUES (:home_team, :away_team, :game_time, :bookmaker,
+                       :market, :point, :price_a, :price_b)""",
+                    rows,
+                )
+        return len(rows)
 
     
 
