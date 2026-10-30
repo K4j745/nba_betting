@@ -44,15 +44,23 @@ TIP_OFFSET   = timedelta(hours=3)       # occurrence_datetime − start meczu
 SNAP_BEFORE  = timedelta(hours=1)       # cena historyczna: ≥ 1 h przed startem
 BATCH        = 100                      # limit tickerów w /markets/candlesticks
 SLEEP        = 0.08                     # ~12 zapytań/s — poniżej limitu publicznego API
+SAVE_EVERY   = 100                      # zapis historii co tyle wydarzeń
 FEE_RATE     = 0.07                     # prowizja: ceil(0,07 · C · P · (1 − P)) za C kontraktów
 
 _session = requests.Session()
 
 
 def _get(path: str, **params) -> dict:
-    for attempt in range(4):
-        r = _session.get(f"{API}{path}", params=params, timeout=30)
-        if r.status_code == 429:
+    for attempt in range(5):
+        try:
+            r = _session.get(f"{API}{path}", params=params, timeout=30)
+        except (requests.ConnectionError, requests.Timeout) as e:
+            if attempt == 4:
+                raise
+            logger.warning("Kalshi %s: %s — ponawiam", path, e)
+            time.sleep(2 ** attempt)
+            continue
+        if r.status_code in (429, 502, 503, 504):
             time.sleep(2 ** attempt)
             continue
         r.raise_for_status()
@@ -190,15 +198,15 @@ def load_history() -> pd.DataFrame:
 def update_history(stats=tuple(SERIES), full: bool = False) -> pd.DataFrame:
     """
     Dopisuje rozliczone wydarzenia, których nie ma w HISTORY_PATH (full=True: od zera).
-    Zapytania: ~1 na 1000 rynków (lista) + ~1 na wydarzenie (świece).
+    Zapytania: ~1 na 1000 rynków (lista) + ~1 na wydarzenie (świece, archiwum: ~2–3 na zawodnika).
+    Zapis co SAVE_EVERY wydarzeń — przerwany backfill wznawia się przez --update.
     """
     hist = pd.DataFrame() if full else load_history()
     done = set(hist["event_ticker"]) if not hist.empty else set()
     new = []
     for stat in stats:
         raw = [(m, False) for m in _paginate("/markets", "markets", series_ticker=SERIES[stat], status="settled")]
-        if full or not done:
-            raw += [(m, True) for m in _paginate("/historical/markets", "markets", series_ticker=SERIES[stat])]
+        raw += [(m, True) for m in _paginate("/historical/markets", "markets", series_ticker=SERIES[stat])]
         ms = pd.DataFrame([{**parse_market(m, stat), "_archived": a} for m, a in raw])
         ms = ms[~ms["event_ticker"].isin(done) & ms["tip"].notna()].drop_duplicates("ticker")
         if ms.empty:
@@ -208,14 +216,20 @@ def update_history(stats=tuple(SERIES), full: bool = False) -> pd.DataFrame:
             px = _bisect_prices(ev) if ev["_archived"].iloc[0] else _snapshot_prices(ev)
             ev = ev.drop(columns="_archived")
             new.append(ev.merge(px, on="ticker", how="left"))
-            if k % 100 == 0:
-                logger.info("  %s: %d/%d wydarzeń", stat, k, ms["event_ticker"].nunique())
+            if (k + 1) % SAVE_EVERY == 0:
+                hist, new = _save(hist, new)
+                logger.info("  %s: %d/%d wydarzeń", stat, k + 1, ms["event_ticker"].nunique())
+    hist, _ = _save(hist, new)
+    return hist
+
+
+def _save(hist: pd.DataFrame, new: list) -> tuple[pd.DataFrame, list]:
     if new:
         hist = pd.concat([hist, *new], ignore_index=True)
         HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
         hist.to_csv(HISTORY_PATH, index=False)
         logger.info("Kalshi: %d rynków w historii (%s)", len(hist), HISTORY_PATH)
-    return hist
+    return hist, []
 
 
 # ─────────────────────────────────────────────────────────────────────────────
