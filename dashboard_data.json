@@ -1,34 +1,196 @@
 {
-  "generated_at": "2026-10-30T13:42:49.284267",
+  "generated_at": "2026-10-30T22:02:03.562891",
   "game_date": "2026-10-30",
   "today_coupon": {
     "date": "2026-10-30",
     "model_version": "points-2026-10-30",
     "paper_trading": true,
-    "n_predictions": 12,
+    "n_predictions": 246,
     "picks": [
       {
-        "game": "Charlotte Hornets @ Washington Wizards",
-        "player": "Kyshawn George",
-        "bet": "over",
-        "line": 13.5,
-        "odds": 1.89,
+        "game": "Orlando Magic @ Toronto Raptors",
+        "player": "Desmond Bane",
+        "bet": "under",
+        "line": 20.5,
+        "odds": 1.85,
         "bookmaker": "unibet",
-        "pts_predicted": 15.7,
-        "p_over": 0.625,
-        "confidence": 62,
-        "ev": 0.1812,
+        "pts_predicted": 15.5,
+        "p_over": 0.23,
+        "confidence": 77,
+        "ev": 0.4245,
         "top_features": [
           "pts_ewm",
           "min_avg_10",
           "opp_def_rtg"
         ],
-        "reasoning": "model 15.7 pkt vs linia 13.5 (unibet), ewm 14.4, min 25.3, opp DEF_RTG 110.1, EV +18.0%"
+        "reasoning": "model 15.5 pkt vs linia 20.5 (unibet), ewm 16.4, min 34.8, opp DEF_RTG 105.1, EV +42.4%"
+      },
+      {
+        "game": "Detroit Pistons @ Brooklyn Nets",
+        "player": "John Collins",
+        "bet": "under",
+        "line": 15.5,
+        "odds": 1.78,
+        "bookmaker": "unibet",
+        "pts_predicted": 10.9,
+        "p_over": 0.221,
+        "confidence": 78,
+        "ev": 0.3866,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 10.9 pkt vs linia 15.5 (unibet), ewm 11.3, min 24.6, opp DEF_RTG 116.6, EV +38.6%"
+      },
+      {
+        "game": "Los Angeles Clippers @ Minnesota Timberwolves",
+        "player": "Rudy Gobert",
+        "bet": "under",
+        "line": 9.5,
+        "odds": 1.88,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 6.7,
+        "p_over": 0.296,
+        "confidence": 70,
+        "ev": 0.3235,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 6.7 pkt vs linia 9.5 (pinnacle), ewm 6.6, min 28.4, opp DEF_RTG 109.1, EV +32.4%"
+      },
+      {
+        "game": "Charlotte Hornets @ Washington Wizards",
+        "player": "Tre Johnson",
+        "bet": "over",
+        "line": 8.5,
+        "odds": 1.85,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 11.7,
+        "p_over": 0.701,
+        "confidence": 70,
+        "ev": 0.2969,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 11.7 pkt vs linia 8.5 (pinnacle), ewm 11.3, min 23.3, opp DEF_RTG 110.1, EV +29.8%"
+      },
+      {
+        "game": "Chicago Bulls @ Boston Celtics",
+        "player": "Tre Jones",
+        "bet": "over",
+        "line": 7.5,
+        "odds": 1.68,
+        "bookmaker": "unibet",
+        "pts_predicted": 11.1,
+        "p_over": 0.728,
+        "confidence": 73,
+        "ev": 0.223,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 11.1 pkt vs linia 7.5 (unibet), ewm 14.4, min 22.1, opp DEF_RTG 108.3, EV +22.4%"
+      },
+      {
+        "game": "New York Knicks @ Philadelphia 76ers",
+        "player": "Mikal Bridges",
+        "bet": "under",
+        "line": 10.5,
+        "odds": 1.63,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 7.1,
+        "p_over": 0.256,
+        "confidence": 74,
+        "ev": 0.2127,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 7.1 pkt vs linia 10.5 (pinnacle), ewm 9.1, min 30.0, opp DEF_RTG 111.2, EV +21.3%"
+      },
+      {
+        "game": "Los Angeles Lakers @ Golden State Warriors",
+        "player": "Luka Dončić",
+        "bet": "under",
+        "line": 34.5,
+        "odds": 1.81,
+        "bookmaker": "unibet",
+        "pts_predicted": 30.5,
+        "p_over": 0.342,
+        "confidence": 66,
+        "ev": 0.191,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 30.5 pkt vs linia 34.5 (unibet), ewm 35.9, min 35.6, opp DEF_RTG 117.6, EV +19.2%"
+      },
+      {
+        "game": "Houston Rockets @ Dallas Mavericks",
+        "player": "Fred VanVleet",
+        "bet": "over",
+        "line": 11.5,
+        "odds": 1.88,
+        "bookmaker": "unibet",
+        "pts_predicted": 13.7,
+        "p_over": 0.633,
+        "confidence": 63,
+        "ev": 0.19,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 13.7 pkt vs linia 11.5 (unibet), ewm 15.3, min 36.0, opp DEF_RTG 114.4, EV +19.1%"
+      },
+      {
+        "game": "Denver Nuggets @ Phoenix Suns",
+        "player": "Khaman Maluach",
+        "bet": "under",
+        "line": 8.5,
+        "odds": 1.75,
+        "bookmaker": "unibet",
+        "pts_predicted": 6.2,
+        "p_over": 0.325,
+        "confidence": 68,
+        "ev": 0.1813,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 6.2 pkt vs linia 8.5 (unibet), ewm 5.4, min 18.4, opp DEF_RTG 112.7, EV +18.2%"
+      },
+      {
+        "game": "Indiana Pacers @ Miami Heat",
+        "player": "Bobby Portis Jr.",
+        "bet": "over",
+        "line": 10.5,
+        "odds": 1.78,
+        "bookmaker": "unibet",
+        "pts_predicted": 13.1,
+        "p_over": 0.66,
+        "confidence": 66,
+        "ev": 0.1748,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 13.1 pkt vs linia 10.5 (unibet), ewm 13.0, min 25.1, opp DEF_RTG 112.3, EV +17.5%"
       }
     ],
-    "total_picks": 1,
+    "total_picks": 10,
     "simulated_stake_per_pick": 10.0,
-    "simulated_total_stake": 10.0
+    "simulated_total_stake": 100.0
   },
   "no_games_reason": null,
   "status_message": "",
