@@ -24,7 +24,11 @@ ODDS_API_BASE   = "https://api.the-odds-api.com/v4"
 SPORT           = "basketball_nba"
 REGIONS         = "eu"          # kursy w formacie dziesiętnym (1.83 etc.)
 MARKETS         = "player_points"
-BOOKMAKERS      = "bet365,unibet,pinnacle"  # kolejność priorytetu
+# Do 10 bukmacherów = koszt jednego regionu w Odds API, więc dodatkowe nic nie kosztują.
+# bet365 usunięty — nie ma go w regionie eu (nigdy nic nie zwrócił). betclic_fr = Betclic
+# Francja (polski betclic.pl jest osobnym operatorem z innymi kursami — nie ma go w API).
+BOOKMAKERS      = ("pinnacle,unibet,betclic_fr,unibet_fr,winamax_fr,pmu_fr,"
+                   "betsson,nordicbet,williamhill,marathonbet")
 GAME_MARKETS    = "spreads,totals"          # krok 4c: kontekst meczu (koszt: 2 kredyty na zapytanie)
 FUZZY_THRESHOLD = 80            # min. score dla dopasowania nazwy gracza
 
@@ -611,15 +615,13 @@ class OddsFetcher:
             source_used, len(raw_props),
         )
 
-        # ── Pipeline: filter → fuzzy match → save ────────────────────────────
-        props = self._filter_odds(raw_props)
-        props = self._resolve_player_names(props)
-
-        # Zapisz DO BAZY wszystkie (przed filtrem confidence) — line movement
+        # ── Pipeline: fuzzy match → save → filter ────────────────────────────
+        # Zapis PRZED filtrem kursów: odds_history to zbiór do ewaluacji i line shoppingu
+        # (krok 6) — linie poza zakresem 1.40–1.90 też są potrzebne do porównań.
+        props = self._resolve_player_names(raw_props)
         if props:
             self._save_to_db(props)
-
-        return props
+        return self._filter_odds(props)
 
     # ── Analiza line movement ─────────────────────────────────────────────────
     def get_line_movement(

@@ -59,6 +59,19 @@ Model live używa zestawu `base`. Wiersze `fatigue` i `context` (krok 4c) liczon
 
 Na liniach bukmacherów revenge wypada pod linią (19 overów na 60 linii). To jednak ok. 30 niezależnych występów, rynek nie wycenia tych meczów inaczej niż pozostałych, a na 2235 meczach efektu brak. Uznaję to za szum. Nemesis „zawodnik vs konkretny obrońca” wymaga danych o pojedynkach (BoxScoreMatchups), których nie pobieramy.
 
+### Line shopping (krok 6)
+
+[line_shopping.py](line_shopping.py) → `reports/line_shopping_*.json`. Pinnacle po zdjęciu marży służy jako cena referencyjna. Różne linie (np. 24,5 vs 25,5) są przeliczane przez rozkład normalny z σ(μ) modelu.
+
+| Analiza | Wynik (Pinnacle + Unibet, 921 par linii) |
+|---|---|
+| Marża: jeden bukmacher → najlepsza cena z dwóch | 6,7–7,2% → 4,9%; 6 arbitraży na 641 grup (max 2,9%) |
+| Unibet bije uczciwą cenę Pinnacle o EV > 3% | 49 zakładów, ROI +12% [−20%; +44%] |
+| CLV tych zakładów (tylko 44 z późniejszym odczytem Pinnacle) | −0,7% [−3,2%; +1,2%]: EV w chwili zakładu (+2,6%) znika, bo Pinnacle przesuwa się w stronę Unibetu |
+| Model (base) po najlepszej cenie zamiast u jednego bukmachera | ROI wyższy o ~2 pp, nadal bez istotnej przewagi |
+
+Line shopping obniża marżę, ale **przewagi nie daje**. Od 2026-10-30 pipeline pobiera kursy 10 bukmacherów z regionu `eu`, w tym Betclic FR (`betclic_fr`), bez dodatkowego kosztu w Odds API. Polskiego betclic.pl nie ma w API. Scrapingu nie wdrażam: regulaminu betclic.pl pod tym kątem nie weryfikowałem, a bukmacherzy zwykle zabraniają automatycznego pobierania.
+
 ## Struktura
 
 | Plik | Rola |
@@ -67,6 +80,7 @@ Na liniach bukmacherów revenge wypada pod linią (19 overów na 60 linii). To j
 | `points_model.py` | `PointsModel` i `train_points_model` |
 | `evaluate.py` | Ewaluacja walk-forward vs rynek: log-loss/Brier vs kursy bez marży, bootstrap CI, symulacja zakładów EV, ablacja zestawów cech → `reports/` |
 | `hypotheses.py` | Testy hipotez revenge / nemesis na resztach modelu poza próbą → `reports/hypotheses_*.json` |
+| `line_shopping.py` | Krok 6: wartość względem Pinnacle (EV, CLV), najlepsza cena, model po najlepszej cenie → `reports/line_shopping_*.json` |
 | `live.py` | Kupon dnia: propsy → cechy → model → tabela `live_predictions` + picki (EV ≥ 5%, kurs 1,40–1,90, max 1 na mecz) |
 | `main.py` | Pipeline uruchamiany przez Actions: kursy, kupon, weryfikacja, eksport dashboardu |
 | `odds_fetcher.py` | The Odds API |
@@ -116,7 +130,7 @@ Timer działa, gdy użytkownik jest zalogowany. Bez logowania potrzebne jest `lo
 ## Ograniczenia
 
 - Brak raportów kontuzji przed meczem, więc model live nie zna absencji.
-- Linie z The Odds API pochodzą od części bukmacherów. Betclic nie jest dostępny.
+- Linie z The Odds API pochodzą od bukmacherów europejskich (10 w regionie `eu`). Betclic tylko w wersji francuskiej (`betclic_fr`).
 - Brak historii spreadów i totali meczów (historyczne kursy Odds API są w płatnych planach; cennika nie weryfikowałem). Od 2026-10-30 pipeline zapisuje je codziennie do tabeli `game_lines` (2 kredyty Odds API na run). Posłużą do treningu, gdy zbierze się sezon.
 - Laptop musi się włączać. Gdy dane są starsze niż 2 dni, kupon nie powstaje (`nba_data_stale`).
 - Dane Sports-Reference/Stathead nie są używane: regulamin zabrania ich użycia do trenowania modeli.

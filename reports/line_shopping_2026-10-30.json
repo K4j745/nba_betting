@@ -1,0 +1,235 @@
+{
+  "generated": "2026-10-30",
+  "reference": "pinnacle",
+  "n_snapshots": 3557,
+  "snapshots_per_book": {
+    "unibet": 1839,
+    "pinnacle": 1718
+  },
+  "value_vs_pinnacle": {
+    "n_lines": 921,
+    "same_line_share": 0.678,
+    "by_threshold": [
+      {
+        "ev_threshold": 0.0,
+        "bets": 150,
+        "mean_ev_at_bet": 0.0246,
+        "n_with_later_close": 44,
+        "mean_ev_same_bets": 0.0264,
+        "mean_clv": -0.0066,
+        "clv_ci95": [
+          -0.0319,
+          0.0119
+        ]
+      },
+      {
+        "ev_threshold": 0.03,
+        "bets": 49,
+        "mean_ev_at_bet": 0.0493,
+        "n_with_later_close": 16,
+        "mean_ev_same_bets": 0.0522,
+        "mean_clv": 0.0144,
+        "clv_ci95": [
+          -0.0341,
+          0.0581
+        ]
+      },
+      {
+        "ev_threshold": 0.05,
+        "bets": 20,
+        "mean_ev_at_bet": 0.0656,
+        "n_with_later_close": 8,
+        "mean_ev_same_bets": 0.0661,
+        "mean_clv": 0.0249,
+        "clv_ci95": [
+          -0.0355,
+          0.0909
+        ]
+      },
+      {
+        "ev_threshold": 0.1,
+        "bets": 1
+      }
+    ],
+    "realized": [
+      {
+        "ev_threshold": 0.0,
+        "bets": 146,
+        "hit_rate": 0.548,
+        "roi": 0.0221,
+        "roi_ci95": [
+          -0.1265,
+          0.1882
+        ]
+      },
+      {
+        "ev_threshold": 0.03,
+        "bets": 47,
+        "hit_rate": 0.596,
+        "roi": 0.1209,
+        "roi_ci95": [
+          -0.1872,
+          0.4339
+        ]
+      },
+      {
+        "ev_threshold": 0.05,
+        "bets": 19,
+        "hit_rate": 0.684,
+        "roi": 0.2832,
+        "roi_ci95": [
+          -0.058,
+          0.6076
+        ]
+      },
+      {
+        "ev_threshold": 0.1,
+        "bets": 1
+      }
+    ],
+    "n_with_result": 892
+  },
+  "best_price": {
+    "n_groups": 641,
+    "books": [
+      "pinnacle",
+      "unibet"
+    ],
+    "margin_per_book": {
+      "pinnacle": 0.0671,
+      "unibet": 0.0715
+    },
+    "margin_best_of": 0.0491,
+    "arbitrage_count": 6,
+    "arbitrage_max_profit": 0.0291
+  },
+  "model_best_price": {
+    "pinnacle": [
+      {
+        "ev_threshold": 0.0,
+        "bets": 688,
+        "hit_rate": 0.501,
+        "roi": -0.0554,
+        "roi_ci95": [
+          -0.1266,
+          0.0155
+        ]
+      },
+      {
+        "ev_threshold": 0.03,
+        "bets": 608,
+        "hit_rate": 0.49,
+        "roi": -0.0756,
+        "roi_ci95": [
+          -0.1491,
+          0.0034
+        ]
+      },
+      {
+        "ev_threshold": 0.05,
+        "bets": 546,
+        "hit_rate": 0.509,
+        "roi": -0.04,
+        "roi_ci95": [
+          -0.1159,
+          0.0391
+        ]
+      },
+      {
+        "ev_threshold": 0.1,
+        "bets": 397,
+        "hit_rate": 0.509,
+        "roi": -0.034,
+        "roi_ci95": [
+          -0.1231,
+          0.0562
+        ]
+      }
+    ],
+    "unibet": [
+      {
+        "ev_threshold": 0.0,
+        "bets": 788,
+        "hit_rate": 0.509,
+        "roi": -0.0491,
+        "roi_ci95": [
+          -0.1158,
+          0.0158
+        ]
+      },
+      {
+        "ev_threshold": 0.03,
+        "bets": 682,
+        "hit_rate": 0.515,
+        "roi": -0.039,
+        "roi_ci95": [
+          -0.1073,
+          0.0333
+        ]
+      },
+      {
+        "ev_threshold": 0.05,
+        "bets": 602,
+        "hit_rate": 0.53,
+        "roi": -0.0101,
+        "roi_ci95": [
+          -0.0828,
+          0.0617
+        ]
+      },
+      {
+        "ev_threshold": 0.1,
+        "bets": 456,
+        "hit_rate": 0.539,
+        "roi": 0.0077,
+        "roi_ci95": [
+          -0.0772,
+          0.0951
+        ]
+      }
+    ],
+    "best_price": [
+      {
+        "ev_threshold": 0.0,
+        "bets": 838,
+        "hit_rate": 0.51,
+        "roi": -0.031,
+        "roi_ci95": [
+          -0.0984,
+          0.0349
+        ]
+      },
+      {
+        "ev_threshold": 0.03,
+        "bets": 749,
+        "hit_rate": 0.501,
+        "roi": -0.0476,
+        "roi_ci95": [
+          -0.1168,
+          0.0245
+        ]
+      },
+      {
+        "ev_threshold": 0.05,
+        "bets": 674,
+        "hit_rate": 0.515,
+        "roi": -0.0197,
+        "roi_ci95": [
+          -0.0956,
+          0.0502
+        ]
+      },
+      {
+        "ev_threshold": 0.1,
+        "bets": 515,
+        "hit_rate": 0.532,
+        "roi": 0.0156,
+        "roi_ci95": [
+          -0.0624,
+          0.0996
+        ]
+      }
+    ]
+  },
+  "note": "EV i CLV względem uczciwej ceny Pinnacle; różne linie przeliczone przez N(μ, σ(μ)). CI95 z bootstrapu po meczach. „Zamknięcie” = ostatni odczyt przed meczem."
+}
