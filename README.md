@@ -45,6 +45,20 @@ Cechy ([history.py](history.py)) są liczone **point-in-time**: wyłącznie z me
 
 Model live używa zestawu `base`. Wiersze `fatigue` i `context` (krok 4c) liczone na innym zbiorze testowym niż starsze wiersze; porównuj Δ względem `base` z tego samego przebiegu. Przed meczem nie wiadomo, kto nie zagra, bo brakuje źródła raportów kontuzji. Poza tym żaden zestaw cech nie poprawia wyniku **względem rynku**. Najbliżej jest `context`: na liniach bukmacherów MAE −0,039 (CI bez zera), ale log-loss bez istotnej zmiany i brak efektu na pełnym holdoucie, więc to kandydat do obserwacji, nie zmiana modelu.
 
+### Testy hipotez (krok 5)
+
+[hypotheses.py](hypotheses.py) → `reports/hypotheses_*.json`. Reszta = punkty − prognoza modelu poza próbą (sezony 2023-24 … 2026-27, 86 tys. występów). CI95 z bootstrapu po zawodnikach.
+
+| Hipoteza | n | Średnia reszta z flagą − bez (CI95) | Wniosek |
+|---|---|---|---|
+| revenge: mecz z byłą drużyną | 2235 | +0,09 [−0,17; +0,35] | brak efektu |
+| revenge: pierwszy mecz po odejściu | 537 | −0,01 [−0,48; +0,49] | brak efektu |
+| revenge: do 365 dni od odejścia | 906 | +0,19 [−0,18; +0,54] | brak efektu |
+| nemesis: najgorszy rywal zawodnika (≥ 3 mecze) | 2236 | −0,19 [−0,44; +0,07] | brak efektu |
+| nemesis: nachylenie reszty względem wcześniejszych reszt z tym rywalem | 38 971 | 0,053 [0,006; 0,104] | statystycznie na granicy, praktycznie ~0,07 pkt na odchylenie standardowe |
+
+Na liniach bukmacherów revenge wypada pod linią (19 overów na 60 linii). To jednak ok. 30 niezależnych występów, rynek nie wycenia tych meczów inaczej niż pozostałych, a na 2235 meczach efektu brak. Uznaję to za szum. Nemesis „zawodnik vs konkretny obrońca” wymaga danych o pojedynkach (BoxScoreMatchups), których nie pobieramy.
+
 ## Struktura
 
 | Plik | Rola |
@@ -52,6 +66,7 @@ Model live używa zestawu `base`. Wiersze `fatigue` i `context` (krok 4c) liczon
 | `history.py` | Logi sezonów 2021-22+ z `nba_api` (`LeagueGameLog`), tabela mecz–zawodnik, cechy point-in-time, zbiór `data/player_games.csv.gz` |
 | `points_model.py` | `PointsModel` i `train_points_model` |
 | `evaluate.py` | Ewaluacja walk-forward vs rynek: log-loss/Brier vs kursy bez marży, bootstrap CI, symulacja zakładów EV, ablacja zestawów cech → `reports/` |
+| `hypotheses.py` | Testy hipotez revenge / nemesis na resztach modelu poza próbą → `reports/hypotheses_*.json` |
 | `live.py` | Kupon dnia: propsy → cechy → model → tabela `live_predictions` + picki (EV ≥ 5%, kurs 1,40–1,90, max 1 na mecz) |
 | `main.py` | Pipeline uruchamiany przez Actions: kursy, kupon, weryfikacja, eksport dashboardu |
 | `odds_fetcher.py` | The Odds API |
