@@ -1,0 +1,93 @@
+{
+  "generated": "2026-10-30",
+  "test_seasons": [
+    "2023-24",
+    "2024-25",
+    "2025-26",
+    "2026-27"
+  ],
+  "n_games": 86006,
+  "resid_mean": 0.025,
+  "revenge": {
+    "is_revenge": {
+      "n_games": 2235,
+      "n_players": 378,
+      "mean_flag": 0.109,
+      "mean_other": 0.023,
+      "diff": 0.086,
+      "diff_ci95": [
+        -0.17,
+        0.346
+      ]
+    },
+    "revenge_first": {
+      "n_games": 537,
+      "n_players": 350,
+      "mean_flag": 0.017,
+      "mean_other": 0.025,
+      "diff": -0.008,
+      "diff_ci95": [
+        -0.479,
+        0.488
+      ]
+    },
+    "revenge_recent": {
+      "n_games": 906,
+      "n_players": 317,
+      "mean_flag": 0.208,
+      "mean_other": 0.023,
+      "diff": 0.185,
+      "diff_ci95": [
+        -0.18,
+        0.539
+      ]
+    }
+  },
+  "revenge_market": {
+    "is_revenge": {
+      "n_lines": 60,
+      "over_rate": 0.317,
+      "p_market_mean": 0.504
+    },
+    "revenge_first": {
+      "n_lines": 21,
+      "over_rate": 0.19,
+      "p_market_mean": 0.506
+    }
+  },
+  "nemesis": {
+    "slope_all": {
+      "n_games": 67067,
+      "slope": 0.0325,
+      "slope_ci95": [
+        -0.0076,
+        0.0714
+      ]
+    },
+    "slope_n>=3": {
+      "n_games": 38971,
+      "slope": 0.0531,
+      "slope_ci95": [
+        0.0062,
+        0.1041
+      ]
+    },
+    "is_nemesis": {
+      "n_games": 2236,
+      "n_players": 503,
+      "mean_flag": -0.162,
+      "mean_other": 0.03,
+      "diff": -0.192,
+      "diff_ci95": [
+        -0.437,
+        0.071
+      ]
+    }
+  },
+  "nemesis_market": {
+    "n_lines": 71,
+    "over_rate": 0.437,
+    "p_market_mean": 0.499
+  },
+  "note": "reszta = PTS − μ poza próbą; diff = średnia reszta z flagą − bez; CI95 z bootstrapu po zawodnikach. Wiele porównań: pojedyncze CI bez zera traktować jako wskazówkę, nie dowód."
+}
