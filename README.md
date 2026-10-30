@@ -15,6 +15,7 @@ flowchart LR
     D --> P[GitHub Actions<br/>pipeline.yml 18:00 UTC]
     O[The Odds API<br/>linie punktów] --> P
     P -->|live.py: cechy → PointsModel| C[kupon + predykcje<br/>nba_betting.db]
+    O --> K[closing_odds.yml co 30 min<br/>kursy ~1 h przed meczem] --> C
     D --> V[pipeline.yml 07:00 UTC<br/>weryfikacja wyników]
     D --> E[evaluate.yml<br/>poniedziałek 10:00 UTC]
     C --> B[dashboard_data.json<br/>GitHub Pages]
@@ -88,7 +89,7 @@ Line shopping obniża marżę, ale **przewagi nie daje**. Od 2026-10-30 pipeline
 | `dashboard.html` | Statyczny dashboard (Chart.js) z boiskiem w tle |
 | `scripts/sync_nba_data.py` | Laptop → branch `data` |
 | `scripts/install_data_timer.sh` | Instalacja timera systemd (`--uninstall` usuwa) |
-| `.github/workflows/` | `pipeline.yml` (kupon i weryfikacja), `evaluate.yml` (raport tygodniowy), `probe.yml` (test dostępu do stats.nba.com) |
+| `.github/workflows/` | `pipeline.yml` (kupon i weryfikacja), `closing_odds.yml` (kursy zamknięcia ~1 h przed meczem, z budżetem kredytów), `evaluate.yml` (raport tygodniowy), `probe.yml` (test dostępu do stats.nba.com) |
 | `model.py`, `features.py`, `train.py`, `data_fetcher.py` | Stara ścieżka (`PropPredictor`), nieużywana w pipeline |
 
 ## Uruchomienie lokalne
