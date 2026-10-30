@@ -101,3 +101,41 @@ def test_true_shooting_and_game_score_use_previous_games(feats):
     assert feats.loc[2, "ts_season"] == pytest.approx(feats.loc[2, "ts_10"])
     # GmSc meczu 1: 10 + 2.4 − 10.5 − 0.4 + 0.7 + 1.2 + 1 + 2.1 + 0 − 0.8 − 2 = 3.7
     assert feats.loc[1, "gmsc_avg_10"] == pytest.approx(3.7)
+
+
+def test_fatigue_and_travel_use_schedule_before_game():
+    # mecze co 2 dni: 1.01 dom, 3.01 i 5.01 w Bostonie (wyjazd), 7.01 znów dom
+    p, t = _logs()
+    p.loc[[1, 2], "MATCHUP"] = "LAL @ BOS"
+    tg = team_game_table(t)
+    f = make_features(player_game_table(p, tg), tg).sort_values("GAME_DATE").reset_index(drop=True)
+    assert list(f["games_7d"]) == [0, 1, 2, 3]
+    assert list(f["min_7d"]) == [0, 30, 60, 90]
+    assert list(f["is_3in4"]) == [0, 0, 0, 0]       # co 2 dni: nigdy 3 mecze w 4 dni
+    assert list(f["road_trip"]) == [0, 1, 2, 0]
+    # LA → Boston ≈ 4170 km, na wschód o 3 h; drugi mecz w Bostonie bez podróży
+    assert f.loc[1, "travel_km"] == pytest.approx(4170, rel=0.02)
+    assert f.loc[1, "tz_shift"] == 3
+    assert f.loc[2, "travel_km"] == pytest.approx(0)
+    assert f.loc[3, "tz_shift"] == -3
+    assert f.loc[0, "travel_km"] == 0                # pierwszy mecz — brak poprzedniego
+
+
+def test_three_in_four_nights():
+    p, t = _logs()
+    for df in (p, t):   # trzeci mecz dzień wcześniej: 1.01, 3.01, 4.01 → 3 mecze w 4 dni
+        df.loc[df["GAME_DATE"] == "2025-01-05", "GAME_DATE"] = pd.Timestamp("2025-01-04")
+    tg = team_game_table(t)
+    f = make_features(player_game_table(p, tg), tg).sort_values("GAME_DATE").reset_index(drop=True)
+    assert list(f["is_3in4"]) == [0, 0, 1, 0]
+
+
+def test_game_context_from_team_ratings(feats):
+    # mecze 1–3: LAL zdobywa 100, BOS 100/110/120, posiadania równe → LAL oczekuje 100,
+    # BOS 110; LAL u siebie (+2) → oczekiwana różnica −8, suma 210
+    row = feats.loc[3]
+    assert row["team_exp_pts"] == pytest.approx(100.0)
+    assert row["exp_total"] == pytest.approx(210.0)
+    assert row["exp_margin"] == pytest.approx(-8.0)
+    assert row["abs_margin"] == pytest.approx(8.0)
+    assert feats["exp_margin"].isna().sum() == 3     # ratingi dopiero od 3 meczów drużyny

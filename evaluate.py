@@ -26,7 +26,8 @@ import pandas as pd
 from config import DB_PATH
 from features import remove_overround
 from history import (
-    ABSENCE_FEATURE_COLS, BASE_FEATURE_COLS, EFFICIENCY_FEATURE_COLS, load_dataset, norm_name,
+    ABSENCE_FEATURE_COLS, BASE_FEATURE_COLS, EFFICIENCY_FEATURE_COLS, FATIGUE_FEATURE_COLS,
+    GAME_CONTEXT_FEATURE_COLS, load_dataset, norm_name,
 )
 from points_model import train_points_model
 
@@ -41,6 +42,8 @@ FEATURE_SETS  = {
     "base":       BASE_FEATURE_COLS,
     "absence":    BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS,
     "efficiency": BASE_FEATURE_COLS + EFFICIENCY_FEATURE_COLS,
+    "fatigue":    BASE_FEATURE_COLS + FATIGUE_FEATURE_COLS,
+    "context":    BASE_FEATURE_COLS + GAME_CONTEXT_FEATURE_COLS,
 }
 
 

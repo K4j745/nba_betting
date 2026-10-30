@@ -205,6 +205,11 @@ def run_daily_pipeline(game_date: str | None = None):
     # zbiór do ewaluacji, który ma rosnąć także wtedy, gdy kuponu nie ma.
     props = step_fetch_props(odds_fetcher, player_lookup)
     logger.info("DIAG: propsów z API = %d", len(props))
+    # Spread/total meczów — na razie tylko zbieramy historię (krok 4c), model ich nie używa
+    try:
+        logger.info("DIAG: linii meczowych (spread/total) = %d", odds_fetcher.fetch_game_lines())
+    except Exception as e:
+        logger.error("Błąd przy pobieraniu linii meczowych: %s", e)
     if not props:
         logger.warning("Brak propsów — pipeline zakończony bez kuponu")
         export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
