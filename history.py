@@ -11,10 +11,13 @@ jako wiersze bez statystyk (PTS = NaN) i przechodzą one przez te same funkcje.
 Użycie:
   python history.py                       # pobierz brakujące sezony + zbuduj zbiór
   python history.py --refresh-current     # odśwież bieżący sezon (nowe mecze)
+  python history.py --offline             # tylko pliki z data/raw (GitHub Actions — bez stats.nba.com)
 """
 import argparse
 import logging
+import re
 import time
+import unicodedata
 from pathlib import Path
 
 import numpy as np
@@ -43,6 +46,14 @@ ABSENCE_DAYS  = 14            # nieobecny = grał dla drużyny w ostatnich 14 dn
 ROTATION_MIN  = 15.0          # … i średnio ≥ 15 min w ostatnich 10 meczach (zawodnik rotacji)
 
 
+def norm_name(name: str) -> str:
+    """Nazwisko do dopasowań między źródłami: bez akcentów, kropek, sufiksów Jr/III."""
+    s = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode().lower()
+    s = re.sub(r"[.'’\-]", " ", s)
+    s = re.sub(r"\b(jr|sr|ii|iii|iv)\b", " ", s)
+    return " ".join(s.split())
+
+
 def season_str(start_year: int) -> str:
     return f"{start_year}-{str(start_year + 1)[-2:]}"
 
@@ -60,11 +71,16 @@ def _raw_path(kind: str, season: str, season_type: str) -> Path:
     return RAW_DIR / f"{kind}_{season}_{tag}.csv.gz"
 
 
-def fetch_league_log(kind: str, season: str, season_type: str, refresh: bool = False) -> pd.DataFrame:
-    """kind: 'P' (zawodnicy) albo 'T' (drużyny). Zakończone sezony pobieramy raz."""
+def fetch_league_log(kind: str, season: str, season_type: str, refresh: bool = False,
+                     offline: bool = False) -> pd.DataFrame:
+    """kind: 'P' (zawodnicy) albo 'T' (drużyny). Zakończone sezony pobieramy raz.
+    offline=True: tylko plik z data/raw, brak pliku → pusty DataFrame."""
     path = _raw_path(kind, season, season_type)
     if path.exists() and not refresh:
         return pd.read_csv(path, dtype={"GAME_ID": str})
+    if offline:
+        logger.warning("Brak %s (tryb offline) — pomijam", path)
+        return pd.DataFrame()
 
     from nba_api.stats.endpoints import leaguegamelog
     logger.info("Pobieram LeagueGameLog %s %s %s", kind, season, season_type)
@@ -82,13 +98,13 @@ def fetch_league_log(kind: str, season: str, season_type: str, refresh: bool = F
     return df
 
 
-def load_logs(refresh_current: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
+def load_logs(refresh_current: bool = False, offline: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
     players, teams = [], []
     for season in all_seasons():
-        refresh = refresh_current and season == CURRENT_SEASON
+        refresh = refresh_current and season == CURRENT_SEASON and not offline
         for st in SEASON_TYPES:
-            players.append(fetch_league_log("P", season, st, refresh))
-            teams.append(fetch_league_log("T", season, st, refresh))
+            players.append(fetch_league_log("P", season, st, refresh, offline))
+            teams.append(fetch_league_log("T", season, st, refresh, offline))
     p = pd.concat([d for d in players if not d.empty], ignore_index=True)
     t = pd.concat([d for d in teams if not d.empty], ignore_index=True)
     for d in (p, t):
@@ -285,8 +301,8 @@ ABSENCE_FEATURE_COLS = [*ABSENCE_COLS, "vac_pts_delta", "vac_min_delta"]
 FEATURE_COLS = BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS
 
 
-def build_dataset(refresh_current: bool = False) -> pd.DataFrame:
-    p, t = load_logs(refresh_current=refresh_current)
+def build_dataset(refresh_current: bool = False, offline: bool = False) -> pd.DataFrame:
+    p, t = load_logs(refresh_current=refresh_current, offline=offline)
     team_games = team_game_table(t)
     games = player_game_table(p, team_games)
     df = make_features(games, team_games)
@@ -308,5 +324,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
     ap = argparse.ArgumentParser()
     ap.add_argument("--refresh-current", action="store_true")
+    ap.add_argument("--offline", action="store_true")
     args = ap.parse_args()
-    build_dataset(refresh_current=args.refresh_current)
+    build_dataset(refresh_current=args.refresh_current, offline=args.offline)

@@ -15,7 +15,7 @@ on:
         type: choice
         options:
           - pipeline   # generuje kupon + dashboard_data.json
-          - verify     # weryfikuje wczorajsze wyniki + retrain
+          - verify     # weryfikuje wczorajsze wyniki (punkty z data/raw)
 
 # Zapobiega równoległym uruchomieniom — jeden job na raz
 concurrency:
@@ -39,6 +39,14 @@ jobs:
           # fetch-depth 0 potrzebny do push'a z historią
           fetch-depth: 0
 
+      # Logi NBA z brancha `data` (synchronizowane z laptopa — stats.nba.com
+      # nie odpowiada runnerom GitHub Actions). data/ jest w .gitignore.
+      - name: Checkout danych NBA (branch data)
+        uses: actions/checkout@v4
+        with:
+          ref: data
+          path: data/raw
+
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
@@ -59,7 +67,7 @@ jobs:
         run: python main.py --run-now
 
       # ── Weryfikacja (09:00 CEST) ───────────────────────────────────────────
-      - name: Run verify — weryfikuj wczoraj + retrain
+      - name: Run verify — weryfikuj wczoraj
         if: >-
           github.event.schedule == '0 7 * * *' ||
           (github.event_name == 'workflow_dispatch' && inputs.mode == 'verify')

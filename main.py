@@ -28,14 +28,12 @@ import schedule
 
 from config import (
     DB_PATH, MODEL_DIR, ODDS_API_KEY,
-    CONFIDENCE_THRESHOLD, STAKE_PER_PICK,
+    STAKE_PER_PICK,
     ODDS_MIN, ODDS_MAX,
 )
-from data_fetcher import NBADataFetcher
-from features import build_feature_vector, MODEL_FEATURE_COLS
-from model import PropPredictor
 from odds_fetcher import OddsFetcher
 from tracker import ResultTracker
+import live
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 LOG_DIR  = Path("logs")
@@ -62,7 +60,8 @@ REASON_NO_MODEL      = "model_missing"
 REASON_NO_PROPS      = "no_props_today"
 REASON_NO_FEATURES   = "no_features_built"
 REASON_NO_PICKS      = "no_picks_passed_filters"
-REASON_NBA_API_DOWN  = "nba_api_unreachable"
+REASON_NO_DATA       = "nba_data_missing"
+REASON_DATA_STALE    = "nba_data_stale"
 
 # Czytelne komunikaty pokazywane na dashboardzie (pole `status_message`).
 _REASON_MESSAGES: dict[str, str] = {
@@ -72,7 +71,8 @@ _REASON_MESSAGES: dict[str, str] = {
     REASON_NO_PROPS:    "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
     REASON_NO_FEATURES: "Są propsy, ale nie udało się zbudować feature vectorów (prawdopodobnie nba_api zablokowane na runnerze CI).",
     REASON_NO_PICKS:    "Są mecze, ale żaden pick nie przeszedł filtrów (kurs 1.40–1.90 + pewność ≥ 60%).",
-    REASON_NBA_API_DOWN: "stats.nba.com nie odpowiada z tego serwera (blokada IP runnera CI) — kursy zapisane, kupon pominięty.",
+    REASON_NO_DATA:     "Brak logów NBA (branch `data`) — uruchom synchronizację na laptopie.",
+    REASON_DATA_STALE:  "Logi NBA są nieaktualne (laptop nie zsynchronizował danych) — kursy zapisane, kupon pominięty.",
 }
 
 
@@ -95,22 +95,6 @@ def _nba_today() -> str:
         return (datetime.now(timezone.utc) - timedelta(hours=4)).date().isoformat()
 
 
-def nba_stats_reachable(timeout: float = 15.0) -> bool:
-    """Jedno lekkie zapytanie do stats.nba.com; False przy timeoucie/błędzie."""
-    try:
-        from nba_api.stats.endpoints import leaguegamelog
-        from config import CURRENT_SEASON
-        leaguegamelog.LeagueGameLog(
-            season=CURRENT_SEASON,
-            player_or_team_abbreviation="T",
-            timeout=timeout,
-        ).get_data_frames()
-        return True
-    except Exception as e:
-        logger.warning("Probe stats.nba.com nieudany: %s", e)
-        return False
-
-
 # ─────────────────────────────────────────────────────────────────────────────
 # Helpery — mapowanie zawodników i drużyn
 # ─────────────────────────────────────────────────────────────────────────────
@@ -123,97 +107,6 @@ def _build_player_lookup() -> dict[str, int]:
     except Exception as e:
         logger.error("Błąd przy budowaniu player_lookup: %s", e)
         return {}
-
-
-def _build_team_lookup() -> dict[str, int]:
-    """
-    Zwraca mapowanie → team_id dla:
-    - skrótów:      {"DAL": 1610612742}
-    - pełnych nazw: {"Dallas Mavericks": 1610612742}
-    - nicków:       {"Mavericks": 1610612742}
-    - miast:        {"Dallas": 1610612742}
-    """
-    try:
-        from nba_api.stats.static import teams as nba_teams
-        all_teams = nba_teams.get_teams()
-        lookup = {}
-        for t in all_teams:
-            tid = t["id"]
-            for key in [
-                t["abbreviation"],
-                t["abbreviation"].upper(),
-                t["full_name"],
-                t["full_name"].upper(),
-                t["nickname"],
-                t["nickname"].upper(),
-                t["city"],
-                t["city"].upper(),
-            ]:
-                lookup[key] = tid
-        logger.info(
-            "team_lookup: %d wpisów dla %d drużyn", len(lookup), len(all_teams)
-        )
-        return lookup
-    except Exception as e:
-        logger.error("Błąd przy budowaniu team_lookup: %s", e)
-        return {}
-
-
-def _resolve_opponent_team_id(
-    game: str,
-    home_team: str,
-    is_home: int,
-    team_lookup: dict[str, int],
-) -> int | None:
-    """
-    Obsługuje formaty Odds API:
-      game      = "San Antonio Spurs vs Philadelphia 76ers"
-      home_team = "San Antonio Spurs"
-    """
-    try:
-        sep = " VS " if " VS " in game.upper() else " @ "
-        parts = game.upper().split(sep) if sep in game.upper() else game.split(" vs ")
-        if len(parts) != 2:
-            return None
-
-        part_home = parts[0].strip()
-        part_away = parts[1].strip()
-
-        # Dopasuj home_team do właściwej strony
-        if home_team.upper() in part_home.upper():
-            opp_name = parts[1].strip()   # zachowaj oryginalne wielkości
-        else:
-            opp_name = parts[0].strip()
-
-        # Szukaj w lookup (pełna nazwa, skrót, miasto)
-        result = (
-            team_lookup.get(opp_name) or
-            team_lookup.get(opp_name.upper()) or
-            team_lookup.get(opp_name.split()[-1])    # ostatni token = nickname
-        )
-
-        if result is None:
-            logger.warning("Nie znaleziono team_id dla: '%s' (game='%s')", opp_name, game)
-
-        return result
-
-    except Exception as e:
-        logger.warning("_resolve_opponent_team_id error: %s | game='%s'", e, game)
-        return None
-
-
-def _guess_position(player_id: int, fetcher: NBADataFetcher) -> str:
-    """
-    Próbuje zgadnąć pozycję gracza z ostatnich statystyk.
-    Fallback: 'PG'
-    """
-    try:
-        recent = fetcher.get_player_recent_stats(player_id, last_n=1)
-        if not recent.empty and "POSITION" in recent.columns:
-            return str(recent.iloc[0]["POSITION"])
-    except Exception:
-        pass
-    return "PG"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -261,142 +154,6 @@ def step_fetch_props(
     )
     return resolved
 
-def _get_player_team(player_id: int) -> str | None:
-    """Zwraca nazwę drużyny gracza z nba_api."""
-    try:
-        from nba_api.stats.static import players as nba_players
-        from nba_api.stats.endpoints import commonplayerinfo
-        info = commonplayerinfo.CommonPlayerInfo(player_id=player_id)
-        df   = info.get_data_frames()[0]
-        return str(df["TEAM_NAME"].iloc[0]) if not df.empty else None
-    except Exception:
-        return None
-
-def step_build_features(
-    props: list[dict],
-    fetcher: NBADataFetcher,
-    team_lookup: dict[str, int],
-) -> list[dict]:
-    """
-    Krok 2: Buduj feature vectory dla każdego propa.
-    Zwraca listę propsów wzbogaconych o 'features_df'.
-    """
-    logger.info("── Krok 2: Budowanie feature vectorów ──────────────────────")
-    enriched = []
-    errors   = 0
-
-    for prop in props:
-        try:
-            player_id  = prop["player_id"]
-            home_team  = prop.get("home_team", "")
-            away_team  = prop.get("away_team", "")
-            is_home    = 0  # TODO: poprawić gdy będzie cache drużyn
-
-            # Rywal = away_team (bo is_home=0, gracz jest gościem)
-            # Dla połowy graczy będzie odwrotnie, ale jeden feature z 22 — akceptowalne
-            opp_name    = home_team  # gracz away → rywal to home
-            opp_team_id = (
-                team_lookup.get(opp_name) or
-                team_lookup.get(opp_name.upper()) or
-                team_lookup.get(opp_name.split()[-1])  # ostatni token = nickname
-            )
-
-            if opp_team_id is None:
-                logger.warning(
-                    "Pominięto %s — brak team_id dla '%s' (home='%s' away='%s')",
-                    prop["player_name"], opp_name, home_team, away_team,
-                )
-                errors += 1
-                continue
-
-            position = _guess_position(player_id, fetcher)
-
-            fv = build_feature_vector(
-                player_id=player_id,
-                opponent_team_id=opp_team_id,
-                line=float(prop["line"]),
-                over_odds=float(prop["over_odds"]),
-                under_odds=float(prop["under_odds"]),
-                is_home=is_home,
-                player_position=position,
-                fetcher=fetcher,
-            )
-
-            enriched.append({**prop, "features_df": fv, "player_position": position})
-
-        except Exception as e:
-            logger.warning(
-                "Błąd budowania features dla %s: %s",
-                prop.get("player_name", "?"), e,
-            )
-            errors += 1
-
-    logger.info("Features: %d zbudowane, %d błędów", len(enriched), errors)
-    return enriched
-
-
-def step_generate_coupon(
-    enriched_props: list[dict],
-    predictor: PropPredictor,
-    game_date: str,
-) -> dict:
-    """
-    Krok 3: Predykcja + generowanie kuponu.
-    """
-    logger.info("── Krok 3: Generowanie kuponu ──────────────────────────────")
-
-    coupon = predictor.generate_coupon(
-        enriched_props,
-        game_date=game_date,
-        stake=STAKE_PER_PICK,
-        min_confidence=CONFIDENCE_THRESHOLD,
-    )
-
-    if not coupon["picks"]:
-        logger.warning("Kupon pusty — żaden prop nie spełnił kryteriów filtrowania")
-    else:
-        _print_coupon(coupon)
-
-    return coupon
-
-
-def step_verify_and_report(
-    tracker: ResultTracker,
-    predictor: PropPredictor,
-    yesterday: str,
-) -> dict:
-    """
-    Krok 4: Weryfikacja wczorajszych wyników + raport + retrain.
-    """
-    logger.info("── Krok 4: Weryfikacja i raport ────────────────────────────")
-
-    # Weryfikacja
-    results = tracker.verify_yesterday(yesterday)
-    if results.empty:
-        logger.warning("Brak wyników do weryfikacji dla %s", yesterday)
-    else:
-        wins   = (results["result"] == "WIN").sum()
-        losses = (results["result"] == "LOSS").sum()
-        pushes = (results["result"] == "PUSH").sum()
-        profit = results["simulated_profit"].sum()
-        logger.info(
-            "Wczoraj: %dW / %dL / %dP | P&L=%+.2f PLN",
-            wins, losses, pushes, profit,
-        )
-
-    # Raport 30-dniowy
-    report = tracker.generate_report(last_n_days=30)
-
-    # Retrain jeśli potrzeba
-    was_retrained = tracker.retrain_if_due(predictor, min_new_samples=30)
-    if was_retrained:
-        logger.info(
-            "Model przetrenowany — nowa wersja: v%d", predictor.version
-        )
-
-    return report
-
-
 def step_backup_db(db_path: str = DB_PATH):
     """Krok opcjonalny: backup bazy danych."""
     backup_dir = Path("backups")
@@ -416,9 +173,8 @@ def step_backup_db(db_path: str = DB_PATH):
 def run_daily_pipeline(game_date: str | None = None):
     """
     Główny pipeline dzienny:
-      1. Pobierz propsy
-      2. Zbuduj feature vectory
-      3. Wygeneruj kupon
+      1. Pobierz propsy (Odds API) i zapisz do odds_history
+      2. live.run_coupon: cechy z logów w data/raw → PointsModel → kupon (paper trading)
     """
     # Dzień meczowy NBA liczymy w strefie ET (patrz _nba_today) — spójnie
     # przy zapisie kuponu i przy odczycie w export_dashboard_data.
@@ -429,10 +185,7 @@ def run_daily_pipeline(game_date: str | None = None):
     logger.info("START PIPELINE DZIENNEGO — %s", game_date)
     logger.info("=" * 60)
 
-    # Inicjalizacja komponentów
-    fetcher      = NBADataFetcher(db_path=DB_PATH)
     player_lookup = _build_player_lookup()
-    team_lookup   = _build_team_lookup()
 
     if not player_lookup:
         logger.error("Brak player_lookup — przerywam pipeline")
@@ -457,40 +210,28 @@ def run_daily_pipeline(game_date: str | None = None):
         export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
         return
 
-    predictor = PropPredictor(db_path=DB_PATH, model_dir=MODEL_DIR)
-
-    # Załaduj model (jeśli istnieje) lub poinformuj o braku
+    # Kupon z PointsModel na logach z data/raw (branch `data`, synchronizowany z laptopa) —
+    # stats.nba.com nie odpowiada runnerom CI, więc nie pytamy go wcale.
     try:
-        predictor.load()
-        logger.info("Załadowano model v%d", predictor.version)
-    except FileNotFoundError:
-        logger.warning(
-            "Brak wytrenowanego modelu — kupon nie zostanie wygenerowany. "
-            "Uruchom najpierw trening: python train.py"
-        )
-        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_MODEL)
+        coupon = live.run_coupon(props, game_date, db_path=DB_PATH)
+    except FileNotFoundError as e:
+        logger.error("%s", e)
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_DATA)
         return
 
-    # Szybki test stats.nba.com — na runnerach CI bywa zablokowane, a wtedy
-    # każdy prop czekał na timeouty (~4 h runu). Lepiej przerwać od razu.
-    if not nba_stats_reachable():
-        logger.error("stats.nba.com nieosiągalne — pomijam budowanie features")
-        export_dashboard_data(db_path=DB_PATH, reason=REASON_NBA_API_DOWN)
+    if coupon.get("error") == "stale":
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_DATA_STALE)
         return
-
-    enriched = step_build_features(props, fetcher, team_lookup)
-    logger.info("DIAG: feature vectorów zbudowanych = %d / %d propsów", len(enriched), len(props))
-    if not enriched:
-        logger.warning("Brak feature vectorów — pipeline zakończony bez kuponu")
+    if coupon.get("error") == "no_features":
         export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_FEATURES)
         return
 
-    coupon = step_generate_coupon(enriched, predictor, game_date)
+    if coupon["picks"]:
+        _print_coupon(coupon)
     logger.info(
-        "DIAG: picków po filtrach (kurs %.2f–%.2f, pewność ≥ %d) = %d / %d kandydatów",
-        ODDS_MIN, ODDS_MAX, CONFIDENCE_THRESHOLD, coupon["total_picks"], len(enriched),
+        "DIAG: predykcji = %d, picków (EV ≥ %.0f%%, kurs %.2f–%.2f) = %d",
+        coupon["n_predictions"], live.EV_MIN * 100, ODDS_MIN, ODDS_MAX, coupon["total_picks"],
     )
-
     reason = REASON_OK if coupon["total_picks"] > 0 else REASON_NO_PICKS
 
     logger.info(
@@ -504,9 +245,8 @@ def run_daily_pipeline(game_date: str | None = None):
 def run_verify_and_report():
     """
     Pipeline weryfikacyjny (następnego dnia rano):
-      4. Weryfikuj wczoraj
+      4. Weryfikuj wczoraj (punkty z logów w data/raw)
       5. Raport 30-dniowy
-      6. Retrain jeśli należy
     """
     yesterday = (date.today() - timedelta(days=1)).isoformat()
 
@@ -514,16 +254,23 @@ def run_verify_and_report():
     logger.info("START WERYFIKACJI — weryfikuję %s", yesterday)
     logger.info("=" * 60)
 
-    fetcher   = NBADataFetcher(db_path=DB_PATH)
-    tracker   = ResultTracker(db_path=DB_PATH, fetcher=fetcher)
-    predictor = PropPredictor(db_path=DB_PATH, model_dir=MODEL_DIR)
-
+    tracker = ResultTracker(db_path=DB_PATH)
     try:
-        predictor.load()
-    except FileNotFoundError:
-        logger.error("Brak modelu — nie można wykonać retrain")
+        pts_fn = live.actual_points_fn()
+    except Exception as e:
+        logger.error("Brak logów do weryfikacji (data/raw): %s", e)
+        pts_fn = None
 
-    step_verify_and_report(tracker, predictor, yesterday)
+    if pts_fn is not None:
+        results = tracker.verify_yesterday(yesterday, actual_pts_fn=pts_fn)
+        if not results.empty:
+            logger.info(
+                "Wczoraj: %dW / %dL / %dP | P&L=%+.2f",
+                (results["result"] == "WIN").sum(), (results["result"] == "LOSS").sum(),
+                (results["result"] == "PUSH").sum(), results["simulated_profit"].sum(),
+            )
+        tracker.generate_report(last_n_days=30)
+    # Retrain nie jest potrzebny: PointsModel trenuje się w każdym runie pipeline'u.
     step_backup_db()
     export_dashboard_data(db_path=DB_PATH)
 

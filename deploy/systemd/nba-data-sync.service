@@ -1,0 +1,15 @@
+# Instalacja: scripts/install_data_timer.sh (podstawia @REPO@ ścieżką do repo)
+[Unit]
+Description=nba_betting: synchronizacja logów NBA do brancha data
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=2h
+StartLimitBurst=4
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPO@
+ExecStart=@REPO@/.venv/bin/python scripts/sync_nba_data.py
+# Po wybudzeniu laptopa sieć bywa jeszcze niegotowa — ponów
+Restart=on-failure
+RestartSec=10min
