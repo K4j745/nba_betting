@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-29T23:44:05.406527",
-  "game_date": "2026-10-29",
+  "generated_at": "2026-10-30T08:53:43.483634",
+  "game_date": "2026-10-30",
   "today_coupon": null,
-  "no_games_reason": "no_features_built",
-  "status_message": "Są propsy, ale nie udało się zbudować feature vectorów (prawdopodobnie nba_api zablokowane na runnerze CI).",
+  "no_games_reason": "no_props_today",
+  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
@@ -20,9 +20,106 @@
   },
   "bet_history": [],
   "model_stats": {
-    "version": 1,
-    "trained_at": "2026-03-13T17:00:00",
-    "cv_mae": 4.4654,
-    "cv_auc": 0.5556
+    "version": null,
+    "trained_at": null,
+    "cv_mae": null,
+    "cv_auc": null
+  },
+  "research": {
+    "report": "eval_2026-10-27.json",
+    "generated": "2026-10-27",
+    "game_dates": [
+      "2026-03-13",
+      "2026-06-03",
+      "2026-06-05",
+      "2026-06-08",
+      "2026-06-10",
+      "2026-06-13",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-24",
+      "2026-10-25",
+      "2026-10-26"
+    ],
+    "rows": [
+      {
+        "book": "pinnacle",
+        "features": "base",
+        "n": 710,
+        "logloss_model": 0.724,
+        "logloss_market": 0.6909,
+        "logloss_diff_ci95": [
+          0.011,
+          0.0551
+        ],
+        "mae_model": 5.288,
+        "mae_line": 5.051,
+        "bets_ev5": 435,
+        "roi_ev5": -0.0102,
+        "roi_ev5_ci95": [
+          -0.0952,
+          0.0783
+        ]
+      },
+      {
+        "book": "pinnacle",
+        "features": "absence",
+        "n": 710,
+        "logloss_model": 0.731,
+        "logloss_market": 0.6909,
+        "logloss_diff_ci95": [
+          0.0172,
+          0.0635
+        ],
+        "mae_model": 5.3,
+        "mae_line": 5.051,
+        "bets_ev5": 455,
+        "roi_ev5": -0.0126,
+        "roi_ev5_ci95": [
+          -0.1051,
+          0.0737
+        ]
+      },
+      {
+        "book": "unibet",
+        "features": "base",
+        "n": 779,
+        "logloss_model": 0.7235,
+        "logloss_market": 0.6932,
+        "logloss_diff_ci95": [
+          0.0103,
+          0.0519
+        ],
+        "mae_model": 5.216,
+        "mae_line": 4.979,
+        "bets_ev5": 470,
+        "roi_ev5": 0.0228,
+        "roi_ev5_ci95": [
+          -0.0611,
+          0.104
+        ]
+      },
+      {
+        "book": "unibet",
+        "features": "absence",
+        "n": 779,
+        "logloss_model": 0.7299,
+        "logloss_market": 0.6932,
+        "logloss_diff_ci95": [
+          0.015,
+          0.0588
+        ],
+        "mae_model": 5.239,
+        "mae_line": 4.979,
+        "bets_ev5": 497,
+        "roi_ev5": -0.0107,
+        "roi_ev5_ci95": [
+          -0.0929,
+          0.0728
+        ]
+      }
+    ]
   }
 }
