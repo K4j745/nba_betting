@@ -15,53 +15,63 @@
   --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }
 [data-theme="dark"] {
-  --bg:           #08101e;
-  --surface:      #0d1829;
-  --surface-2:    #112038;
-  --surface-3:    #162849;
-  --text:         #f0f4ff;
-  --muted:        #6b7fa3;
-  --green:        #00c853;
-  --green-dim:    rgba(0, 200, 83, 0.14);
-  --red:          #C9082A;
-  --red-dim:      rgba(201, 8, 42, 0.16);
-  --yellow:       #ffab00;
-  --yellow-dim:   rgba(255, 171, 0, 0.14);
-  --blue:         #1D428A;
-  --border:       rgba(29, 66, 138, 0.20);
-  --shadow:       0 4px 24px rgba(0, 0, 0, 0.6);
-  --chart-grid:   rgba(29, 66, 138, 0.12);
+  --bg:           #1a0f08;
+  --surface:      rgba(30, 18, 10, 0.86);
+  --surface-2:    rgba(58, 36, 20, 0.70);
+  --surface-3:    rgba(92, 58, 32, 0.70);
+  --text:         #fbf1e2;
+  --muted:        #c9a77f;
+  --green:        #5cc98a;
+  --green-dim:    rgba(92, 201, 138, 0.16);
+  --red:          #ff6b57;
+  --red-dim:      rgba(255, 107, 87, 0.16);
+  --yellow:       #f2b84b;
+  --yellow-dim:   rgba(242, 184, 75, 0.16);
+  --accent:       #f07f2e;
+  --border:       rgba(240, 200, 150, 0.16);
+  --shadow:       0 6px 28px rgba(0, 0, 0, 0.55);
+  --chart-grid:   rgba(240, 200, 150, 0.10);
+  --court-dim:    rgba(12, 6, 2, 0.42);
 }
 [data-theme="light"] {
-  --bg:           #f0f2f8;
-  --surface:      #ffffff;
-  --surface-2:    #eef1fb;
-  --surface-3:    #dde3f5;
-  --text:         #0d1219;
-  --muted:        #6b7280;
-  --green:        #059669;
-  --green-dim:    rgba(5, 150, 105, 0.10);
-  --red:          #C9082A;
-  --red-dim:      rgba(201, 8, 42, 0.10);
-  --yellow:       #d97706;
-  --yellow-dim:   rgba(217, 119, 6, 0.10);
-  --blue:         #1D428A;
-  --border:       rgba(0, 0, 0, 0.08);
-  --shadow:       0 4px 32px rgba(0, 0, 0, 0.08);
-  --chart-grid:   rgba(0, 0, 0, 0.05);
+  --bg:           #6b3f22;
+  --surface:      rgba(255, 249, 240, 0.92);
+  --surface-2:    rgba(246, 230, 208, 0.85);
+  --surface-3:    rgba(232, 208, 176, 0.85);
+  --text:         #2b1709;
+  --muted:        #85603d;
+  --green:        #23854e;
+  --green-dim:    rgba(35, 133, 78, 0.12);
+  --red:          #c23a26;
+  --red-dim:      rgba(194, 58, 38, 0.12);
+  --yellow:       #b9770e;
+  --yellow-dim:   rgba(185, 119, 14, 0.14);
+  --accent:       #d9621a;
+  --border:       rgba(90, 50, 20, 0.14);
+  --shadow:       0 6px 28px rgba(60, 30, 10, 0.22);
+  --chart-grid:   rgba(90, 50, 20, 0.08);
+  --court-dim:    rgba(255, 245, 230, 0.06);
+}
+/* Kolory samego boiska (te same w obu motywach; w ciemnym przyciemnia je --court-dim) */
+:root {
+  --wood-1: #e2b07a; --wood-2: #d9a46c; --wood-3: #e6b984; --wood-4: #d49c62;
+  --paint:  #8a4b26; --apron: #5a3019; --line: rgba(255, 252, 245, 0.92);
+  --rim:    #f07f2e; --ball: #e8732a; --ball-seam: #2b1407;
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
+  position: relative;
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
   font-size: 14px;
   line-height: 1.6;
   transition: background var(--duration), color var(--duration);
-  min-height: 100vh;
+  min-height: max(100vh, calc(min(100vw, 1500px) * 1.35));
+  overflow-x: hidden;
 }
 
 /* ── Layout ────────────────────────────────────────────────────────────────── */
@@ -72,9 +82,15 @@ body {
   font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--text);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--surface);
   margin-bottom: 14px;
 }
+.card, .kpi-card, .chart-card { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -86,6 +102,7 @@ body {
 /* ── Header ────────────────────────────────────────────────────────────────── */
 header {
   background: var(--surface);
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -108,7 +125,7 @@ header {
 .logo-icon {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, var(--red) 0%, var(--blue) 100%);
+  background: radial-gradient(circle at 35% 30%, #ffb26b 0%, var(--ball) 55%, #a8480f 100%);
   border-radius: 8px;
   display: grid;
   place-items: center;
@@ -137,7 +154,7 @@ header {
 .btn-icon:hover { background: var(--surface-3); }
 
 /* ── Main Content ──────────────────────────────────────────────────────────── */
-main { padding: 28px 0 60px; }
+main { position: relative; z-index: 1; padding: 28px 0 0; }
 
 /* ── KPI Cards ─────────────────────────────────────────────────────────────── */
 .kpi-grid {
@@ -161,7 +178,7 @@ main { padding: 28px 0 60px; }
 .text-green  { color: var(--green); }
 .text-red    { color: var(--red); }
 .text-yellow { color: var(--yellow); }
-.text-blue   { color: var(--blue); }
+.text-blue   { color: var(--accent); }
 
 /* ── Coupon Table ──────────────────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; }
@@ -243,7 +260,7 @@ tr:hover td { background: var(--surface-2); }
 .conf-fill {
   height: 100%;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--blue), var(--green));
+  background: linear-gradient(90deg, var(--accent), var(--green));
 }
 .conf-num { font-size: 11px; color: var(--muted); font-family: var(--font-mono); min-width: 28px; }
 
@@ -281,7 +298,7 @@ tr:hover td { background: var(--surface-2); }
   font-weight: 600;
   transition: all var(--duration);
 }
-.filter-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .filter-btn:hover:not(.active) { background: var(--surface-3); color: var(--text); }
 
 .pnl-pos { color: var(--green); font-family: var(--font-mono); font-size: 12px; }
@@ -318,10 +335,121 @@ tr:hover td { background: var(--surface-2); }
   display: none;
 }
 .error-banner code { font-family: var(--font-mono); background: rgba(0,0,0,.2); padding: 1px 5px; border-radius: 3px; }
+
+[data-theme="light"] .section-title { text-shadow: none; }
+
+/* ── Boisko w tle ──────────────────────────────────────────────────────────── */
+.court {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden;
+  background: var(--apron); pointer-events: none;
+}
+.court-floor {
+  position: absolute; top: 18px; bottom: 18px; left: 50%;
+  width: min(calc(100% - 36px), 1500px); transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  border: 3px solid var(--line);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 311px, rgba(70, 35, 10, .10) 311px 312px),
+    repeating-linear-gradient(90deg, rgba(70, 35, 10, .16) 0 1px, transparent 1px 31px),
+    repeating-linear-gradient(90deg, var(--wood-1) 0 31px, var(--wood-2) 31px 62px,
+                                     var(--wood-3) 62px 93px, var(--wood-4) 93px 124px,
+                                     var(--wood-2) 124px 155px, var(--wood-1) 155px 186px);
+  box-shadow: 0 0 60px rgba(0, 0, 0, .45);
+}
+.court-floor::after {   /* światło hali + przyciemnienie w ciemnym motywie */
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(255, 240, 210, .18), transparent 60%), var(--court-dim);
+}
+.court-end { display: block; width: 100%; height: auto; flex-shrink: 0; }
+.court-mid { flex: 1; position: relative; min-height: 0; }
+.court-mid::before {   /* linia środkowa */
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px;
+  background: var(--line); transform: translateY(-50%);
+}
+.court-mid::after {    /* koło środkowe */
+  content: ""; position: absolute; left: 50%; top: 50%; width: 24%; aspect-ratio: 1;
+  transform: translate(-50%, -50%); border-radius: 50%;
+  border: 3px solid var(--line); background: var(--paint);
+  box-shadow: inset 0 0 0 calc(min(100vw, 1500px) * .08) var(--paint);
+}
+
+/* ── Kosze i piłka ─────────────────────────────────────────────────────────── */
+.fx { position: absolute; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; }
+.hoop { position: absolute; z-index: 2; width: 96px; height: 96px; transform: translate(-50%, -50%); }
+.hoop svg { width: 100%; height: 100%; overflow: visible; }
+.hoop-back  { z-index: 1; }
+.hoop-front { z-index: 4; }
+.ball, .ball-shadow { position: absolute; left: 0; top: 0; will-change: transform; }
+.ball {
+  width: 40px; height: 40px; z-index: 5;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .35));
+}
+.ball.under-rim { z-index: 3; }
+.ball-shadow {
+  width: 40px; height: 14px; z-index: 2; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, .45), transparent 70%);
+}
+@media (max-width: 600px) {
+  .hoop { width: 72px; height: 72px; }
+  .ball, .ball-shadow { width: 30px; }
+  .ball { height: 30px; }
+}
+footer.court-footer {
+  position: relative; z-index: 1;
+  height: calc(min(100vw, 1500px) * 0.105 + 150px);
+  text-align: center; font-size: 11px; color: var(--text);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+  padding: 8px 16px 0;
+}
 </style>
 </head>
 
 <body>
+<!-- Boisko (tło) -->
+<div class="court" aria-hidden="true">
+  <div class="hoop hoop-back"  id="hoopTopBack"></div>
+  <div class="hoop hoop-front" id="hoopTopFront"></div>
+  <div class="court-floor">
+    <svg class="court-end" viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" >
+      <g fill="none" stroke="var(--line)" stroke-width="3">
+        <rect x="170" y="0" width="160" height="190" fill="var(--paint)"/>
+        <path d="M190 190 A60 60 0 0 0 310 190" />
+        <path d="M190 190 A60 60 0 0 1 310 190" stroke-dasharray="10 9"/>
+        <path d="M210 52.5 A40 40 0 0 0 290 52.5" />
+        <path d="M30 0 V142 A237.5 237.5 0 0 0 470 142 V0" />
+        <path d="M160 70 h10 M160 110 h10 M160 140 h10 M330 70 h10 M330 110 h10 M330 140 h10" />
+      </g>
+    </svg>
+    <div class="court-mid"></div>
+    <svg class="court-end" viewBox="0 0 500 300" preserveAspectRatio="xMidYMid meet" style="transform:scaleY(-1)">
+      <g fill="none" stroke="var(--line)" stroke-width="3">
+        <rect x="170" y="0" width="160" height="190" fill="var(--paint)"/>
+        <path d="M190 190 A60 60 0 0 0 310 190" />
+        <path d="M190 190 A60 60 0 0 1 310 190" stroke-dasharray="10 9"/>
+        <path d="M210 52.5 A40 40 0 0 0 290 52.5" />
+        <path d="M30 0 V142 A237.5 237.5 0 0 0 470 142 V0" />
+        <path d="M160 70 h10 M160 110 h10 M160 140 h10 M330 70 h10 M330 110 h10 M330 140 h10" />
+      </g>
+    </svg>
+  </div>
+</div>
+<!-- Kosze i piłka (kozłowanie przy scrollu) -->
+<div class="fx" id="fx" aria-hidden="true">
+  <div class="hoop hoop-back"  id="hoopBack"></div>
+  <div class="ball-shadow" id="ballShadow"></div>
+  <svg class="ball" id="ball" viewBox="0 0 40 40">
+    <defs><radialGradient id="ballGrad" cx="35%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#ffb26b"/><stop offset=".55" stop-color="var(--ball)"/><stop offset="1" stop-color="#9c420d"/>
+    </radialGradient></defs>
+    <circle cx="20" cy="20" r="19" fill="url(#ballGrad)" stroke="var(--ball-seam)" stroke-width="1.2"/>
+    <g fill="none" stroke="var(--ball-seam)" stroke-width="1.3">
+      <path d="M20 1 V39 M1 20 H39"/>
+      <path d="M6.5 6.5 C13 13 13 27 6.5 33.5 M33.5 6.5 C27 13 27 27 33.5 33.5"/>
+    </g>
+  </svg>
+  <div class="hoop hoop-front" id="hoopFront"></div>
+</div>
+
 <!-- Header -->
 <header>
   <div class="container header-inner">
@@ -446,6 +574,7 @@ tr:hover td { background: var(--surface-2); }
 
 </div><!-- /container -->
 </main>
+<footer class="court-footer">Paper trading · dane: stats.nba.com, The Odds API · model nie ma przewagi nad rynkiem</footer>
 
 <script>
 /* ── State ─────────────────────────────────────────────────────────────────── */
@@ -659,7 +788,7 @@ function chartColors() {
   return {
     green:     cssVar('--green'),
     red:       cssVar('--red'),
-    blue:      cssVar('--blue'),
+    blue:      cssVar('--accent'),
     yellow:    cssVar('--yellow'),
     muted:     cssVar('--muted'),
     grid:      cssVar('--chart-grid'),
@@ -878,6 +1007,120 @@ function renderHistory(history, days) {
   </table>
   <div style="padding:10px 12px;font-size:11px;color:var(--muted)">${filtered.length} wyników · pokazuję ${Math.min(filtered.length,100)}</div>`;
 }
+
+
+/* ── Boisko: kosze i kozłowanie piłki przy scrollu ─────────────────────────────── */
+(function courtFx() {
+  const BACK = `<svg viewBox="-48 -48 96 96">
+      <ellipse cx="0" cy="4" rx="26" ry="22" fill="rgba(0,0,0,.18)"/>
+      <rect x="-5" y="-40" width="10" height="24" rx="2" fill="#3a3a3a"/>
+      <rect x="-36" y="-44" width="72" height="7" rx="2" fill="#f4f4f4" stroke="#222" stroke-width="1.5"/>
+      <rect x="-12" y="-43" width="24" height="5" fill="none" stroke="#c0392b" stroke-width="1.2"/>
+    </svg>`;
+  const FRONT = `<svg viewBox="-48 -48 96 96">
+      <g stroke="rgba(255,255,255,.85)" stroke-width="1" fill="none">
+        <circle r="13"/><circle r="8"/>
+        ${[0,30,60,90,120,150].map(a => `<line x1="${-17*Math.cos(a*Math.PI/180)}" y1="${-17*Math.sin(a*Math.PI/180)}" x2="${17*Math.cos(a*Math.PI/180)}" y2="${17*Math.sin(a*Math.PI/180)}"/>`).join('')}
+      </g>
+      <circle r="18" fill="none" stroke="var(--rim)" stroke-width="3.5"/>
+    </svg>`;
+  ['hoopTopBack', 'hoopBack'].forEach(id => document.getElementById(id).innerHTML = BACK);
+  ['hoopTopFront', 'hoopFront'].forEach(id => document.getElementById(id).innerHTML = FRONT);
+  // górny kosz: tablica od strony linii końcowej (u góry), dolny — odwrócony
+  ['hoopTopBack', 'hoopTopFront'].forEach(id => document.getElementById(id).style.transform = 'translate(-50%,-50%)');
+  ['hoopBack', 'hoopFront'].forEach(id => document.getElementById(id).style.transform = 'translate(-50%,-50%) scaleY(-1)');
+
+  const ball = document.getElementById('ball');
+  const shadow = document.getElementById('ballShadow');
+  const ends = document.querySelectorAll('.court-end');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BASKET = 52.5 / 300;     // środek obręczy w viewBox końcówki boiska
+  let geo = null;
+
+  function place(id, x, y) {
+    const el = document.getElementById(id);
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+  }
+
+  function measure() {
+    const sy = window.scrollY;
+    const top = ends[0].getBoundingClientRect(), bot = ends[1].getBoundingClientRect();
+    geo = {
+      top:  { x: top.left + top.width / 2, y: top.top + sy + top.height * BASKET },
+      rim:  { x: bot.left + bot.width / 2, y: bot.bottom + sy - bot.height * BASKET },
+      w: document.documentElement.clientWidth,
+      vh: window.innerHeight,
+      max: Math.max(0, document.documentElement.scrollHeight - window.innerHeight),
+      size: ball.getBoundingClientRect().width || 40,
+    };
+    place('hoopTopBack', geo.top.x, geo.top.y);
+    place('hoopTopFront', geo.top.x, geo.top.y);
+    place('hoopBack', geo.rim.x, geo.rim.y);
+    place('hoopFront', geo.rim.x, geo.rim.y);
+  }
+
+  // Pozycja kozłującej piłki dla danego scrolla (współrzędne dokumentu).
+  // h ∈ [0,1] — wysokość nad parkietem (0 = odbicie).
+  function dribble(sy) {
+    const floorY = sy + geo.vh * 0.72;
+    const x = geo.w / 2 + geo.w * 0.32 * Math.sin(sy / 650);
+    const h = Math.abs(Math.sin(sy / 120 * Math.PI / 2));
+    return { x, floorY, h };
+  }
+
+  function draw(x, floorY, h, z, rot, inNet) {
+    const s = geo.size;
+    const lift = h * 34;                    // piłka „nad” parkietem
+    const scale = 1 + 0.32 * h;             // bliżej kamery = większa
+    const squash = h < 0.08 && !inNet ? 'scale(1.12, 0.88)' : '';
+    ball.style.transform = `translate(${x - s / 2}px, ${floorY - s / 2 - lift}px) scale(${scale * z}) rotate(${rot}deg) ${squash}`;
+    shadow.style.transform = `translate(${x - s / 2}px, ${floorY - 7 + (inNet ? 0 : s * 0.35)}px) scale(${(1 - 0.45 * h) * z})`;
+    shadow.style.opacity = inNet ? 0 : 0.9 - 0.5 * h;
+  }
+
+  function frame() {
+    if (!geo) measure();
+    const sy = Math.min(window.scrollY, geo.max);
+    const rot = sy * 0.5;
+    if (reduced || geo.max < 40) {          // brak animacji / brak scrolla: piłka w koszu
+      ball.classList.add('under-rim');
+      draw(geo.rim.x, geo.rim.y, 0, 0.8, 0, true);
+      return;
+    }
+    const shotLen = Math.min(geo.vh * 0.55, geo.max * 0.4);
+    const shotStart = geo.max - shotLen;
+    if (sy <= shotStart) {
+      ball.classList.remove('under-rim');
+      const d = dribble(sy);
+      draw(d.x, d.floorY, d.h, 1, rot, false);
+      return;
+    }
+    // Rzut: łuk od pozycji z kozłowania do obręczy, na końcu przez siatkę.
+    const t = (sy - shotStart) / shotLen;
+    const d0 = dribble(shotStart);
+    const e = t * t * (3 - 2 * t);
+    const x = d0.x + (geo.rim.x - d0.x) * e;
+    const fy = d0.floorY + (geo.rim.y - d0.floorY) * e;
+    const arc = 4 * t * (1 - t);                       // 0 → 1 → 0
+    const h = Math.max(d0.h * (1 - t), 0) + 1.6 * arc;
+    const z = t > 0.85 ? 1 - (t - 0.85) / 0.15 * 0.22 : 1;   // wpada pod obręcz
+    ball.classList.toggle('under-rim', t > 0.85);
+    draw(x, fy, Math.min(h, 2), z, rot, t > 0.97);
+  }
+
+  let pending = false;
+  const onScroll = () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => { pending = false; frame(); });
+  };
+  const remeasure = () => { measure(); frame(); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', remeasure);
+  new ResizeObserver(remeasure).observe(document.body);
+  remeasure();
+})();
 
 /* ── Init ─────────────────────────────────────────────────────────────────────── */
 loadData();
