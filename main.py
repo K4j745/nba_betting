@@ -15,6 +15,7 @@ Uruchomienie:
 """
 
 import argparse
+import json
 import logging
 import os
 import shutil
@@ -245,6 +246,33 @@ def run_daily_pipeline(game_date: str | None = None):
     )
 
     export_dashboard_data(db_path=DB_PATH, reason=reason)
+
+
+def _coupon_teams(game_date: str, db_path: str = DB_PATH) -> frozenset:
+    """Drużyny z picków ostatniego kuponu na dany dzień (\"Away @ Home\" → obie nazwy)."""
+    try:
+        with sqlite3.connect(db_path) as conn:
+            row = conn.execute(
+                "SELECT coupon_json FROM coupons WHERE date = ? ORDER BY id DESC LIMIT 1", (game_date,)
+            ).fetchone()
+    except sqlite3.Error:
+        return frozenset()
+    if not row:
+        return frozenset()
+    teams = set()
+    for pick in json.loads(row[0]).get("picks", []):
+        teams.update(t.strip() for t in pick.get("game", "").split("@"))
+    return frozenset(teams)
+
+
+def run_closing_odds():
+    """
+    Drugi run (~1 h przed meczem, cron co 30 min): kursy „zamknięcia” do CLV i ewaluacji.
+    Pobiera tylko mecze z oknem startu 15–75 min, w ramach budżetu Odds API.
+    """
+    player_lookup = _build_player_lookup()
+    fetcher = OddsFetcher(nba_player_names=list(player_lookup), db_path=DB_PATH)
+    return fetcher.fetch_closing(priority_teams=_coupon_teams(_nba_today()))
 
 
 def run_verify_and_report():
@@ -606,6 +634,7 @@ Przykłady:
   python main.py                      # scheduler (non-stop)
   python main.py --run-now            # pipeline od razu (debug)
   python main.py --verify-only        # tylko weryfikacja
+  python main.py --closing-odds       # kursy zamknięcia (~1 h przed meczem)
   python main.py --date 2026-03-10    # pipeline dla konkretnej daty
         """,
     )
@@ -620,6 +649,11 @@ Przykłady:
         help="Tylko weryfikacja i raport",
     )
     parser.add_argument(
+        "--closing-odds",
+        action="store_true",
+        help="Kursy zamknięcia dla meczów startujących za 15–75 min (drugi run)",
+    )
+    parser.add_argument(
         "--date",
         type=str,
         default=None,
@@ -631,7 +665,9 @@ Przykłady:
 if __name__ == "__main__":
     args = parse_args()
 
-    if args.verify_only:
+    if args.closing_odds:
+        run_closing_odds()
+    elif args.verify_only:
         run_verify_and_report()
     elif args.run_now:
         run_daily_pipeline(game_date=args.date)
