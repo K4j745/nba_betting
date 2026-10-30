@@ -6,7 +6,7 @@ import random
 import re
 import sqlite3
 import time
-from datetime import datetime
+from datetime import date, datetime, timedelta, timezone
 from typing import Optional
 
 import requests
@@ -29,6 +29,8 @@ MARKETS         = "player_points"
 # Francja (polski betclic.pl jest osobnym operatorem z innymi kursami — nie ma go w API).
 BOOKMAKERS      = ("pinnacle,unibet,betclic_fr,unibet_fr,winamax_fr,pmu_fr,"
                    "betsson,nordicbet,williamhill,marathonbet")
+CLOSING_WINDOW_MIN = (15, 75)   # drugi run: mecze zaczynające się za 15–75 min (cron co 30 min)
+EVENING_RUN_COST   = 15         # szacowany koszt wieczornego runu (mecze + spread/total) do rezerwy
 GAME_MARKETS    = "spreads,totals"          # krok 4c: kontekst meczu (koszt: 2 kredyty na zapytanie)
 FUZZY_THRESHOLD = 80            # min. score dla dopasowania nazwy gracza
 
@@ -96,6 +98,11 @@ def decimal_in_range(odds: float) -> bool:
 # ─────────────────────────────────────────────────────────────────────────────
 # Fuzzy matching nazw graczy
 # ─────────────────────────────────────────────────────────────────────────────
+def _month_end(d: date) -> date:
+    nxt = (d.replace(day=28) + timedelta(days=4)).replace(day=1)
+    return nxt - timedelta(days=1)
+
+
 class PlayerNameMatcher:
     """
     Dopasowuje nazwy graczy między różnymi źródłami danych.
@@ -284,58 +291,57 @@ class OddsAPIClient:
             logger.error("Odds API request failed: %s", e)
             return None
 
+    def get_events(self, sport: str = SPORT) -> list[dict]:
+        """Nadchodzące mecze (id, drużyny, commence_time). Endpoint /events nie zużywa kredytów."""
+        return self._get(f"/sports/{sport}/events", {"regions": REGIONS}) or []
+
+    def get_event_props_raw(self, event: dict, sport: str = SPORT) -> list[dict]:
+        """Propsy punktowe jednego meczu (koszt: 1 kredyt = 1 rynek × 1 region)."""
+        odds_data = self._get(
+            f"/sports/{sport}/events/{event['id']}/odds",
+            {
+                "regions":  REGIONS,
+                "markets":  MARKETS,
+                "bookmakers": BOOKMAKERS,
+                "oddsFormat": "decimal",
+            },
+        )
+        if not odds_data:
+            return []
+        props = []
+        for bookmaker in odds_data.get("bookmakers", []):
+            bk_name = bookmaker["key"]
+            for market in bookmaker.get("markets", []):
+                if market["key"] != "player_points":
+                    continue
+                for outcome in market.get("outcomes", []):
+                    props.append({
+                        "player_name": outcome["description"],
+                        "stat_type":   "player_points",
+                        "line":        float(outcome.get("point", 0)),
+                        "side":        outcome["name"].lower(),  # "over"/"under"
+                        "odds":        float(outcome["price"]),
+                        "home_team":   event["home_team"],
+                        "away_team":   event["away_team"],
+                        "game_time":   event["commence_time"],
+                        "bookmaker":   bk_name,
+                        "source":      "odds_api",
+                    })
+        return props
+
     def get_player_props_raw(self, sport: str = SPORT) -> list[dict]:
         """
         Pobiera player_points propsy dla wszystkich dzisiejszych meczów NBA.
         Zwraca surowe dane z API (lista eventów z oddsami).
         """
-        # Krok 1: lista eventów (game_id + drużyny)
-        events = self._get(
-            f"/sports/{sport}/events",
-            {"regions": REGIONS},
-        )
+        events = self.get_events(sport)
         if not events:
             logger.warning("Brak eventów z Odds API")
             return []
 
         all_props = []
         for event in events:
-            event_id   = event["id"]
-            home_team  = event["home_team"]
-            away_team  = event["away_team"]
-            game_time  = event["commence_time"]
-
-            # Krok 2: propsy per event
-            odds_data = self._get(
-                f"/sports/{sport}/events/{event_id}/odds",
-                {
-                    "regions":  REGIONS,
-                    "markets":  MARKETS,
-                    "bookmakers": BOOKMAKERS,
-                    "oddsFormat": "decimal",
-                },
-            )
-            if not odds_data:
-                continue
-
-            for bookmaker in odds_data.get("bookmakers", []):
-                bk_name = bookmaker["key"]
-                for market in bookmaker.get("markets", []):
-                    if market["key"] != "player_points":
-                        continue
-                    for outcome in market.get("outcomes", []):
-                        all_props.append({
-                            "player_name": outcome["description"],
-                            "stat_type":   "player_points",
-                            "line":        float(outcome.get("point", 0)),
-                            "side":        outcome["name"].lower(),  # "over"/"under"
-                            "odds":        float(outcome["price"]),
-                            "home_team":   home_team,
-                            "away_team":   away_team,
-                            "game_time":   game_time,
-                            "bookmaker":   bk_name,
-                            "source":      "odds_api",
-                        })
+            all_props.extend(self.get_event_props_raw(event, sport))
             time.sleep(0.3)  # grzeczny klient
 
         logger.info("Odds API: pobrano %d raw outcomes", len(all_props))
@@ -491,7 +497,72 @@ class OddsFetcher:
                     fetched_at TEXT DEFAULT (datetime('now'))
                 )
             """)
+            # mecze, dla których pobrano już kursy zamknięcia (drugi run ~1 h przed meczem)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS closing_fetches (
+                    event_id TEXT PRIMARY KEY, home_team TEXT, away_team TEXT,
+                    game_time TEXT, n_props INTEGER,
+                    fetched_at TEXT DEFAULT (datetime('now'))
+                )
+            """)
             conn.commit()
+
+    def fetch_closing(
+        self,
+        now: Optional[datetime] = None,
+        window_min: tuple[int, int] = CLOSING_WINDOW_MIN,
+        evening_cost: int = EVENING_RUN_COST,
+        priority_teams: frozenset = frozenset(),
+    ) -> dict:
+        """
+        Kursy „zamknięcia”: propsy meczów, które zaczynają się za window_min minut
+        i nie mają jeszcze takiego odczytu. Zapis do odds_history z source='odds_api_close'.
+
+        Budżet: przed każdym meczem (1 kredyt) sprawdza pozostały limit z nagłówka API
+        i zostawia rezerwę = dni do końca miesiąca × evening_cost na wieczorne runy z kuponem.
+        Mecze z pickami (priority_teams) idą pierwsze.
+        """
+        now = now or datetime.now(timezone.utc)
+        lo, hi = window_min
+        events = self.api_client.get_events()
+        with self._conn() as conn:
+            done = {r[0] for r in conn.execute("SELECT event_id FROM closing_fetches")}
+        due = []
+        for e in events:
+            mins = (datetime.fromisoformat(e["commence_time"].replace("Z", "+00:00")) - now).total_seconds() / 60
+            if lo < mins <= hi and e["id"] not in done:
+                due.append(e)
+        due.sort(key=lambda e: not ({e["home_team"], e["away_team"]} & priority_teams))
+
+        days_left = (_month_end(now.date()) - now.date()).days + 1
+        reserve = days_left * evening_cost
+        summary = {"events": len(events), "due": len(due), "fetched": 0,
+                   "skipped_budget": 0, "props": 0, "reserve": reserve}
+        for e in due:
+            remaining = self.api_client._requests_remaining
+            if remaining is not None and remaining - 1 < reserve:
+                logger.warning("Zamknięcie %s @ %s pominięte: limit %d < rezerwa %d",
+                               e["away_team"], e["home_team"], remaining, reserve)
+                summary["skipped_budget"] += 1
+                continue
+            raw = self.api_client.get_event_props_raw(e)
+            props = self._resolve_player_names(_pair_over_under(raw))
+            for p in props:
+                p["source"] = "odds_api_close"
+            if props:
+                self._save_to_db(props)
+            with self._conn() as conn:
+                conn.execute(
+                    "INSERT OR REPLACE INTO closing_fetches (event_id, home_team, away_team, game_time, n_props) "
+                    "VALUES (?, ?, ?, ?, ?)",
+                    (e["id"], e["home_team"], e["away_team"], e["commence_time"], len(props)),
+                )
+            summary["fetched"] += 1
+            summary["props"] += len(props)
+            time.sleep(0.3)
+        summary["requests_remaining"] = self.api_client._requests_remaining
+        logger.info("Zamknięcie: %s", summary)
+        return summary
 
     def fetch_game_lines(self) -> int:
         """Pobiera spread/total i zapisuje do game_lines. Zwraca liczbę wierszy."""

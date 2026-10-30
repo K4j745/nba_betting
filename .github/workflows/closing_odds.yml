@@ -1,0 +1,53 @@
+name: Kursy zamknięcia (~1 h przed meczem)
+
+# Drugi run pobierania kursów: mecze startujące za 15–75 min (python main.py --closing-odds).
+# Lista meczów (/events) nie zużywa kredytów Odds API — run bez meczów w oknie jest darmowy.
+# Każdy mecz w oknie = 1 kredyt; budżet pilnuje rezerwy na wieczorne runy do końca miesiąca.
+# Mecze NBA: ~17:00–03:30 UTC → cron co 30 min w tym przedziale (minuty :07/:37, bo crony
+# o pełnej godzinie GitHub opóźnia najbardziej).
+on:
+  schedule:
+    - cron: '7,37 15-23 * * *'
+    - cron: '7,37 0-3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: nba-pipeline
+  cancel-in-progress: false
+
+jobs:
+  closing:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - run: pip install -r requirements.txt
+
+      - name: Kursy zamknięcia
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python main.py --closing-odds
+
+      # Commit tylko, gdy coś pobrano (baza zmienia się tylko wtedy) — bez deployu dashboardu
+      - name: Commit bazy
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f nba_betting.db
+          if ! git diff --staged --quiet; then
+            git commit -m "data: kursy zamknięcia $(date -u +'%Y-%m-%dT%H:%M')Z [skip ci]"
+            git pull --rebase
+            git push
+          else
+            echo "Brak meczów w oknie — nic do commitowania."
+          fi
