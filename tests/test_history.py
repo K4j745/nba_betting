@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from history import TEAM_ABBR_TO_ID, team_game_table, player_game_table, make_features
+from history import STAT_COLS, TEAM_ABBR_TO_ID, team_game_table, player_game_table, make_features
 
 LAL, BOS = TEAM_ABBR_TO_ID["LAL"], TEAM_ABBR_TO_ID["BOS"]
 
@@ -28,6 +28,7 @@ def _logs():
             SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, PLAYER_ID=7,
             PLAYER_NAME="Test Player", TEAM_ID=LAL, TEAM_ABBREVIATION="LAL",
             MATCHUP="LAL vs. BOS", MIN=30, PTS=10 * (i + 1), FGA=15, FTA=4, FG3A=5, TOV=2,
+            FGM=6, FTM=3, OREB=1, DREB=4, AST=3, STL=1, BLK=0, PF=2,
         ))
     return pd.DataFrame(player_rows), pd.DataFrame(team_rows)
 
@@ -69,8 +70,9 @@ def test_future_rows_get_features():
     future = p.iloc[[-1]].copy()
     future["GAME_ID"] = "0022599999"
     future["GAME_DATE"] = pd.Timestamp("2025-01-09")
-    for c in ("MIN", "PTS", "FGA", "FTA", "FG3A", "TOV"):
-        future[c] = np.nan
+    for c in STAT_COLS:
+        if c in future:
+            future[c] = np.nan
     tg = team_game_table(t)
     games = player_game_table(pd.concat([p, future]), tg)
     out = make_features(games, tg).set_index("GAME_ID")
@@ -90,3 +92,12 @@ def test_absent_rotation_teammate_is_counted():
     assert me.loc[3, "vac_min"] == pytest.approx(30.0)
     assert me.loc[3, "vac_pts"] == pytest.approx(20.0)
     assert me.loc[3, "vac_pts_delta"] == pytest.approx(20.0)
+
+
+def test_true_shooting_and_game_score_use_previous_games(feats):
+    # TSA na mecz = 15 + 0.44·4 = 16.76; mecz 3 widzi tylko mecze 1–2 (PTS 10 + 20)
+    assert np.isnan(feats.loc[0, "ts_10"])
+    assert feats.loc[2, "ts_10"] == pytest.approx(30 / (2 * 2 * 16.76))
+    assert feats.loc[2, "ts_season"] == pytest.approx(feats.loc[2, "ts_10"])
+    # GmSc meczu 1: 10 + 2.4 − 10.5 − 0.4 + 0.7 + 1.2 + 1 + 2.1 + 0 − 0.8 − 2 = 3.7
+    assert feats.loc[1, "gmsc_avg_10"] == pytest.approx(3.7)

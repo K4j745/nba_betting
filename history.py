@@ -149,6 +149,13 @@ def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
 # ─────────────────────────────────────────────────────────────────────────────
 # Tabela mecz-zawodnik
 # ─────────────────────────────────────────────────────────────────────────────
+# Statystyki meczu (dla przyszłych meczów = NaN)
+STAT_COLS = [
+    "MIN", "PTS", "FGM", "FGA", "FTM", "FTA", "FG3A", "OREB", "DREB",
+    "AST", "STL", "BLK", "TOV", "PF", "USG", "GMSC",
+]
+
+
 def player_game_table(player_logs: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame:
     p = player_logs.copy()
     p["IS_HOME"] = p["MATCHUP"].str.contains(" vs. ").astype(int)
@@ -168,10 +175,15 @@ def player_game_table(player_logs: pd.DataFrame, team_games: pd.DataFrame) -> pd
         plays * (p["TEAM_MIN"] / 5) / (p["MIN"] * team_plays),
         np.nan,
     )
+    # Game Score (Hollinger) per mecz — jedna liczba „jak dobry był mecz”
+    p["GMSC"] = (
+        p["PTS"] + 0.4 * p["FGM"] - 0.7 * p["FGA"] - 0.4 * (p["FTA"] - p["FTM"])
+        + 0.7 * p["OREB"] + 0.3 * p["DREB"] + p["STL"] + 0.7 * p["AST"]
+        + 0.7 * p["BLK"] - 0.4 * p["PF"] - p["TOV"]
+    )
     keep = [
         "SEASON", "IS_PLAYOFFS", "GAME_ID", "GAME_DATE", "PLAYER_ID", "PLAYER_NAME",
-        "TEAM_ID", "TEAM_ABBREVIATION", "OPP_ID", "IS_HOME",
-        "MIN", "PTS", "FGA", "FTA", "FG3A", "TOV", "USG",
+        "TEAM_ID", "TEAM_ABBREVIATION", "OPP_ID", "IS_HOME", *STAT_COLS,
     ]
     return p[keep]
 
@@ -207,6 +219,20 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     for col in ("FGA", "FTA", "FG3A"):
         df[f"{col.lower()}_avg_10"] = _roll_mean(g, col, 10)
     df["usg_avg_10"] = _roll_mean(g, "USG", 10)
+
+    # ── Skuteczność (krok 4b): TS% liczone z sum (stabilniejsze niż średnia ilorazów)
+    df["_TSA"] = df["FGA"] + 0.44 * df["FTA"]
+    g = df.groupby("PLAYER_ID", group_keys=False)
+    pts_s = lambda n: g["PTS"].transform(lambda s: s.shift(1).rolling(n, min_periods=1).sum())
+    tsa_s = lambda n: g["_TSA"].transform(lambda s: s.shift(1).rolling(n, min_periods=1).sum())
+    p10, t10 = pts_s(10), tsa_s(10)
+    df["ts_10"] = np.where(t10 > 0, p10 / (2 * t10), np.nan)
+    gs_ = df.groupby(["PLAYER_ID", "SEASON"], group_keys=False)
+    p_season = gs_["PTS"].transform(lambda s: s.shift(1).expanding().sum())
+    t_season = gs_["_TSA"].transform(lambda s: s.shift(1).expanding().sum())
+    df["ts_season"] = np.where(t_season > 0, p_season / (2 * t_season), np.nan)
+    df["gmsc_avg_10"] = _roll_mean(g, "GMSC", 10)
+    df = df.drop(columns="_TSA")
 
     # ── Sezon do tej pory
     gs = df.groupby(["PLAYER_ID", "SEASON"], group_keys=False)
@@ -298,7 +324,8 @@ BASE_FEATURE_COLS = [
     "opp_def_rtg", "opp_pace", "team_pace",
 ]
 ABSENCE_FEATURE_COLS = [*ABSENCE_COLS, "vac_pts_delta", "vac_min_delta"]
-FEATURE_COLS = BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS
+EFFICIENCY_FEATURE_COLS = ["ts_10", "ts_season", "gmsc_avg_10"]
+FEATURE_COLS = BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS + EFFICIENCY_FEATURE_COLS
 
 
 def build_dataset(refresh_current: bool = False, offline: bool = False) -> pd.DataFrame:

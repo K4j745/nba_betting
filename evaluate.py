@@ -25,7 +25,9 @@ import pandas as pd
 
 from config import DB_PATH
 from features import remove_overround
-from history import BASE_FEATURE_COLS, FEATURE_COLS, load_dataset, norm_name
+from history import (
+    ABSENCE_FEATURE_COLS, BASE_FEATURE_COLS, EFFICIENCY_FEATURE_COLS, load_dataset, norm_name,
+)
 from points_model import train_points_model
 
 logger = logging.getLogger(__name__)
@@ -36,8 +38,9 @@ N_BOOT        = 2000
 EPS           = 1e-6
 # Zestawy cech porównywane w ablacji (każdy nowy krok 4 = nowy wpis)
 FEATURE_SETS  = {
-    "base":    BASE_FEATURE_COLS,
-    "absence": FEATURE_COLS,
+    "base":       BASE_FEATURE_COLS,
+    "absence":    BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS,
+    "efficiency": BASE_FEATURE_COLS + EFFICIENCY_FEATURE_COLS,
 }
 
 

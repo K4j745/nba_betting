@@ -22,7 +22,7 @@ import pandas as pd
 
 from config import DB_PATH, ODDS_MAX, ODDS_MIN, STAKE_PER_PICK
 from history import (
-    BASE_FEATURE_COLS, TEAM_ABBR_TO_ID, load_logs, make_features,
+    BASE_FEATURE_COLS, STAT_COLS, TEAM_ABBR_TO_ID, load_logs, make_features,
     norm_name, player_game_table, team_game_table,
 )
 from points_model import train_points_model
@@ -87,8 +87,7 @@ def props_to_rows(props: list[dict], games: pd.DataFrame, game_date: str) -> pd.
             "PLAYER_ID": r["PLAYER_ID"], "PLAYER_NAME": r["PLAYER_NAME"],
             "TEAM_ID": r["TEAM_ID"], "TEAM_ABBREVIATION": r["TEAM_ABBREVIATION"],
             "OPP_ID": TEAM_ABBR_TO_ID[opp], "IS_HOME": int(is_home),
-            "MIN": np.nan, "PTS": np.nan, "FGA": np.nan, "FTA": np.nan,
-            "FG3A": np.nan, "TOV": np.nan, "USG": np.nan,
+            **{c: np.nan for c in STAT_COLS},
         })
     if skipped:
         logger.info("props_to_rows: pominięto %d propsów (brak zawodnika w logach lub inna drużyna)", skipped)
