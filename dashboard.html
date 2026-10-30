@@ -634,8 +634,13 @@ function renderCoupon(coupon, statusMessage, reason) {
       </table>
     </div>
     <div style="margin-top:12px;font-size:12px;color:var(--muted)">
-      ${picks.length} pick${picks.length>1?'i':''} · Stake: ${coupon.simulated_total_stake ?? '—'} PLN · Model v${coupon.model_version ?? '?'}
-    </div>`;
+      ${picks.length} pick${picks.length>1?'i':''} · Stake: ${coupon.simulated_total_stake ?? '—'} PLN · Model ${coupon.model_version ?? '?'}
+      ${coupon.n_predictions != null ? ` · ${coupon.n_predictions} predykcji zapisanych` : ''}
+    </div>
+    ${coupon.paper_trading ? `<div class="kpi-sub" style="margin-top:8px;color:var(--red)">
+      ⚠️ Symulacja (paper trading). Ewaluacja nie wykazała przewagi modelu nad rynkiem — wysokie EV
+      oznacza zwykle, że model wie mniej niż bukmacher (np. o kontuzjach), a nie okazję.
+    </div>` : ''}`;
 }
 
 /* ── Charts ──────────────────────────────────────────────────────────────────── */

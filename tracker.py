@@ -60,6 +60,15 @@ class ResultTracker:
     def _init_db(self):
         with self._conn() as conn:
             conn.executescript("""
+                -- coupons czytamy w verify_yesterday — tworzymy, jeśli tracker
+                -- działa na świeżej bazie (wcześniej tworzył ją tylko PropPredictor)
+                CREATE TABLE IF NOT EXISTS coupons (
+                    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                    date        TEXT,
+                    coupon_json TEXT,
+                    created_at  TEXT DEFAULT (datetime('now'))
+                );
+
                 CREATE TABLE IF NOT EXISTS results (
                     id               INTEGER PRIMARY KEY AUTOINCREMENT,
                     coupon_id        INTEGER NOT NULL,
@@ -109,11 +118,17 @@ class ResultTracker:
         logger.debug("ResultTracker DB initialized")
 
     # ── Weryfikacja wyników ───────────────────────────────────────────────────
-    def verify_yesterday(self, target_date: Optional[str] = None) -> pd.DataFrame:
+    def verify_yesterday(
+        self,
+        target_date: Optional[str] = None,
+        actual_pts_fn=None,
+    ) -> pd.DataFrame:
         """
         Pobiera box scores z poprzedniego dnia i weryfikuje kupony.
 
-        target_date: YYYY-MM-DD (domyślnie wczoraj)
+        target_date:   YYYY-MM-DD (domyślnie wczoraj)
+        actual_pts_fn: opcjonalnie (player_name, date) → punkty; pozwala weryfikować
+                       z logów w data/raw zamiast nba_api (zablokowanego na CI)
         Zwraca DataFrame z wynikami (WIN/LOSS/PUSH).
         """
         if target_date is None:
@@ -133,6 +148,11 @@ class ResultTracker:
             logger.warning("Brak kuponów dla daty %s", target_date)
             return pd.DataFrame()
 
+        # Nie weryfikuj drugi raz kuponów, które już mają wyniki (ponowny run)
+        with self._conn() as conn:
+            done = {r[0] for r in conn.execute("SELECT DISTINCT coupon_id FROM results")}
+        coupons = coupons[~coupons["id"].isin(done)]
+
         verified_rows = []
         for _, coup_row in coupons.iterrows():
             coupon    = json.loads(coup_row["coupon_json"])
@@ -147,7 +167,10 @@ class ResultTracker:
                     continue
 
                 # Pobierz rzeczywiste punkty z box score
-                actual_pts = self._fetch_actual_pts(player_id, target_date)
+                actual_pts = (
+                    actual_pts_fn(player_name, target_date) if actual_pts_fn
+                    else self._fetch_actual_pts(player_id, target_date)
+                )
                 if actual_pts is None:
                     logger.warning(
                         "Brak box score dla %s (%s)", player_name, target_date

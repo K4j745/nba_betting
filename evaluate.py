@@ -16,9 +16,7 @@ Użycie:
 """
 import json
 import logging
-import re
 import sqlite3
-import unicodedata
 from datetime import date
 from pathlib import Path
 
@@ -27,7 +25,7 @@ import pandas as pd
 
 from config import DB_PATH
 from features import remove_overround
-from history import BASE_FEATURE_COLS, FEATURE_COLS, load_dataset
+from history import BASE_FEATURE_COLS, FEATURE_COLS, load_dataset, norm_name
 from points_model import train_points_model
 
 logger = logging.getLogger(__name__)
@@ -71,21 +69,14 @@ def load_lines(db_path: str = DB_PATH) -> pd.DataFrame:
     return o.drop(columns="imbalance").reset_index(drop=True)
 
 
-def _norm_name(name: str) -> str:
-    s = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode().lower()
-    s = re.sub(r"[.'’\-]", " ", s)
-    s = re.sub(r"\b(jr|sr|ii|iii|iv)\b", " ", s)
-    return " ".join(s.split())
-
-
 def attach_games(lines: pd.DataFrame, games: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Dopasowuje linię do meczu zawodnika z tego dnia (ET). Zwraca (dopasowane, niedopasowane)."""
     from rapidfuzz import process, fuzz
 
     g = games.copy()
-    g["name_key"] = g["PLAYER_NAME"].map(_norm_name)
+    g["name_key"] = g["PLAYER_NAME"].map(norm_name)
     lines = lines.copy()
-    lines["name_key"] = lines["player_name"].map(_norm_name)
+    lines["name_key"] = lines["player_name"].map(norm_name)
 
     # fuzzy tylko w obrębie zawodników grających tego dnia
     by_day = g.groupby("GAME_DATE")["name_key"].apply(lambda s: sorted(set(s))).to_dict()

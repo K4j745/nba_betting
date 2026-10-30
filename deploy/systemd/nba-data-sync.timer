@@ -1,0 +1,14 @@
+# 09:00 — mecze z nocy są już w logach (weryfikacja na CI ok. 13 UTC)
+# 16:00 — druga próba przed wieczornym pipeline'em (ok. 20–22 UTC)
+# Persistent=true: jeśli laptop był wyłączony, zadanie odpali się po starcie.
+[Unit]
+Description=nba_betting: synchronizacja logów NBA 2× dziennie
+
+[Timer]
+OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 16:00:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target
