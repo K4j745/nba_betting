@@ -1,9 +1,37 @@
 {
-  "generated_at": "2026-10-30T09:34:51.764781",
+  "generated_at": "2026-10-30T10:08:34.777474",
   "game_date": "2026-10-30",
-  "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "today_coupon": {
+    "date": "2026-10-30",
+    "model_version": "points-2026-10-30",
+    "paper_trading": true,
+    "n_predictions": 12,
+    "picks": [
+      {
+        "game": "Charlotte Hornets @ Washington Wizards",
+        "player": "Kyshawn George",
+        "bet": "over",
+        "line": 13.5,
+        "odds": 1.89,
+        "bookmaker": "unibet",
+        "pts_predicted": 15.7,
+        "p_over": 0.625,
+        "confidence": 62,
+        "ev": 0.1812,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 15.7 pkt vs linia 13.5 (unibet), ewm 14.4, min 25.3, opp DEF_RTG 110.1, EV +18.0%"
+      }
+    ],
+    "total_picks": 1,
+    "simulated_stake_per_pick": 10.0,
+    "simulated_total_stake": 10.0
+  },
+  "no_games_reason": null,
+  "status_message": "",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
@@ -105,22 +133,60 @@
         ]
       },
       {
+        "book": "pinnacle",
+        "features": "fatigue",
+        "n": 905,
+        "logloss_model": 0.7253,
+        "logloss_market": 0.6914,
+        "logloss_diff_ci95": [
+          0.0147,
+          0.0532
+        ],
+        "mae_model": 5.364,
+        "mae_line": 5.132,
+        "bets_ev5": 552,
+        "roi_ev5": -0.0267,
+        "roi_ev5_ci95": [
+          -0.1048,
+          0.0498
+        ]
+      },
+      {
+        "book": "pinnacle",
+        "features": "context",
+        "n": 905,
+        "logloss_model": 0.724,
+        "logloss_market": 0.6914,
+        "logloss_diff_ci95": [
+          0.0148,
+          0.0517
+        ],
+        "mae_model": 5.338,
+        "mae_line": 5.132,
+        "bets_ev5": 542,
+        "roi_ev5": -0.0148,
+        "roi_ev5_ci95": [
+          -0.0958,
+          0.0636
+        ]
+      },
+      {
         "book": "unibet",
         "features": "base",
         "n": 1011,
         "logloss_model": 0.727,
         "logloss_market": 0.6927,
         "logloss_diff_ci95": [
-          0.0174,
-          0.0528
+          0.0168,
+          0.0521
         ],
         "mae_model": 5.304,
         "mae_line": 5.049,
         "bets_ev5": 602,
         "roi_ev5": -0.0101,
         "roi_ev5_ci95": [
-          -0.0885,
-          0.0656
+          -0.0839,
+          0.0651
         ]
       },
       {
@@ -130,16 +196,16 @@
         "logloss_model": 0.7288,
         "logloss_market": 0.6927,
         "logloss_diff_ci95": [
-          0.0172,
-          0.0545
+          0.0184,
+          0.0538
         ],
         "mae_model": 5.288,
         "mae_line": 5.049,
         "bets_ev5": 620,
         "roi_ev5": -0.0333,
         "roi_ev5_ci95": [
-          -0.1086,
-          0.0393
+          -0.1061,
+          0.0394
         ]
       },
       {
@@ -149,16 +215,54 @@
         "logloss_model": 0.7244,
         "logloss_market": 0.6927,
         "logloss_diff_ci95": [
-          0.0136,
-          0.0501
+          0.0138,
+          0.0492
         ],
         "mae_model": 5.279,
         "mae_line": 5.049,
         "bets_ev5": 605,
         "roi_ev5": -0.0103,
         "roi_ev5_ci95": [
-          -0.0886,
-          0.0663
+          -0.0807,
+          0.0649
+        ]
+      },
+      {
+        "book": "unibet",
+        "features": "fatigue",
+        "n": 1011,
+        "logloss_model": 0.7261,
+        "logloss_market": 0.6927,
+        "logloss_diff_ci95": [
+          0.0143,
+          0.0512
+        ],
+        "mae_model": 5.294,
+        "mae_line": 5.049,
+        "bets_ev5": 604,
+        "roi_ev5": 0.0045,
+        "roi_ev5_ci95": [
+          -0.0737,
+          0.076
+        ]
+      },
+      {
+        "book": "unibet",
+        "features": "context",
+        "n": 1011,
+        "logloss_model": 0.7242,
+        "logloss_market": 0.6927,
+        "logloss_diff_ci95": [
+          0.0137,
+          0.0501
+        ],
+        "mae_model": 5.266,
+        "mae_line": 5.049,
+        "bets_ev5": 606,
+        "roi_ev5": -0.0103,
+        "roi_ev5_ci95": [
+          -0.0822,
+          0.0646
         ]
       }
     ]
