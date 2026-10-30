@@ -43,6 +43,11 @@ jobs:
       - name: Ewaluacja walk-forward
         run: python evaluate.py
 
+      - name: Ewaluacja PTS/REB/AST vs Kalshi
+        run: |
+          if [ -f data/raw/kalshi_lines.csv.gz ]; then python evaluate_stats.py
+          else echo "Brak data/raw/kalshi_lines.csv.gz — pomijam"; fi
+
       - name: Commit raportu
         run: |
           git config user.name  "github-actions[bot]"

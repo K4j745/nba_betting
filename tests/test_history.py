@@ -21,14 +21,14 @@ def _logs():
                 SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, TEAM_ID=tid,
                 TEAM_ABBREVIATION=abbr[tid],
                 MATCHUP=f"{abbr[tid]} {'vs.' if home else '@'} {abbr[opp]}",
-                MIN=240, FGA=80, FTA=20, OREB=10, TOV=12,
+                MIN=240, FGA=80, FTA=20, OREB=10, TOV=12, REB=45, AST=25,
                 PTS=100 + 10 * i if tid == BOS else 100,
             ))
         player_rows.append(dict(
             SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, PLAYER_ID=7,
             PLAYER_NAME="Test Player", TEAM_ID=LAL, TEAM_ABBREVIATION="LAL",
             MATCHUP="LAL vs. BOS", MIN=30, PTS=10 * (i + 1), FGA=15, FTA=4, FG3A=5, TOV=2,
-            FGM=6, FTM=3, OREB=1, DREB=4, AST=3, STL=1, BLK=0, PF=2,
+            FGM=6, FTM=3, OREB=1, DREB=4, REB=5 + i, AST=3, STL=1, BLK=0, PF=2,
         ))
     return pd.DataFrame(player_rows), pd.DataFrame(team_rows)
 
@@ -139,3 +139,15 @@ def test_game_context_from_team_ratings(feats):
     assert row["exp_margin"] == pytest.approx(-8.0)
     assert row["abs_margin"] == pytest.approx(8.0)
     assert feats["exp_margin"].isna().sum() == 3     # ratingi dopiero od 3 meczów drużyny
+
+
+def test_rebound_and_assist_features_use_previous_games(feats):
+    # REB = 5, 6, 7, 8; AST = 3
+    assert np.isnan(feats.loc[0, "reb_avg_3"])
+    assert feats.loc[2, "reb_avg_3"] == pytest.approx(5.5)
+    assert feats.loc[3, "reb_ewm"] < 7                       # tylko 5, 6, 7
+    assert feats.loc[3, "ast_avg_10"] == pytest.approx(3.0)
+    assert feats.loc[3, "reb_per36_10"] == pytest.approx(36 * 18 / 90)
+    # rywal (BOS) oddaje 45 zbiórek przy 90,8 posiadania → ~49,6 na 100
+    assert feats.loc[3, "opp_reb_allowed"] == pytest.approx(100 * 45 / 90.8, rel=1e-3)
+    assert feats["opp_reb_allowed"].isna().sum() == 3

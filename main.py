@@ -35,6 +35,7 @@ from config import (
 from odds_fetcher import OddsFetcher
 from tracker import ResultTracker
 import injuries
+import kalshi
 import live
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -176,7 +177,9 @@ def run_daily_pipeline(game_date: str | None = None):
     """
     Główny pipeline dzienny:
       1. Pobierz propsy (Odds API) i zapisz do odds_history
-      2. live.run_coupon: cechy z logów w data/raw → PointsModel → kupon (paper trading)
+      2. Raport kontuzji NBA → Out/Doubtful
+      3. Kupony REB/AST z linii Kalshi (darmowe, bez klucza) — niezależnie od Odds API
+      4. live.run_coupon: cechy z logów w data/raw → PointsModel → kupon PTS (paper trading)
     """
     # Dzień meczowy NBA liczymy w strefie ET (patrz _nba_today) — spójnie
     # przy zapisie kuponu i przy odczycie w export_dashboard_data.
@@ -212,13 +215,7 @@ def run_daily_pipeline(game_date: str | None = None):
         logger.info("DIAG: linii meczowych (spread/total) = %d", odds_fetcher.fetch_game_lines())
     except Exception as e:
         logger.error("Błąd przy pobieraniu linii meczowych: %s", e)
-    if not props:
-        logger.warning("Brak propsów — pipeline zakończony bez kuponu")
-        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
-        return
 
-    # Kupon z PointsModel na logach z data/raw (branch `data`, synchronizowany z laptopa) —
-    # stats.nba.com nie odpowiada runnerom CI, więc nie pytamy go wcale.
     # Oficjalny raport kontuzji NBA (Out/Doubtful) → cechy absencji w modelu live.
     # Brak raportu / błąd → model bez absencji (jak wcześniej).
     try:
@@ -227,6 +224,15 @@ def run_daily_pipeline(game_date: str | None = None):
         logger.error("Raport kontuzji: %s", e)
         out = None
     logger.info("DIAG: raport kontuzji = %s", "brak" if out is None else f"{len(out)} Out/Doubtful")
+    run_stat_coupons(game_date, out)
+
+    if not props:
+        logger.warning("Brak propsów — pipeline zakończony bez kuponu")
+        export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_PROPS)
+        return
+
+    # Kupon z PointsModel na logach z data/raw (branch `data`, synchronizowany z laptopa) —
+    # stats.nba.com nie odpowiada runnerom CI, więc nie pytamy go wcale.
     try:
         coupon = live.run_coupon(props, game_date, db_path=DB_PATH, out=out)
     except FileNotFoundError as e:
@@ -255,6 +261,23 @@ def run_daily_pipeline(game_date: str | None = None):
     )
 
     export_dashboard_data(db_path=DB_PATH, reason=reason)
+
+
+def run_stat_coupons(game_date: str, out, stats=("REB", "AST"), db_path: str = DB_PATH) -> dict:
+    """Kupony zbiórek/asyst z głównych linii Kalshi. Błąd jednej statystyki nie przerywa pipeline'u."""
+    res = {}
+    for stat in stats:
+        try:
+            props = kalshi.to_props(kalshi.live_lines(stat, game_date))
+            logger.info("DIAG: Kalshi %s — linii głównych = %d", stat, len(props))
+            if not props:
+                continue
+            c = live.run_coupon(props, game_date, db_path=db_path, out=out, stat=stat)
+            res[stat] = c.get("error") or c["total_picks"]
+        except Exception as e:   # Kalshi niedostępne z runnera, brak danych itp.
+            logger.error("Kupon %s: %s", stat, e)
+            res[stat] = f"error: {e}"
+    return res
 
 
 def _coupon_teams(game_date: str, db_path: str = DB_PATH) -> frozenset:
@@ -358,7 +381,7 @@ def run_scheduler():
 def _latest_research_summary(report_dir: str = "reports") -> dict | None:
     """Skrót najnowszego raportu evaluate.py (model vs rynek) dla dashboardu."""
     import json as _json
-    reports = sorted(p for p in Path(report_dir).glob("eval_*.json"))
+    reports = sorted(p for p in Path(report_dir).glob("eval_*.json") if not p.name.startswith("eval_stats_"))
     if not reports:
         return None
     r = _json.loads(reports[-1].read_text(encoding="utf-8"))
@@ -381,6 +404,50 @@ def _latest_research_summary(report_dir: str = "reports") -> dict | None:
         "game_dates": r.get("game_dates", []),
         "rows": rows,
     }
+
+
+def _stat_tabs(today: str, db_path: str = DB_PATH, report_dir: str = "reports") -> dict:
+    """
+    Zakładki dashboardu Punkty / Zbiórki / Asysty:
+      kalshi_eval — model vs ceny Kalshi z najnowszego reports/eval_stats_*.json (PTS, REB, AST),
+      coupon/history/kpi — kupony REB/AST (stat_coupons) zweryfikowane z logów.
+    """
+    reports = sorted(Path(report_dir).glob("eval_stats_*.json"))
+    ev = json.loads(reports[-1].read_text(encoding="utf-8")) if reports else {}
+    tabs = {}
+    for stat in ("PTS", "REB", "AST"):
+        tab = {"kalshi_eval": None}
+        st = ev.get("stats", {}).get(stat)
+        if st:
+            tab["kalshi_eval"] = {
+                "report": reports[-1].name, "dates": st["dates"], "matched": st["matched"],
+                "rows": [{"features": name, **{k: v["scores"][k] for k in (
+                              "n", "logloss_model", "logloss_market", "logloss_diff", "logloss_diff_ci95",
+                              "mae_model", "mae_line")},
+                          "bets_ev5": next((b for b in v["bets"] if b["ev_threshold"] == 0.05), {})}
+                         for name, v in st["sets"].items()],
+                "calibration": st.get("calibration_base", []),
+            }
+        if stat != "PTS":
+            try:
+                hist = live.stat_results(stat, db_path=db_path)
+            except Exception as e:   # brak logów w data/raw itp.
+                logger.error("Wyniki %s: %s", stat, e)
+                hist = []
+            done = [h for h in hist if h["result"]]
+            with sqlite3.connect(db_path) as conn:
+                conn.execute(live.STAT_COUPONS_DDL)
+                row = conn.execute("SELECT coupon_json FROM stat_coupons WHERE date = ? AND stat = ? "
+                                   "ORDER BY id DESC LIMIT 1", (today, stat)).fetchone()
+            tab.update({
+                "coupon": json.loads(row[0]) if row else None,
+                "history": hist[-100:][::-1],
+                "kpi": {"picks": len(done), "wins": sum(h["result"] == "WIN" for h in done),
+                        "pnl": round(sum(h["profit"] for h in done), 2),
+                        "roi": round(sum(h["profit"] for h in done) / len(done), 4) if done else None},
+            })
+        tabs[stat] = tab
+    return tabs
 
 
 def export_dashboard_data(
@@ -602,6 +669,7 @@ def export_dashboard_data(
         "bet_history":      bet_history,
         "model_stats":      model_stats,
         "research":         _latest_research_summary(),
+        "stats":            _stat_tabs(today, db_path=db_path),
     }
 
     with open(output_path, "w", encoding="utf-8") as f:

@@ -137,8 +137,9 @@ def team_game_table(team_logs: pd.DataFrame) -> pd.DataFrame:
     """Jeden wiersz na drużynę-mecz z posiadaniami i punktami straconymi."""
     t = team_logs.copy()
     t["POSS"] = t["FGA"] + 0.44 * t["FTA"] - t["OREB"] + t["TOV"]
-    opp = t[["GAME_ID", "TEAM_ID", "PTS", "POSS"]].rename(
-        columns={"TEAM_ID": "OPP_ID", "PTS": "PTS_ALLOWED", "POSS": "OPP_POSS"}
+    opp = t[["GAME_ID", "TEAM_ID", "PTS", "POSS", "REB", "AST"]].rename(
+        columns={"TEAM_ID": "OPP_ID", "PTS": "PTS_ALLOWED", "POSS": "OPP_POSS",
+                 "REB": "REB_ALLOWED", "AST": "AST_ALLOWED"}
     )
     t = t.merge(opp, on="GAME_ID")
     t = t[t["TEAM_ID"] != t["OPP_ID"]]
@@ -146,6 +147,7 @@ def team_game_table(team_logs: pd.DataFrame) -> pd.DataFrame:
     return t[[
         "GAME_ID", "GAME_DATE", "TEAM_ID", "TEAM_ABBREVIATION", "OPP_ID",
         "MIN", "FGA", "FTA", "TOV", "PTS", "PTS_ALLOWED", "GAME_POSS",
+        "REB_ALLOWED", "AST_ALLOWED",
     ]].rename(columns={"MIN": "TEAM_MIN", "FGA": "TEAM_FGA", "FTA": "TEAM_FTA", "TOV": "TEAM_TOV"})
 
 
@@ -160,6 +162,9 @@ def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
     roll = lambda col: g[col].transform(lambda s: s.rolling(TEAM_WINDOW, min_periods=3).sum())
     out["def_rtg"] = 100 * roll("PTS_ALLOWED") / roll("GAME_POSS")
     out["off_rtg"] = 100 * roll("PTS") / roll("GAME_POSS")
+    # zbiórki / asysty rywali na 100 posiadań (cechy dla modeli REB i AST)
+    out["reb_allowed"] = 100 * roll("REB_ALLOWED") / roll("GAME_POSS")
+    out["ast_allowed"] = 100 * roll("AST_ALLOWED") / roll("GAME_POSS")
     out["pace"] = g["GAME_POSS"].transform(lambda s: s.rolling(TEAM_WINDOW, min_periods=3).mean())
     return out.sort_values("GAME_DATE")
 
@@ -169,7 +174,7 @@ def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
 # ─────────────────────────────────────────────────────────────────────────────
 # Statystyki meczu (dla przyszłych meczów = NaN)
 STAT_COLS = [
-    "MIN", "PTS", "FGM", "FGA", "FTM", "FTA", "FG3A", "OREB", "DREB",
+    "MIN", "PTS", "FGM", "FGA", "FTM", "FTA", "FG3A", "OREB", "DREB", "REB",
     "AST", "STL", "BLK", "TOV", "PF", "USG", "GMSC",
 ]
 
@@ -271,11 +276,26 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     df["pts_avg_vs_opp"] = gh["PTS"].transform(lambda s: s.shift(1).rolling(5, min_periods=1).mean())
     df["h2h_games"]      = gh.cumcount().clip(upper=5)
 
+    # ── Zbiórki i asysty: odpowiedniki cech punktowych (modele REB / AST)
+    gs = df.groupby(["PLAYER_ID", "SEASON"], group_keys=False)
+    for st in ("REB", "AST"):
+        lo = st.lower()
+        for n in (3, 5, 10, 20):
+            df[f"{lo}_avg_{n}"] = _roll_mean(g, st, n)
+        df[f"{lo}_ewm"]    = g[st].transform(lambda s: s.shift(1).ewm(halflife=5, min_periods=1).mean())
+        df[f"{lo}_std_10"] = g[st].transform(lambda s: s.shift(1).rolling(10, min_periods=3).std())
+        df[f"{lo}_trend"]  = df[f"{lo}_avg_3"] - df[f"{lo}_avg_10"]
+        s10 = g[st].transform(lambda s: s.shift(1).rolling(10, min_periods=1).sum())
+        df[f"{lo}_per36_10"] = np.where(min10 > 0, 36 * s10 / min10, np.nan)
+        df[f"season_{lo}_avg"] = gs[st].transform(lambda s: s.shift(1).expanding().mean())
+        df[f"{lo}_avg_vs_opp"] = gh[st].transform(lambda s: s.shift(1).rolling(5, min_periods=1).mean())
+    df["oreb_avg_10"] = _roll_mean(g, "OREB", 10)
+
     # ── Absencje kolegów z rotacji (bff / no_bff — wersja drużynowa)
-    for col in ("MIN", "PTS", "FGA"):
+    for col in ("MIN", "PTS", "FGA", "REB", "AST"):
         df[f"_{col}_post"] = g[col].transform(lambda s: s.rolling(10, min_periods=3).mean())
     df = df.merge(team_absences(df), on=["GAME_ID", "TEAM_ID"], how="left")
-    for col in ABSENCE_COLS:
+    for col in ABSENCE_COLS + ABSENCE_EXTRA_COLS:
         df[col] = df[col].fillna(0.0)
     df = df.sort_values(["PLAYER_ID", "GAME_DATE", "GAME_ID"]).reset_index(drop=True)
     g = df.groupby("PLAYER_ID", group_keys=False)
@@ -283,15 +303,19 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     # <0 = ktoś wraca, więc średnie zawodnika z ostatnich meczów mogą być zawyżone
     df["vac_pts_delta"] = df["vac_pts"] - _roll_mean(g, "vac_pts", 5)
     df["vac_min_delta"] = df["vac_min"] - _roll_mean(g, "vac_min", 5)
+    df["vac_reb_delta"] = df["vac_reb"] - _roll_mean(g, "vac_reb", 5)
+    df["vac_ast_delta"] = df["vac_ast"] - _roll_mean(g, "vac_ast", 5)
     df = df.drop(columns=[c for c in df.columns if c.endswith("_post")])
 
     # ── Rywal i własna drużyna: stan sprzed dnia meczu
     form = team_form(team_games)
     df = df.sort_values("GAME_DATE")
     opp = form.rename(columns={"TEAM_ID": "OPP_ID", "def_rtg": "opp_def_rtg", "pace": "opp_pace",
-                               "off_rtg": "opp_off_rtg"})
+                               "off_rtg": "opp_off_rtg", "reb_allowed": "opp_reb_allowed",
+                               "ast_allowed": "opp_ast_allowed"})
     df = pd.merge_asof(df, opp, on="GAME_DATE", by="OPP_ID", allow_exact_matches=False)
-    own = form.rename(columns={"def_rtg": "team_def_rtg", "pace": "team_pace", "off_rtg": "team_off_rtg"})
+    own = form.rename(columns={"def_rtg": "team_def_rtg", "pace": "team_pace", "off_rtg": "team_off_rtg"}) \
+        .drop(columns=["reb_allowed", "ast_allowed"])
     df = pd.merge_asof(df, own, on="GAME_DATE", by="TEAM_ID", allow_exact_matches=False)
 
     # ── Kontekst meczu (krok 4c): oczekiwany wynik z ratingów drużyn — zastępstwo
@@ -369,6 +393,7 @@ def _fatigue_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 ABSENCE_COLS = ["n_out", "vac_min", "vac_pts", "vac_fga"]
+ABSENCE_EXTRA_COLS = ["vac_reb", "vac_ast"]     # dla modeli REB / AST
 
 
 def team_absences(df: pd.DataFrame) -> pd.DataFrame:
@@ -381,7 +406,8 @@ def team_absences(df: pd.DataFrame) -> pd.DataFrame:
     Zawodnik wymieniony do innej drużyny przez 14 dni liczy się jako brak w starej —
     to zgodne z rzeczywistością (jego minuty trzeba rozdzielić).
     """
-    apps = df[["TEAM_ID", "SEASON", "PLAYER_ID", "GAME_DATE", "_MIN_post", "_PTS_post", "_FGA_post"]] \
+    apps = df[["TEAM_ID", "SEASON", "PLAYER_ID", "GAME_DATE", "_MIN_post", "_PTS_post", "_FGA_post",
+               "_REB_post", "_AST_post"]] \
         .dropna(subset=["_MIN_post"])
     games = df[["TEAM_ID", "SEASON", "GAME_ID", "GAME_DATE"]].drop_duplicates()
     present = set(zip(df["GAME_ID"], df["PLAYER_ID"]))
@@ -402,9 +428,10 @@ def team_absences(df: pd.DataFrame) -> pd.DataFrame:
         out.append(m.groupby(["GAME_ID", "TEAM_ID"]).agg(
             n_out=("PLAYER_ID", "size"), vac_min=("_MIN_post", "sum"),
             vac_pts=("_PTS_post", "sum"), vac_fga=("_FGA_post", "sum"),
+            vac_reb=("_REB_post", "sum"), vac_ast=("_AST_post", "sum"),
         ).reset_index())
     if not out:
-        return pd.DataFrame(columns=["GAME_ID", "TEAM_ID", *ABSENCE_COLS])
+        return pd.DataFrame(columns=["GAME_ID", "TEAM_ID", *ABSENCE_COLS, *ABSENCE_EXTRA_COLS])
     return pd.concat(out, ignore_index=True)
 
 
@@ -419,8 +446,30 @@ BASE_FEATURE_COLS = [
 ]
 ABSENCE_FEATURE_COLS = [*ABSENCE_COLS, "vac_pts_delta", "vac_min_delta"]
 EFFICIENCY_FEATURE_COLS = ["ts_10", "ts_season", "gmsc_avg_10"]
+# ── Modele zbiórek i asyst: wspólny kontekst + cechy danej statystyki
+_SHARED_CONTEXT = [
+    "min_avg_5", "min_avg_10", "min_last", "usg_avg_10", "fga_avg_10", "pts_avg_10",
+    "games_in_season", "IS_HOME", "IS_PLAYOFFS", "days_rest", "is_b2b", "h2h_games",
+    "opp_pace", "team_pace",
+]
+
+
+def _stat_cols(lo: str) -> list[str]:
+    return [f"{lo}_avg_3", f"{lo}_avg_5", f"{lo}_avg_10", f"{lo}_avg_20", f"{lo}_ewm",
+            f"{lo}_std_10", f"{lo}_trend", f"{lo}_per36_10", f"season_{lo}_avg", f"{lo}_avg_vs_opp"]
+
+
+REB_BASE_FEATURE_COLS = _SHARED_CONTEXT + _stat_cols("reb") + ["oreb_avg_10", "opp_reb_allowed"]
+AST_BASE_FEATURE_COLS = _SHARED_CONTEXT + _stat_cols("ast") + ["opp_ast_allowed"]
+# Statystyka → (cechy bazowe, cechy absencji). Punkty bez zmian.
+TARGETS = {
+    "PTS": (None, None),   # uzupełniane niżej (BASE/ABSENCE_FEATURE_COLS)
+    "REB": (REB_BASE_FEATURE_COLS, ["n_out", "vac_min", "vac_min_delta", "vac_reb", "vac_reb_delta"]),
+    "AST": (AST_BASE_FEATURE_COLS, ["n_out", "vac_min", "vac_min_delta", "vac_ast", "vac_ast_delta"]),
+}
 FATIGUE_FEATURE_COLS = ["games_7d", "min_7d", "is_3in4", "travel_km", "tz_shift", "road_trip", "at_altitude"]
 GAME_CONTEXT_FEATURE_COLS = ["team_exp_pts", "exp_total", "exp_margin", "abs_margin"]
+TARGETS["PTS"] = (BASE_FEATURE_COLS, ABSENCE_FEATURE_COLS)
 FEATURE_COLS = (BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS + EFFICIENCY_FEATURE_COLS
                 + FATIGUE_FEATURE_COLS + GAME_CONTEXT_FEATURE_COLS)
 
