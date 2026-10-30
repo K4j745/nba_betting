@@ -38,3 +38,30 @@ def test_live_features_use_only_history():
     assert len(hist) == 4 and len(live) == 1
     assert live.iloc[0]["pts_avg_3"] == 30.0          # (20 + 30 + 40) / 3
     assert live.iloc[0]["IS_HOME"] == 1
+
+
+def _games_with_teammate():
+    """Zawodnik 7 (z propsem) + kolega 8 z rotacji (30 min), oba w LAL."""
+    p, t = _logs()
+    mate = p.copy()
+    mate["PLAYER_ID"], mate["PLAYER_NAME"], mate["PTS"] = 8, "Mate Player", 12
+    tg = team_game_table(t)
+    return player_game_table(pd.concat([p, mate], ignore_index=True), tg), tg
+
+
+PROPS = [{"player_name": "Test Player", "home_team": "Los Angeles Lakers",
+          "away_team": "Boston Celtics", "line": 25.5}]
+
+
+def test_injury_report_drives_live_absences():
+    games, tg = _games_with_teammate()
+    none_out = pd.DataFrame(columns=["team", "name_key"])
+    _, live = live_features(PROPS, games, tg, "2025-01-09", out=none_out)
+    assert len(live) == 1                              # wiersze zastępcze usunięte
+    assert live.iloc[0]["n_out"] == 0                  # kolega bez propsa NIE jest „nieobecny”
+
+    mate_out = pd.DataFrame({"team": ["LAL"], "name_key": ["mate player"]})
+    _, live = live_features(PROPS, games, tg, "2025-01-09", out=mate_out)
+    assert live.iloc[0]["n_out"] == 1
+    assert live.iloc[0]["vac_min"] == 30.0
+    assert live.iloc[0]["vac_pts"] == 12.0

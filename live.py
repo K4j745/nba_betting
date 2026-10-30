@@ -7,8 +7,8 @@ Pipeline „na żywo” na danych z repo (branch `data` → data/raw), bez stats
                           ~5 s) → wszystkie predykcje do live_predictions, picki z EV ≥ EV_MIN
   actual_points_fn()    — punkty z logów do weryfikacji kuponów
 
-Model live używa BASE_FEATURE_COLS: absencji kolegów nie znamy przed meczem bez raportu
-kontuzji, a w ewaluacji i tak nie poprawiały wyniku względem rynku.
+Model live: BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS, gdy jest oficjalny raport kontuzji NBA
+(injuries.py — Out/Doubtful przed meczem); bez raportu: BASE_FEATURE_COLS.
 
 ⚠️ Ewaluacja (reports/eval_*) nie pokazała przewagi nad rynkiem — kupon to symulacja
 (paper trading), która ma zbierać wyniki poza próbą, a nie rekomendacja zakładów.
@@ -22,8 +22,8 @@ import pandas as pd
 
 from config import DB_PATH, ODDS_MAX, ODDS_MIN, STAKE_PER_PICK
 from history import (
-    BASE_FEATURE_COLS, STAT_COLS, TEAM_ABBR_TO_ID, load_logs, make_features,
-    norm_name, player_game_table, team_game_table,
+    ABSENCE_DAYS, ABSENCE_FEATURE_COLS, BASE_FEATURE_COLS, STAT_COLS, TEAM_ABBR_TO_ID,
+    load_logs, make_features, norm_name, player_game_table, team_game_table,
 )
 from points_model import train_points_model
 
@@ -94,12 +94,50 @@ def props_to_rows(props: list[dict], games: pd.DataFrame, game_date: str) -> pd.
     return pd.DataFrame(rows)
 
 
+def roster_fillers(games: pd.DataFrame, future: pd.DataFrame, out: pd.DataFrame) -> pd.DataFrame:
+    """
+    Wiersze zastępcze dla meczów na żywo: każdy, kto grał dla drużyny w ostatnich ABSENCE_DAYS
+    dniach i NIE jest Out/Doubtful w raporcie kontuzji, „gra” dziś. Dzięki temu team_absences
+    (to samo co w treningu) widzi jako nieobecnych tylko zawodników z raportu — bez tego każdy
+    zawodnik bez propsa wyglądałby na nieobecnego.
+    out: kolumny team (skrót), name_key.
+    """
+    if future.empty:
+        return future
+    day = future["GAME_DATE"].iloc[0]
+    recent = games[(games["GAME_DATE"] < day) & (games["GAME_DATE"] >= day - pd.Timedelta(days=ABSENCE_DAYS))]
+    last = recent.sort_values("GAME_DATE").groupby("PLAYER_ID").tail(1)
+    out_keys = set(zip(out["team"], out["name_key"]))
+    rows = []
+    for (gid, tid), g in future.groupby(["GAME_ID", "TEAM_ID"]):
+        ref = g.iloc[0]
+        cand = last[(last["TEAM_ID"] == tid) & ~last["PLAYER_ID"].isin(g["PLAYER_ID"])]
+        for r in cand.itertuples():
+            if (r.TEAM_ABBREVIATION, norm_name(r.PLAYER_NAME)) in out_keys:
+                continue
+            row = ref.to_dict()
+            row.update(PLAYER_ID=r.PLAYER_ID, PLAYER_NAME=r.PLAYER_NAME, SEASON=r.SEASON, _FILLER=True)
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
 def live_features(props: list[dict], games: pd.DataFrame, team_games: pd.DataFrame,
-                  game_date: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """(historia z cechami do treningu, dzisiejsze wiersze z cechami) — jedno liczenie cech."""
+                  game_date: str, out: pd.DataFrame | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    (historia z cechami do treningu, dzisiejsze wiersze z cechami) — jedno liczenie cech.
+    out = Out/Doubtful z raportu kontuzji (None → cechy absencji dla dzisiejszych meczów
+    są bez znaczenia i model ich nie używa).
+    """
     future = props_to_rows(props, games, game_date)
-    feats = make_features(pd.concat([games, future], ignore_index=True), team_games)
+    parts = [games, future]
+    if out is not None and not future.empty:
+        parts.append(roster_fillers(games, future, out))
+    feats = make_features(pd.concat(parts, ignore_index=True), team_games)
     is_live = feats["GAME_ID"].str.startswith("LIVE-")
+    if "_FILLER" in feats:
+        keep = feats["_FILLER"].fillna(False).astype(bool)
+        feats = feats[~keep].drop(columns="_FILLER")
+        is_live = is_live[~keep]
     return feats[~is_live].reset_index(drop=True), feats[is_live].reset_index(drop=True)
 
 
@@ -121,7 +159,7 @@ def _save_predictions(rows: list[dict], db_path: str):
 
 
 def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
-               stake: float = STAKE_PER_PICK) -> dict:
+               stake: float = STAKE_PER_PICK, out: pd.DataFrame | None = None) -> dict:
     """
     Zwraca dict kuponu (format zgodny z tracker/dashboard) albo
     {"error": "<powód>"} gdy dane są nieaktualne lub żaden prop nie pasuje.
@@ -132,11 +170,12 @@ def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
         logger.error("Dane NBA sprzed %d dni (ostatni mecz %s)", age, games["GAME_DATE"].max().date())
         return {"error": "stale", "data_age_days": age}
 
-    dataset, feats = live_features(props, games, team_games, game_date)
+    dataset, feats = live_features(props, games, team_games, game_date, out=out)
     if feats.empty:
         return {"error": "no_features"}
 
-    model = train_points_model(dataset, cutoff=game_date, features=BASE_FEATURE_COLS)
+    features = BASE_FEATURE_COLS + ABSENCE_FEATURE_COLS if out is not None else BASE_FEATURE_COLS
+    model = train_points_model(dataset, cutoff=game_date, features=features)
     feats["mu"] = model.mu(feats)
     by_name = {norm_name(n): i for i, n in enumerate(feats["PLAYER_NAME"])}
 
@@ -188,6 +227,8 @@ def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
         "date": game_date,
         "model_version": f"points-{game_date}",
         "paper_trading": True,
+        "injury_report": out is not None,
+        "n_out": None if out is None else int(len(out)),
         "n_predictions": len(preds),
         "picks": picks,
         "total_picks": len(picks),

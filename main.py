@@ -34,6 +34,7 @@ from config import (
 )
 from odds_fetcher import OddsFetcher
 from tracker import ResultTracker
+import injuries
 import live
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -218,8 +219,16 @@ def run_daily_pipeline(game_date: str | None = None):
 
     # Kupon z PointsModel na logach z data/raw (branch `data`, synchronizowany z laptopa) —
     # stats.nba.com nie odpowiada runnerom CI, więc nie pytamy go wcale.
+    # Oficjalny raport kontuzji NBA (Out/Doubtful) → cechy absencji w modelu live.
+    # Brak raportu / błąd → model bez absencji (jak wcześniej).
     try:
-        coupon = live.run_coupon(props, game_date, db_path=DB_PATH)
+        out = injuries.fetch_out_players(game_date)
+    except Exception as e:
+        logger.error("Raport kontuzji: %s", e)
+        out = None
+    logger.info("DIAG: raport kontuzji = %s", "brak" if out is None else f"{len(out)} Out/Doubtful")
+    try:
+        coupon = live.run_coupon(props, game_date, db_path=DB_PATH, out=out)
     except FileNotFoundError as e:
         logger.error("%s", e)
         export_dashboard_data(db_path=DB_PATH, reason=REASON_NO_DATA)
