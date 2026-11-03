@@ -131,7 +131,7 @@ def run() -> dict:
               "stats": {}}
     preds = []
     for stat in ("PTS", "REB", "AST"):
-        lines = main_lines(hist[hist["stat"] == stat]).rename(columns={"player": "player_name"})
+        lines = main_lines(hist[hist["stat"] == stat]).rename(columns={"player": "player_name"}).assign(bookmaker="kalshi")
         matched, unmatched = attach_games(lines.drop(columns=["name_key"]), data)
         matched["y_over"] = (matched[stat] > matched["line"]).astype(int)
         logger.info("%s: %d linii, dopasowane %d, niedopasowane %d", stat, len(lines), len(matched), len(unmatched))
