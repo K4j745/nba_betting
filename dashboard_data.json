@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-03T00:42:27.817054",
-  "game_date": "2026-11-02",
+  "generated_at": "2026-11-03T14:44:49.932825",
+  "game_date": "2026-11-03",
   "today_coupon": null,
-  "no_games_reason": "nba_data_stale",
-  "status_message": "Logi NBA są nieaktualne (laptop nie zsynchronizował danych) — kursy zapisane, kupon pominięty.",
+  "no_games_reason": "no_props_today",
+  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
