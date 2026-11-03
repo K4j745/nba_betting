@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-02T16:40:43.260631",
+  "generated_at": "2026-11-03T00:42:27.817054",
   "game_date": "2026-11-02",
   "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "no_games_reason": "nba_data_stale",
+  "status_message": "Logi NBA są nieaktualne (laptop nie zsynchronizował danych) — kursy zapisane, kupon pominięty.",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
@@ -26,8 +26,8 @@
     "cv_auc": null
   },
   "research": {
-    "report": "eval_2026-10-30.json",
-    "generated": "2026-10-30",
+    "report": "eval_2026-11-02.json",
+    "generated": "2026-11-02",
     "game_dates": [
       "2026-03-13",
       "2026-06-03",
@@ -54,16 +54,16 @@
         "logloss_model": 0.7267,
         "logloss_market": 0.6914,
         "logloss_diff_ci95": [
-          0.0163,
-          0.0554
+          0.0161,
+          0.0546
         ],
         "mae_model": 5.378,
         "mae_line": 5.132,
         "bets_ev5": 546,
         "roi_ev5": -0.04,
         "roi_ev5_ci95": [
-          -0.12,
-          0.0431
+          -0.1176,
+          0.0384
         ]
       },
       {
@@ -73,16 +73,16 @@
         "logloss_model": 0.7289,
         "logloss_market": 0.6914,
         "logloss_diff_ci95": [
-          0.0187,
-          0.0561
+          0.0179,
+          0.0567
         ],
         "mae_model": 5.354,
         "mae_line": 5.132,
         "bets_ev5": 558,
         "roi_ev5": -0.0222,
         "roi_ev5_ci95": [
-          -0.1039,
-          0.0567
+          -0.1027,
+          0.0594
         ]
       },
       {
@@ -92,16 +92,16 @@
         "logloss_model": 0.7246,
         "logloss_market": 0.6914,
         "logloss_diff_ci95": [
-          0.0154,
-          0.052
+          0.0142,
+          0.053
         ],
         "mae_model": 5.353,
         "mae_line": 5.132,
         "bets_ev5": 536,
         "roi_ev5": -0.0067,
         "roi_ev5_ci95": [
-          -0.0899,
-          0.0705
+          -0.0934,
+          0.0692
         ]
       },
       {
@@ -111,16 +111,16 @@
         "logloss_model": 0.7253,
         "logloss_market": 0.6914,
         "logloss_diff_ci95": [
-          0.0147,
-          0.0532
+          0.016,
+          0.0537
         ],
         "mae_model": 5.364,
         "mae_line": 5.132,
         "bets_ev5": 552,
         "roi_ev5": -0.0267,
         "roi_ev5_ci95": [
-          -0.1048,
-          0.0498
+          -0.0999,
+          0.051
         ]
       },
       {
@@ -130,111 +130,111 @@
         "logloss_model": 0.724,
         "logloss_market": 0.6914,
         "logloss_diff_ci95": [
-          0.0148,
-          0.0517
+          0.0145,
+          0.0516
         ],
         "mae_model": 5.338,
         "mae_line": 5.132,
         "bets_ev5": 542,
         "roi_ev5": -0.0148,
         "roi_ev5_ci95": [
-          -0.0958,
-          0.0636
+          -0.0955,
+          0.0622
         ]
       },
       {
         "book": "unibet",
         "features": "base",
         "n": 1011,
-        "logloss_model": 0.727,
-        "logloss_market": 0.6927,
+        "logloss_model": 0.7271,
+        "logloss_market": 0.6929,
         "logloss_diff_ci95": [
-          0.0168,
-          0.0521
+          0.0156,
+          0.0512
         ],
         "mae_model": 5.304,
-        "mae_line": 5.049,
+        "mae_line": 5.048,
         "bets_ev5": 602,
         "roi_ev5": -0.0101,
         "roi_ev5_ci95": [
-          -0.0839,
-          0.0651
+          -0.0844,
+          0.0689
         ]
       },
       {
         "book": "unibet",
         "features": "absence",
         "n": 1011,
-        "logloss_model": 0.7288,
-        "logloss_market": 0.6927,
+        "logloss_model": 0.7289,
+        "logloss_market": 0.6929,
         "logloss_diff_ci95": [
-          0.0184,
-          0.0538
+          0.0182,
+          0.0543
         ],
         "mae_model": 5.288,
-        "mae_line": 5.049,
+        "mae_line": 5.048,
         "bets_ev5": 620,
         "roi_ev5": -0.0333,
         "roi_ev5_ci95": [
-          -0.1061,
-          0.0394
+          -0.1115,
+          0.0413
         ]
       },
       {
         "book": "unibet",
         "features": "efficiency",
         "n": 1011,
-        "logloss_model": 0.7244,
-        "logloss_market": 0.6927,
+        "logloss_model": 0.7246,
+        "logloss_market": 0.6929,
         "logloss_diff_ci95": [
-          0.0138,
-          0.0492
+          0.014,
+          0.0495
         ],
         "mae_model": 5.279,
-        "mae_line": 5.049,
+        "mae_line": 5.048,
         "bets_ev5": 605,
         "roi_ev5": -0.0103,
         "roi_ev5_ci95": [
-          -0.0807,
-          0.0649
+          -0.0777,
+          0.0676
         ]
       },
       {
         "book": "unibet",
         "features": "fatigue",
         "n": 1011,
-        "logloss_model": 0.7261,
-        "logloss_market": 0.6927,
+        "logloss_model": 0.7262,
+        "logloss_market": 0.6929,
         "logloss_diff_ci95": [
-          0.0143,
-          0.0512
+          0.0154,
+          0.051
         ],
         "mae_model": 5.294,
-        "mae_line": 5.049,
+        "mae_line": 5.048,
         "bets_ev5": 604,
         "roi_ev5": 0.0045,
         "roi_ev5_ci95": [
-          -0.0737,
-          0.076
+          -0.0703,
+          0.0767
         ]
       },
       {
         "book": "unibet",
         "features": "context",
         "n": 1011,
-        "logloss_model": 0.7242,
-        "logloss_market": 0.6927,
+        "logloss_model": 0.7243,
+        "logloss_market": 0.6929,
         "logloss_diff_ci95": [
-          0.0137,
-          0.0501
+          0.0141,
+          0.0496
         ],
         "mae_model": 5.266,
-        "mae_line": 5.049,
+        "mae_line": 5.048,
         "bets_ev5": 606,
         "roi_ev5": -0.0103,
         "roi_ev5_ci95": [
-          -0.0822,
-          0.0646
+          -0.0815,
+          0.0675
         ]
       }
     ]
