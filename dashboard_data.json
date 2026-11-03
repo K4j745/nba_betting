@@ -1,9 +1,73 @@
 {
-  "generated_at": "2026-11-03T14:44:49.932825",
+  "generated_at": "2026-11-03T22:59:55.270231",
   "game_date": "2026-11-03",
-  "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "today_coupon": {
+    "date": "2026-11-03",
+    "model_version": "points-2026-11-03",
+    "paper_trading": true,
+    "n_predictions": 32,
+    "picks": [
+      {
+        "game": "Philadelphia 76ers @ Detroit Pistons",
+        "player": "LeBron James",
+        "bet": "over",
+        "line": 14.5,
+        "odds": 1.88,
+        "bookmaker": "unibet",
+        "pts_predicted": 18.7,
+        "p_over": 0.711,
+        "confidence": 71,
+        "ev": 0.3367,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 18.7 pkt vs linia 14.5 (unibet), ewm 19.0, min 34.9, opp DEF_RTG 105.2, EV +33.6%"
+      },
+      {
+        "game": "Cleveland Cavaliers @ Oklahoma City Thunder",
+        "player": "Jaylin Williams",
+        "bet": "under",
+        "line": 7.5,
+        "odds": 1.8,
+        "bookmaker": "unibet",
+        "pts_predicted": 5.2,
+        "p_over": 0.315,
+        "confidence": 69,
+        "ev": 0.233,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 5.2 pkt vs linia 7.5 (unibet), ewm 3.9, min 19.8, opp DEF_RTG 111.5, EV +23.3%"
+      },
+      {
+        "game": "Minnesota Timberwolves @ Houston Rockets",
+        "player": "Fred VanVleet",
+        "bet": "over",
+        "line": 11.5,
+        "odds": 1.87,
+        "bookmaker": "unibet",
+        "pts_predicted": 13.5,
+        "p_over": 0.619,
+        "confidence": 62,
+        "ev": 0.1575,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 13.5 pkt vs linia 11.5 (unibet), ewm 14.4, min 33.7, opp DEF_RTG 108.2, EV +15.8%"
+      }
+    ],
+    "total_picks": 3,
+    "simulated_stake_per_pick": 10.0,
+    "simulated_total_stake": 30.0
+  },
+  "no_games_reason": null,
+  "status_message": "",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
