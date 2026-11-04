@@ -1,9 +1,271 @@
 {
-  "generated_at": "2026-11-04T14:57:01.484290",
+  "generated_at": "2026-11-04T23:22:03.197226",
   "game_date": "2026-11-04",
-  "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "today_coupon": {
+    "date": "2026-11-04",
+    "model_version": "points-2026-11-04",
+    "paper_trading": true,
+    "n_predictions": 348,
+    "picks": [
+      {
+        "game": "Milwaukee Bucks @ Boston Celtics",
+        "player": "Derrick White",
+        "bet": "under",
+        "line": 17.5,
+        "odds": 1.88,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 12.7,
+        "p_over": 0.222,
+        "confidence": 78,
+        "ev": 0.4626,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 12.7 pkt vs linia 17.5 (pinnacle), ewm 11.2, min 32.3, opp DEF_RTG 117.6, EV +46.2%"
+      },
+      {
+        "game": "Utah Jazz @ New Orleans Pelicans",
+        "player": "Brice Sensabaugh",
+        "bet": "over",
+        "line": 7.5,
+        "odds": 1.77,
+        "bookmaker": "unibet",
+        "pts_predicted": 12.5,
+        "p_over": 0.787,
+        "confidence": 79,
+        "ev": 0.393,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 12.5 pkt vs linia 7.5 (unibet), ewm 14.3, min 18.9, opp DEF_RTG 115.3, EV +39.3%"
+      },
+      {
+        "game": "Indiana Pacers @ Memphis Grizzlies",
+        "player": "Ivica Zubac",
+        "bet": "under",
+        "line": 12.5,
+        "odds": 1.74,
+        "bookmaker": "unibet",
+        "pts_predicted": 8.5,
+        "p_over": 0.237,
+        "confidence": 76,
+        "ev": 0.3276,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 8.5 pkt vs linia 12.5 (unibet), ewm 10.9, min 24.9, opp DEF_RTG 118.0, EV +32.8%"
+      },
+      {
+        "game": "Minnesota Timberwolves @ Houston Rockets",
+        "player": "Marcus Smart",
+        "bet": "over",
+        "line": 6.5,
+        "odds": 1.76,
+        "bookmaker": "unibet",
+        "pts_predicted": 10.6,
+        "p_over": 0.754,
+        "confidence": 75,
+        "ev": 0.327,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 10.6 pkt vs linia 6.5 (unibet), ewm 11.0, min 28.9, opp DEF_RTG 108.2, EV +32.7%"
+      },
+      {
+        "game": "Charlotte Hornets @ Brooklyn Nets",
+        "player": "Grayson Allen",
+        "bet": "over",
+        "line": 10.5,
+        "odds": 1.88,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 13.6,
+        "p_over": 0.685,
+        "confidence": 68,
+        "ev": 0.2878,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 13.6 pkt vs linia 10.5 (pinnacle), ewm 13.9, min 24.9, opp DEF_RTG 114.7, EV +28.8%"
+      },
+      {
+        "game": "Philadelphia 76ers @ Detroit Pistons",
+        "player": "VJ Edgecombe",
+        "bet": "over",
+        "line": 10.5,
+        "odds": 1.87,
+        "bookmaker": "unibet",
+        "pts_predicted": 13.7,
+        "p_over": 0.686,
+        "confidence": 69,
+        "ev": 0.2828,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 13.7 pkt vs linia 10.5 (unibet), ewm 13.6, min 34.3, opp DEF_RTG 105.2, EV +28.3%"
+      },
+      {
+        "game": "Miami Heat @ Los Angeles Clippers",
+        "player": "Klay Thompson",
+        "bet": "over",
+        "line": 9.5,
+        "odds": 1.89,
+        "bookmaker": "unibet",
+        "pts_predicted": 12.3,
+        "p_over": 0.671,
+        "confidence": 67,
+        "ev": 0.2682,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 12.3 pkt vs linia 9.5 (unibet), ewm 12.5, min 20.6, opp DEF_RTG 113.4, EV +26.8%"
+      },
+      {
+        "game": "Los Angeles Lakers @ Sacramento Kings",
+        "player": "Precious Achiuwa",
+        "bet": "over",
+        "line": 9.5,
+        "odds": 1.82,
+        "bookmaker": "unibet",
+        "pts_predicted": 12.2,
+        "p_over": 0.667,
+        "confidence": 67,
+        "ev": 0.2139,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 12.2 pkt vs linia 9.5 (unibet), ewm 12.5, min 29.5, opp DEF_RTG 113.1, EV +21.4%"
+      },
+      {
+        "game": "Chicago Bulls @ New York Knicks",
+        "player": "Miles McBride",
+        "bet": "under",
+        "line": 8.5,
+        "odds": 1.88,
+        "bookmaker": "unibet",
+        "pts_predicted": 6.7,
+        "p_over": 0.362,
+        "confidence": 64,
+        "ev": 0.1994,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 6.7 pkt vs linia 8.5 (unibet), ewm 5.9, min 15.8, opp DEF_RTG 117.9, EV +20.0%"
+      },
+      {
+        "game": "Portland Trail Blazers @ Phoenix Suns",
+        "player": "Oso Ighodaro",
+        "bet": "over",
+        "line": 5.5,
+        "odds": 1.76,
+        "bookmaker": "unibet",
+        "pts_predicted": 8.0,
+        "p_over": 0.681,
+        "confidence": 68,
+        "ev": 0.1986,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 8.0 pkt vs linia 5.5 (unibet), ewm 7.8, min 24.1, opp DEF_RTG 110.4, EV +19.9%"
+      },
+      {
+        "game": "Atlanta Hawks @ Washington Wizards",
+        "player": "Aaron Wiggins",
+        "bet": "under",
+        "line": 13.5,
+        "odds": 1.85,
+        "bookmaker": "unibet",
+        "pts_predicted": 11.2,
+        "p_over": 0.353,
+        "confidence": 65,
+        "ev": 0.197,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 11.2 pkt vs linia 13.5 (unibet), ewm 9.5, min 21.3, opp DEF_RTG 116.9, EV +19.7%"
+      },
+      {
+        "game": "Toronto Raptors @ Denver Nuggets",
+        "player": "Christian Braun",
+        "bet": "over",
+        "line": 12.5,
+        "odds": 1.88,
+        "bookmaker": "unibet",
+        "pts_predicted": 14.8,
+        "p_over": 0.631,
+        "confidence": 63,
+        "ev": 0.1863,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 14.8 pkt vs linia 12.5 (unibet), ewm 13.6, min 33.4, opp DEF_RTG 107.3, EV +18.7%"
+      },
+      {
+        "game": "Dallas Mavericks @ San Antonio Spurs",
+        "player": "Daniel Gafford",
+        "bet": "over",
+        "line": 8.5,
+        "odds": 1.75,
+        "bookmaker": "unibet",
+        "pts_predicted": 10.7,
+        "p_over": 0.646,
+        "confidence": 65,
+        "ev": 0.1305,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 10.7 pkt vs linia 8.5 (unibet), ewm 11.9, min 21.9, opp DEF_RTG 105.1, EV +13.0%"
+      },
+      {
+        "game": "Cleveland Cavaliers @ Oklahoma City Thunder",
+        "player": "Shai Gilgeous-Alexander",
+        "bet": "under",
+        "line": 31.5,
+        "odds": 1.88,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 29.2,
+        "p_over": 0.405,
+        "confidence": 59,
+        "ev": 0.1186,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 29.2 pkt vs linia 31.5 (pinnacle), ewm 28.4, min 34.3, opp DEF_RTG 111.5, EV +11.8%"
+      }
+    ],
+    "total_picks": 14,
+    "simulated_stake_per_pick": 10.0,
+    "simulated_total_stake": 140.0
+  },
+  "no_games_reason": null,
+  "status_message": "",
   "kpi": {
     "win_rate": 0.0,
     "roi_30d": 0.0,
