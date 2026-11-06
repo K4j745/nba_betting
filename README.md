@@ -1,20 +1,22 @@
-# NBA Betting — model punktów zawodników vs rynek
+# NBA Betting — model punktów, zbiórek i asyst zawodników vs rynek
 
-Projekt badawczy: przewiduje liczbę punktów zawodników NBA i porównuje te prognozy z liniami bukmacherów (player props, over/under punktów).
+Projekt badawczy: przewiduje punkty, zbiórki i asysty zawodników NBA i porównuje te prognozy z rynkiem (player props, over/under). Punkty: linie bukmacherów z The Odds API. Zbiórki i asysty: darmowe, publiczne ceny Kalshi.
 
 **Dashboard:** https://K4j745.github.io/nba_betting/dashboard.html
 
 > [!WARNING]
-> **Model nie ma przewagi nad rynkiem.** Uczciwa ewaluacja walk-forward ([reports/eval_2026-10-30.json](reports/eval_2026-10-30.json): 905 linii Pinnacle i 1011 Unibet z marca–czerwca i października 2026) pokazuje, że kursy po zdjęciu marży przewidują wynik lepiej niż model. Δ log-loss vs Pinnacle wynosi +0,035, CI95 [+0,016; +0,055]. Kupon na dashboardzie to **symulacja (paper trading)**: zbiera wyniki poza próbą, nie jest rekomendacją zakładów.
+> **Model nie ma przewagi nad rynkiem.** Uczciwa ewaluacja walk-forward ([reports/eval_2026-10-30.json](reports/eval_2026-10-30.json): 905 linii Pinnacle i 1011 Unibet z marca–czerwca i października 2026) pokazuje, że kursy po zdjęciu marży przewidują wynik lepiej niż model. Δ log-loss vs Pinnacle wynosi +0,035, CI95 [+0,016; +0,055]. To samo dla cen Kalshi (punkty, zbiórki, asysty, 13 tys. linii, [reports/eval_stats_2026-11-03.json](reports/eval_stats_2026-11-03.json)). Model, który zaczyna od ceny rynku i ją koryguje, też nie daje poprawy ([reports/market_model_2026-11-03.json](reports/market_model_2026-11-03.json)). Kupon na dashboardzie to **symulacja (paper trading)**: zbiera wyniki poza próbą, nie jest rekomendacją zakładów.
 
 ## Jak to działa
 
 ```mermaid
 flowchart LR
     T[Laptop: timer systemd<br/>09:00 i 16:00] -->|scripts/sync_nba_data.py| D[(branch data<br/>logi NBA csv.gz)]
-    D --> P[GitHub Actions<br/>pipeline.yml 18:00 UTC]
+    D --> P[GitHub Actions<br/>pipeline.yml 21:30 UTC]
     O[The Odds API<br/>linie punktów] --> P
-    P -->|live.py: cechy → PointsModel| C[kupon + predykcje<br/>nba_betting.db]
+    I[Raport kontuzji NBA<br/>PDF co 15 min] --> P
+    KX[Kalshi API<br/>zbiórki, asysty] --> P
+    P -->|live.py: cechy → PointsModel| C[kupony PTS / REB / AST<br/>nba_betting.db]
     O --> K[closing_odds.yml co 30 min<br/>kursy ~1 h przed meczem] --> C
     D --> V[pipeline.yml 07:00 UTC<br/>weryfikacja wyników]
     D --> E[evaluate.yml<br/>poniedziałek 10:00 UTC]
@@ -24,7 +26,9 @@ flowchart LR
 ```
 
 - **Dane NBA** pobiera laptop. stats.nba.com nie odpowiada adresom chmurowym, w tym runnerom GitHub Actions, co sprawdził `probe.yml`. Laptop wypycha logi na branch `data`, który ma zawsze jeden commit.
-- **Kursy** pochodzą z The Odds API: Pinnacle, Unibet i inni bukmacherzy dostępni w API. Betclic nie jest scrapowany.
+- **Kursy punktów** pochodzą z The Odds API: Pinnacle, Unibet i inni bukmacherzy dostępni w API. Betclic nie jest scrapowany.
+- **Zbiórki i asysty** w The Odds API kosztowałyby osobne kredyty, więc ceny bierzemy z publicznego API Kalshi (bez klucza, [kalshi.py](kalshi.py)). Kalshi to giełda zdarzeń dostępna tylko w USA; tu służy wyłącznie jako odniesienie rynkowe. Kurs w kuponie = 1 / (cena kontraktu + prowizja Kalshi).
+- **Kontuzje:** oficjalny raport NBA (`ak-static.cms.nba.com/referee/injury/…pdf`, [injuries.py](injuries.py)). Zawodnicy Out/Doubtful zasilają cechy absencji kolegów w modelu live. Walidacja na grudniu 2025: każdy oznaczony Out/Doubtful rzeczywiście nie zagrał (precyzja 100%), a raport z 18:00 ET wychwytuje 71% nieobecnych z rotacji.
 - **Model** trenuje się od nowa przy każdym uruchomieniu (~5 s), więc w repo nie ma pickli.
 
 ## Model
@@ -32,7 +36,9 @@ flowchart LR
 `PointsModel` ([points_model.py](points_model.py)):
 1. XGBoost przewiduje oczekiwane punkty μ.
 2. Odchylenie σ(μ) = a + b·μ jest dopasowane na zbiorze walidacyjnym (ostatnie 6000 występów przed datą odcięcia).
-3. P(over) = 1 − Φ((linia − μ) / σ).
+3. P(over) = 1 − Φ((linia − μ) / σ) dla punktów. Dla zbiórek i asyst rozkład normalny zawyżał P(over) o 6–8 pp, bo to małe, prawoskośne liczby całkowite. Używamy więc rozkładu ujemnego dwumianowego o tej samej średniej i wariancji. Na sezonie 2025-26 średnie P(over) wynosi wtedy 0,440 przy faktycznych 0,441 (REB) i 0,423 przy 0,425 (AST).
+
+Ten sam model (`train_points_model(..., target="REB"|"AST")`) działa dla każdej statystyki, z własnym zestawem cech (`history.TARGETS`): forma danej statystyki, zbiórki w ataku, zbiórki/asysty oddawane przez rywala na 100 posiadań oraz „zwolnione” zbiórki/asysty nieobecnych kolegów.
 
 Cechy ([history.py](history.py)) są liczone **point-in-time**: wyłącznie z meczów rozegranych przed danym spotkaniem (`shift(1)` przed oknami kroczącymi). Ta sama funkcja `make_features` buduje zbiór treningowy i wiersze meczów, które dopiero się odbędą.
 
@@ -73,21 +79,49 @@ Na liniach bukmacherów revenge wypada pod linią (19 overów na 60 linii). To j
 
 Line shopping obniża marżę, ale **przewagi nie daje**. Od 2026-10-30 pipeline pobiera kursy 10 bukmacherów z regionu `eu`, w tym Betclic FR (`betclic_fr`), bez dodatkowego kosztu w Odds API. Polskiego betclic.pl nie ma w API. Scrapingu nie wdrażam: regulaminu betclic.pl pod tym kątem nie weryfikowałem, a bukmacherzy zwykle zabraniają automatycznego pobierania.
 
+### Zbiórki i asysty vs Kalshi
+
+Walk-forward (model trenowany co tydzień na wcześniejszych meczach), linie główne Kalshi, cena = środek bid/ask ≥ 1 h przed meczem, 11.2025 – 11.2026 ([reports/eval_stats_2026-11-03.json](reports/eval_stats_2026-11-03.json)). Dodatnia Δ = model gorszy od rynku.
+
+| | Linii | Δ log-loss (base) | Δ log-loss (faktyczne absencje) | MAE model / linia |
+|---|---|---|---|---|
+| Punkty | 5537 | +0,021 [+0,015; +0,026] | +0,016 [+0,011; +0,022] | 5,49 / 5,50 |
+| Zbiórki | 4411 | +0,012 [+0,006; +0,018] | +0,011 [+0,005; +0,017] | 2,27 / 2,28 |
+| Asysty | 3493 | +0,017 [+0,010; +0,024] | +0,016 [+0,008; +0,023] | 1,90 / 1,89 |
+
+Średnią model przewiduje tak dobrze jak linia, ale jego prawdopodobieństwa są gorsze od cen.
+
+### Model od rynku
+
+[market_model.py](market_model.py): `logit p = α + β·logit(p_rynku) + γ·(logit p_modelu − logit p_rynku) + δ·absencje`, regresja logistyczna walk-forward. Absencje liczone z **raportu kontuzji z godziny przed meczem**, czyli z tego, co rynek wiedział w chwili ceny. Faktyczne absencje to tylko górna granica, bo zawierają późne skreślenia.
+
+| | Linii | rynek + model | rynek + model + raport kontuzji |
+|---|---|---|---|
+| Punkty | 5016 | +0,0004 [−0,0008; +0,0017] | +0,0007 [−0,0007; +0,0022] |
+| Zbiórki | 3886 | +0,0009 [−0,0006; +0,0023] | +0,0012 [−0,0004; +0,0027] |
+| Asysty | 3004 | +0,0006 [−0,0008; +0,0021] | +0,0003 [−0,0019; +0,0023] |
+
+Rynek jest dobrze skalibrowany (β ≈ 1). Waga modelu γ jest bliska zeru (zbiórki: 0,15 [−0,007; 0,31], na granicy). Zakłady przy EV > 5% mają wszędzie ujemny ROI. Na asystach współczynniki absencji z raportu są istotne na całej próbie, ale poza próbą nie poprawiają prognozy.
+
 ## Struktura
 
 | Plik | Rola |
 |---|---|
 | `history.py` | Logi sezonów 2021-22+ z `nba_api` (`LeagueGameLog`), tabela mecz–zawodnik, cechy point-in-time, zbiór `data/player_games.csv.gz` |
-| `points_model.py` | `PointsModel` i `train_points_model` |
+| `points_model.py` | `PointsModel` i `train_points_model` (PTS / REB / AST) |
+| `injuries.py` | Oficjalny raport kontuzji NBA (PDF) → Out/Doubtful; historia raportów z godziny przed meczami (`data/raw/injury_reports.csv.gz`); `--validate` porównuje z logami |
+| `kalshi.py` | Ceny Kalshi: historia rozliczonych rynków (`data/raw/kalshi_lines.csv.gz`, archiwum przez bisekcję drabinki progów) i linie na żywo |
+| `market_model.py` | Korekta ceny Kalshi: model + absencje z raportu kontuzji sprzed meczu, walk-forward → `reports/market_model_*.json` |
+| `evaluate_stats.py` | Model vs Kalshi dla PTS / REB / AST (walk-forward tygodniowo) → `reports/eval_stats_*.json` |
 | `evaluate.py` | Ewaluacja walk-forward vs rynek: log-loss/Brier vs kursy bez marży, bootstrap CI, symulacja zakładów EV, ablacja zestawów cech → `reports/` |
 | `hypotheses.py` | Testy hipotez revenge / nemesis na resztach modelu poza próbą → `reports/hypotheses_*.json` |
 | `line_shopping.py` | Krok 6: wartość względem Pinnacle (EV, CLV), najlepsza cena, model po najlepszej cenie → `reports/line_shopping_*.json` |
-| `live.py` | Kupon dnia: propsy → cechy → model → tabela `live_predictions` + picki (EV ≥ 5%, kurs 1,40–1,90, max 1 na mecz) |
+| `live.py` | Kupony dnia: propsy → cechy → model → tabela `live_predictions` + picki (EV ≥ 5%, max 1 na mecz; kurs 1,40–1,90 dla PTS, 1,40–2,60 dla REB/AST z Kalshi). REB/AST w tabeli `stat_coupons`, wyniki liczone z logów (`stat_results`) |
 | `main.py` | Pipeline uruchamiany przez Actions: kursy, kupon, weryfikacja, eksport dashboardu |
 | `odds_fetcher.py` | The Odds API |
 | `tracker.py` | Weryfikacja kuponów i statystyki (SQLite `nba_betting.db`) |
-| `dashboard.html` | Statyczny dashboard (Chart.js) z boiskiem w tle |
-| `scripts/sync_nba_data.py` | Laptop → branch `data` |
+| `dashboard.html` | Statyczny dashboard (Chart.js) z boiskiem w tle; zakładki Punkty / Zbiórki / Asysty (`#reb`, `#ast`) |
+| `scripts/sync_nba_data.py` | Laptop → branch `data` (logi NBA + nowe rynki Kalshi) |
 | `scripts/install_data_timer.sh` | Instalacja timera systemd (`--uninstall` usuwa) |
 | `.github/workflows/` | `pipeline.yml` (kupon i weryfikacja), `closing_odds.yml` (kursy zamknięcia ~1 h przed meczem, z budżetem kredytów), `evaluate.yml` (raport tygodniowy), `probe.yml` (test dostępu do stats.nba.com) |
 | `model.py`, `features.py`, `train.py`, `data_fetcher.py` | Stara ścieżka (`PropPredictor`), nieużywana w pipeline |
@@ -130,7 +164,8 @@ Timer działa, gdy użytkownik jest zalogowany. Bez logowania potrzebne jest `lo
 
 ## Ograniczenia
 
-- Brak raportów kontuzji przed meczem, więc model live nie zna absencji.
+- Raport kontuzji wychwytuje ok. 70% nieobecnych z rotacji (decyzje trenera, późne zmiany). Model live zna więc absencje tylko częściowo.
+- Kalshi: historia od grudnia 2025. Rynki z archiwum mają ceny tylko wokół linii głównej, bo świece archiwum pobiera się pojedynczo. Płynność jest mniejsza niż u bukmacherów (spread zwykle 2–4 ¢; rynki ze spreadem > 10 ¢ są pomijane).
 - Linie z The Odds API pochodzą od bukmacherów europejskich (10 w regionie `eu`). Betclic tylko w wersji francuskiej (`betclic_fr`).
 - Brak historii spreadów i totali meczów (historyczne kursy Odds API są w płatnych planach; cennika nie weryfikowałem). Od 2026-10-30 pipeline zapisuje je codziennie do tabeli `game_lines` (2 kredyty Odds API na run). Posłużą do treningu, gdy zbierze się sezon.
 - Laptop musi się włączać. Gdy dane są starsze niż 2 dni, kupon nie powstaje (`nba_data_stale`).

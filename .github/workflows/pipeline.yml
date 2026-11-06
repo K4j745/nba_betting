@@ -2,8 +2,9 @@ name: NBA Betting Pipeline
 
 on:
   schedule:
-    # Pipeline dzienny — 20:00 CEST = 18:00 UTC (letni), 19:00 UTC (zimowy)
-    - cron: '0 18 * * *'
+    # Pipeline dzienny — 21:30 UTC = 16:30 ET (zima) / 17:30 ET (lato), przed meczami o 19:00 ET.
+    # Późno, bo raport kontuzji NBA o tej porze ma ~70% nieobecnych (o 13:00 ET ~58%).
+    - cron: '30 21 * * *'
     # Weryfikacja — 09:00 CEST = 07:00 UTC
     - cron: '0 7 * * *'
   workflow_dispatch:
@@ -57,10 +58,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── Pipeline dzienny (20:00 CEST) ──────────────────────────────────────
+      # ── Pipeline dzienny (21:30 UTC) ──────────────────────────────────────
       - name: Run pipeline — generuj kupon
         if: >-
-          github.event.schedule == '0 18 * * *' ||
+          github.event.schedule == '30 21 * * *' ||
           (github.event_name == 'workflow_dispatch' && inputs.mode == 'pipeline')
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}

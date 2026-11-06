@@ -301,6 +301,11 @@ tr:hover td { background: var(--surface-2); }
 .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .filter-btn:hover:not(.active) { background: var(--surface-3); color: var(--text); }
 
+/* Zakładki statystyk */
+.stat-tabs { display: flex; gap: 6px; margin: 18px 0 4px; flex-wrap: wrap; }
+.stat-tabs .filter-btn { font-size: 13px; padding: 7px 18px; }
+.stat-note { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+
 .pnl-pos { color: var(--green); font-family: var(--font-mono); font-size: 12px; }
 .pnl-neg { color: var(--red);   font-family: var(--font-mono); font-size: 12px; }
 .mono    { font-family: var(--font-mono); font-size: 12px; }
@@ -477,6 +482,13 @@ footer.court-footer {
     i otwórz <code>http://localhost:8080/dashboard.html</code>
   </div>
 
+  <nav class="stat-tabs" aria-label="Statystyka">
+    <button class="filter-btn active" data-stat="PTS" onclick="setStat('PTS')">🏀 Punkty</button>
+    <button class="filter-btn" data-stat="REB" onclick="setStat('REB')">🧱 Zbiórki</button>
+    <button class="filter-btn" data-stat="AST" onclick="setStat('AST')">🎯 Asysty</button>
+  </nav>
+
+  <div id="tabPTS">
   <!-- KPI -->
   <section class="section">
     <div class="kpi-grid" id="kpiGrid">
@@ -571,10 +583,57 @@ footer.court-footer {
       </div>
     </div>
   </section>
+  </div><!-- /tabPTS -->
+
+  <!-- Zbiórki / Asysty (linie z Kalshi) -->
+  <div id="tabStat" style="display:none">
+    <section class="section">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="sWin">—</div><div class="kpi-sub" id="sWinSub">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">ROI</div><div class="kpi-value" id="sRoi">—</div><div class="kpi-sub">na zakład, po prowizji Kalshi</div></div>
+        <div class="kpi-card"><div class="kpi-label">P&amp;L</div><div class="kpi-value" id="sPnl">—</div><div class="kpi-sub">stawka 1 j. na pick</div></div>
+        <div class="kpi-card"><div class="kpi-label">Model vs Kalshi</div><div class="kpi-value" id="sEdge">—</div><div class="kpi-sub" id="sEdgeSub">Δ log-loss (base)</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-title" id="sCouponTitle">Kupon Dnia</div>
+      <div class="card" id="sCouponCard"></div>
+    </section>
+    <section class="section">
+      <div class="section-title">Historia (weryfikacja z logów NBA)</div>
+      <div class="card"><div class="table-wrap" id="sHistory"></div></div>
+    </section>
+  </div>
+
+  <!-- Model vs Kalshi (wszystkie zakładki) -->
+  <section class="section" id="kalshiSection" style="display:none">
+    <div class="section-title" id="kalshiTitle">Model vs Kalshi</div>
+    <div class="card">
+      <div class="kpi-sub" id="kalshiMeta" style="margin-bottom:10px"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cechy</th><th>n</th><th>Log-loss model / rynek</th><th>Δ CI95</th>
+            <th>MAE model / linia</th><th>Zakłady EV&gt;5%</th><th>ROI (CI95)</th></tr></thead>
+          <tbody id="kalshiBody"></tbody>
+        </table>
+      </div>
+      <div class="table-wrap" style="margin-top:14px">
+        <table>
+          <thead><tr><th>P(over) modelu</th><th>n</th><th>model</th><th>rynek</th><th>faktycznie</th></tr></thead>
+          <tbody id="kalshiCal"></tbody>
+        </table>
+      </div>
+      <div class="stat-note">
+        Linie główne Kalshi (cena najbliższa 50%), środek bid/ask ≥ 1 h przed meczem. Model trenowany co tydzień
+        tylko na wcześniejszych meczach. „absence” używa faktycznych absencji — to górna granica tego, co da raport kontuzji.
+        Kalshi działa tylko w USA; tu służy jako darmowy punkt odniesienia rynkowego.
+      </div>
+    </div>
+  </section>
 
 </div><!-- /container -->
 </main>
-<footer class="court-footer">Paper trading · dane: stats.nba.com, The Odds API · model nie ma przewagi nad rynkiem</footer>
+<footer class="court-footer">Paper trading · dane: stats.nba.com, The Odds API, Kalshi, raport kontuzji NBA · model nie ma przewagi nad rynkiem</footer>
 
 <script>
 /* ── State ─────────────────────────────────────────────────────────────────── */
@@ -635,6 +694,20 @@ function daysAgo(dateStr, days) {
   return new Date(dateStr) >= cutoff;
 }
 
+/* ── Puste wykresy: chowamy canvas zamiast go usuwać (kolejny render — odświeżenie,
+      zmiana motywu — musi go znaleźć) ────────────────────────────────────────── */
+function emptyChart(el, msg) {
+  el.style.display = 'none';
+  let n = el.parentElement.querySelector('.no-data');
+  if (!n) { n = document.createElement('div'); n.className = 'no-data'; el.parentElement.appendChild(n); }
+  n.innerHTML = msg.replace(/<[^>]+>/g, '');
+}
+function showChart(el) {
+  el.style.display = '';
+  const n = el.parentElement.querySelector('.no-data');
+  if (n) n.remove();
+}
+
 /* ── CSS var reader ─────────────────────────────────────────────────────────── */
 function cssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -660,9 +733,107 @@ function render(d) {
   document.getElementById('updatedAt').textContent = 'Aktualizacja: ' + ts;
   renderKPI(d);
   renderCoupon(d.today_coupon, d.status_message, d.no_games_reason);
+  renderStatTab(d);
   renderCharts(d);
   renderHistory(d.bet_history, _filterDays);
   renderResearch(d.research);
+}
+
+/* ── Zakładki Punkty / Zbiórki / Asysty ─────────────────────────────────────────── */
+let _stat = (location.hash.slice(1) || 'PTS').toUpperCase();
+if (!['PTS', 'REB', 'AST'].includes(_stat)) _stat = 'PTS';
+const STAT_NAME = { PTS: 'punkty', REB: 'zbiórki', AST: 'asysty' };
+
+function setStat(s) {
+  _stat = s;
+  history.replaceState(null, '', s === 'PTS' ? location.pathname : '#' + s.toLowerCase());
+  if (_data) renderStatTab(_data);
+}
+
+function signed(x, d = 3) { return x == null ? '—' : (x >= 0 ? '+' : '') + x.toFixed(d); }
+
+function renderStatTab(d) {
+  document.querySelectorAll('.stat-tabs .filter-btn')
+    .forEach(b => b.classList.toggle('active', b.dataset.stat === _stat));
+  document.getElementById('tabPTS').style.display  = _stat === 'PTS' ? '' : 'none';
+  document.getElementById('tabStat').style.display = _stat === 'PTS' ? 'none' : '';
+  const tab = (d.stats || {})[_stat] || {};
+  renderKalshiEval(tab.kalshi_eval);
+  if (_stat === 'PTS') return;
+
+  const k = tab.kpi || {};
+  const wr = k.picks ? k.wins / k.picks : null;
+  document.getElementById('sWin').textContent = pct(wr, 1);
+  document.getElementById('sWin').className = 'kpi-value ' + clrVal(wr == null ? null : wr - 0.5);
+  document.getElementById('sWinSub').textContent = `${k.wins ?? 0}W / ${(k.picks ?? 0) - (k.wins ?? 0)}L · ${k.picks ?? 0} picks`;
+  document.getElementById('sRoi').textContent = pct(k.roi, 1);
+  document.getElementById('sRoi').className = 'kpi-value ' + clrVal(k.roi);
+  document.getElementById('sPnl').textContent = signed(k.pnl, 2) + ' j.';
+  document.getElementById('sPnl').className = 'kpi-value ' + clrVal(k.pnl);
+  const base = tab.kalshi_eval && tab.kalshi_eval.rows.find(r => r.features === 'base');
+  document.getElementById('sEdge').textContent = base ? signed(base.logloss_diff) : '—';
+  document.getElementById('sEdge').className = 'kpi-value ' + (base ? clrVal(-base.logloss_diff) : '');
+  document.getElementById('sEdgeSub').textContent = base ? `> 0 = model gorszy od rynku · n=${base.n}` : 'brak raportu eval_stats';
+
+  // Kupon: ta sama tabela co dla punktów
+  const c = tab.coupon;
+  document.getElementById('sCouponTitle').textContent = `Kupon Dnia · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
+  const card = document.getElementById('sCouponCard');
+  if (!c || !c.picks || !c.picks.length) {
+    card.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>
+      <div class="empty-title">Brak picków na dziś</div>
+      <div class="empty-body">${c ? `${c.n_predictions} linii Kalshi sprawdzonych, żadna nie przeszła progu EV ≥ 5%.`
+        : 'Brak linii Kalshi dla dzisiejszych meczów albo pipeline jeszcze nie działał.'}</div></div>`;
+  } else {
+    card.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs*</th><th>Rynek P(over)</th><th>Model P(over)</th><th>Reasoning</th></tr></thead>
+      <tbody>${c.picks.map(p => `<tr>
+        <td>${evBadge(p.ev)}</td>
+        <td><div class="player-name">${p.player}</div><div class="game-label">${p.game}</div></td>
+        <td>${betBadge(p.bet)}</td><td class="mono">${p.line}</td><td class="mono">${p.odds}</td>
+        <td class="mono">${p.p_market != null ? pct(p.p_market) : '—'}</td>
+        <td class="mono">${pct(p.p_over)}</td>
+        <td class="mono" style="font-size:11px;color:var(--muted);max-width:220px">${p.reasoning || '—'}</td></tr>`).join('')}
+      </tbody></table></div>
+      <div class="stat-note">* kurs = 1 / (cena kontraktu + prowizja Kalshi). ${c.injury_report ? `Raport kontuzji: ${c.n_out} Out/Doubtful.` : 'Bez raportu kontuzji.'}
+      ⚠️ Paper trading — to nie rekomendacja zakładów.</div>`;
+  }
+
+  const h = tab.history || [];
+  document.getElementById('sHistory').innerHTML = !h.length
+    ? `<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">Brak historii</div>
+       <div class="empty-body">Wyniki pojawią się, gdy logi meczów trafią do repo (branch data).</div></div>`
+    : `<table><thead><tr><th>Data</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>P&amp;L</th></tr></thead>
+       <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
+         <td><div class="player-name">${r.player}</div><div class="game-label">${r.game || ''}</div></td>
+         <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
+         <td class="mono">${r.actual ?? '—'}</td>
+         <td>${r.result ? resultBadge(r.result) : '<span class="badge-result badge-push">czeka</span>'}</td>
+         <td class="${(r.profit || 0) >= 0 ? 'pnl-pos' : 'pnl-neg'}">${r.profit == null ? '—' : signed(r.profit, 2) + ' j.'}</td></tr>`).join('')}
+       </tbody></table>`;
+}
+
+function renderKalshiEval(e) {
+  const sec = document.getElementById('kalshiSection');
+  if (!e) { sec.style.display = 'none'; return; }
+  sec.style.display = '';
+  document.getElementById('kalshiTitle').textContent = `Model vs Kalshi · ${STAT_NAME[_stat]}`;
+  document.getElementById('kalshiMeta').textContent =
+    `${e.report} · ${e.matched} linii · ${e.dates[0]} → ${e.dates[1]}`;
+  const ci = c => c ? `[${signed(c[0])}; ${signed(c[1])}]` : '—';
+  const ciPct = c => c ? `[${(c[0] * 100).toFixed(1)}%; ${(c[1] * 100).toFixed(1)}%]` : '';
+  document.getElementById('kalshiBody').innerHTML = e.rows.map(x => {
+    const c = x.logloss_diff_ci95, b = x.bets_ev5 || {};
+    const cls = c && c[1] < 0 ? 'text-green' : (c && c[0] > 0 ? 'text-red' : '');
+    return `<tr><td>${x.features}</td><td>${x.n}</td>
+      <td>${x.logloss_model.toFixed(3)} / ${x.logloss_market.toFixed(3)}</td>
+      <td class="${cls}">${ci(c)}</td>
+      <td>${x.mae_model.toFixed(2)} / ${x.mae_line.toFixed(2)}</td>
+      <td>${b.bets ?? 0}</td><td>${b.roi == null ? '—' : (b.roi * 100).toFixed(1) + '% ' + ciPct(b.roi_ci95)}</td></tr>`;
+  }).join('');
+  document.getElementById('kalshiCal').innerHTML = (e.calibration || []).map(r =>
+    `<tr><td class="mono">${r.bin}</td><td>${r.n}</td><td>${pct(r.p)}</td><td>${pct(r.market)}</td><td>${pct(r.actual)}</td></tr>`
+  ).join('');
 }
 
 /* ── Research (evaluate.py) ─────────────────────────────────────────────────── */
@@ -819,8 +990,9 @@ function baseOptions(colors) {
 function renderBankrollChart(curve) {
   destroyChart('bankroll');
   const el = document.getElementById('bankrollChart');
+  showChart(el);
   if (!curve.length) {
-    el.parentElement.innerHTML = '<div class="no-data">Za mało danych (uruchom pipeline)</div>';
+    return emptyChart(el, '<div class="no-data">Za mało danych (uruchom pipeline)</div>');
     return;
   }
   const colors = chartColors();
@@ -871,8 +1043,9 @@ function renderBankrollChart(curve) {
 function renderTeamChart(teams) {
   destroyChart('team');
   const el = document.getElementById('teamChart');
+  showChart(el);
   if (!teams.length) {
-    el.parentElement.innerHTML = '<div class="no-data">Za mało danych (min. 3 typy per drużyna)</div>';
+    return emptyChart(el, '<div class="no-data">Za mało danych (min. 3 typy per drużyna)</div>');
     return;
   }
   const colors = chartColors();
@@ -904,8 +1077,9 @@ function renderTeamChart(teams) {
 function renderCalibrationChart(cal) {
   destroyChart('cal');
   const el = document.getElementById('calibrationChart');
+  showChart(el);
   if (!cal.prob_pred || cal.prob_pred.length < 2) {
-    el.parentElement.innerHTML = `<div class="no-data">Za mało danych (min. 10 zweryfikowanych)</div>`;
+    return emptyChart(el, `<div class="no-data">Za mało danych (min. 10 zweryfikowanych)</div>`);
     return;
   }
   const colors = chartColors();
@@ -936,8 +1110,9 @@ function renderCalibrationChart(cal) {
 function renderEvChart(coupon) {
   destroyChart('ev');
   const el = document.getElementById('evChart');
+  showChart(el);
   if (!coupon || !coupon.picks || coupon.picks.length === 0) {
-    el.parentElement.innerHTML = '<div class="no-data">Brak kuponu na dziś</div>';
+    return emptyChart(el, '<div class="no-data">Brak kuponu na dziś</div>');
     return;
   }
   const colors  = chartColors();

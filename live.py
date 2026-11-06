@@ -7,8 +7,10 @@ Pipeline „na żywo” na danych z repo (branch `data` → data/raw), bez stats
                           ~5 s) → wszystkie predykcje do live_predictions, picki z EV ≥ EV_MIN
   actual_points_fn()    — punkty z logów do weryfikacji kuponów
 
-Model live używa BASE_FEATURE_COLS: absencji kolegów nie znamy przed meczem bez raportu
-kontuzji, a w ewaluacji i tak nie poprawiały wyniku względem rynku.
+Model live: cechy bazowe + absencje (history.TARGETS[stat]), gdy jest oficjalny raport kontuzji
+NBA (injuries.py — Out/Doubtful przed meczem); bez raportu: tylko bazowe.
+Statystyki: PTS (Odds API → tabela coupons, tracker) oraz REB/AST (Kalshi → stat_coupons,
+weryfikacja wprost z logów w stat_results()).
 
 ⚠️ Ewaluacja (reports/eval_*) nie pokazała przewagi nad rynkiem — kupon to symulacja
 (paper trading), która ma zbierać wyniki poza próbą, a nie rekomendacja zakładów.
@@ -22,14 +24,17 @@ import pandas as pd
 
 from config import DB_PATH, ODDS_MAX, ODDS_MIN, STAKE_PER_PICK
 from history import (
-    BASE_FEATURE_COLS, STAT_COLS, TEAM_ABBR_TO_ID, load_logs, make_features,
-    norm_name, player_game_table, team_game_table,
+    ABSENCE_DAYS, STAT_COLS, TARGETS, TEAM_ABBR_TO_ID,
+    load_logs, make_features, norm_name, player_game_table, team_game_table,
 )
 from points_model import train_points_model
 
 logger = logging.getLogger(__name__)
 
 EV_MIN        = 0.05   # minimalna wartość oczekiwana zakładu
+STAT_ODDS     = (1.40, 2.60)   # REB/AST z Kalshi: linie główne ~50% → kurs ~1,9–2,1 po prowizji
+STAT_LABEL    = {"PTS": "pkt", "REB": "zb.", "AST": "as."}
+OPP_FEATURE   = {"PTS": "opp_def_rtg", "REB": "opp_reb_allowed", "AST": "opp_ast_allowed"}
 MAX_STALE_DAYS = 2     # dane starsze niż tyle dni → brak kuponu (laptop nie zsynchronizował)
 
 try:
@@ -94,12 +99,50 @@ def props_to_rows(props: list[dict], games: pd.DataFrame, game_date: str) -> pd.
     return pd.DataFrame(rows)
 
 
+def roster_fillers(games: pd.DataFrame, future: pd.DataFrame, out: pd.DataFrame) -> pd.DataFrame:
+    """
+    Wiersze zastępcze dla meczów na żywo: każdy, kto grał dla drużyny w ostatnich ABSENCE_DAYS
+    dniach i NIE jest Out/Doubtful w raporcie kontuzji, „gra” dziś. Dzięki temu team_absences
+    (to samo co w treningu) widzi jako nieobecnych tylko zawodników z raportu — bez tego każdy
+    zawodnik bez propsa wyglądałby na nieobecnego.
+    out: kolumny team (skrót), name_key.
+    """
+    if future.empty:
+        return future
+    day = future["GAME_DATE"].iloc[0]
+    recent = games[(games["GAME_DATE"] < day) & (games["GAME_DATE"] >= day - pd.Timedelta(days=ABSENCE_DAYS))]
+    last = recent.sort_values("GAME_DATE").groupby("PLAYER_ID").tail(1)
+    out_keys = set(zip(out["team"], out["name_key"]))
+    rows = []
+    for (gid, tid), g in future.groupby(["GAME_ID", "TEAM_ID"]):
+        ref = g.iloc[0]
+        cand = last[(last["TEAM_ID"] == tid) & ~last["PLAYER_ID"].isin(g["PLAYER_ID"])]
+        for r in cand.itertuples():
+            if (r.TEAM_ABBREVIATION, norm_name(r.PLAYER_NAME)) in out_keys:
+                continue
+            row = ref.to_dict()
+            row.update(PLAYER_ID=r.PLAYER_ID, PLAYER_NAME=r.PLAYER_NAME, SEASON=r.SEASON, _FILLER=True)
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
 def live_features(props: list[dict], games: pd.DataFrame, team_games: pd.DataFrame,
-                  game_date: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """(historia z cechami do treningu, dzisiejsze wiersze z cechami) — jedno liczenie cech."""
+                  game_date: str, out: pd.DataFrame | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    (historia z cechami do treningu, dzisiejsze wiersze z cechami) — jedno liczenie cech.
+    out = Out/Doubtful z raportu kontuzji (None → cechy absencji dla dzisiejszych meczów
+    są bez znaczenia i model ich nie używa).
+    """
     future = props_to_rows(props, games, game_date)
-    feats = make_features(pd.concat([games, future], ignore_index=True), team_games)
+    parts = [games, future]
+    if out is not None and not future.empty:
+        parts.append(roster_fillers(games, future, out))
+    feats = make_features(pd.concat(parts, ignore_index=True), team_games)
     is_live = feats["GAME_ID"].str.startswith("LIVE-")
+    if "_FILLER" in feats:
+        keep = feats["_FILLER"].fillna(False).astype(bool)
+        feats = feats[~keep].drop(columns="_FILLER")
+        is_live = is_live[~keep]
     return feats[~is_live].reset_index(drop=True), feats[is_live].reset_index(drop=True)
 
 
@@ -115,16 +158,22 @@ def _save_predictions(rows: list[dict], db_path: str):
                 game_date TEXT, player_name TEXT, player_id INTEGER, game TEXT,
                 bookmaker TEXT, line REAL, over_odds REAL, under_odds REAL,
                 mu REAL, p_over REAL, best_side TEXT, best_ev REAL,
-                model_cutoff TEXT, created_at TEXT DEFAULT (datetime('now'))
+                model_cutoff TEXT, created_at TEXT DEFAULT (datetime('now')),
+                stat TEXT DEFAULT 'PTS'
             )""")
+        cols = {r[1] for r in conn.execute("PRAGMA table_info(live_predictions)")}
+        if "stat" not in cols:   # baza sprzed REB/AST
+            conn.execute("ALTER TABLE live_predictions ADD COLUMN stat TEXT DEFAULT 'PTS'")
         pd.DataFrame(rows).to_sql("live_predictions", conn, if_exists="append", index=False)
 
 
 def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
-               stake: float = STAKE_PER_PICK) -> dict:
+               stake: float = STAKE_PER_PICK, out: pd.DataFrame | None = None,
+               stat: str = "PTS") -> dict:
     """
     Zwraca dict kuponu (format zgodny z tracker/dashboard) albo
     {"error": "<powód>"} gdy dane są nieaktualne lub żaden prop nie pasuje.
+    stat = PTS → tabela coupons (tracker); REB/AST → stat_coupons (kursy z Kalshi).
     """
     games, team_games = load_live_games()
     age = data_age_days(games, game_date)
@@ -132,11 +181,15 @@ def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
         logger.error("Dane NBA sprzed %d dni (ostatni mecz %s)", age, games["GAME_DATE"].max().date())
         return {"error": "stale", "data_age_days": age}
 
-    dataset, feats = live_features(props, games, team_games, game_date)
+    dataset, feats = live_features(props, games, team_games, game_date, out=out)
     if feats.empty:
         return {"error": "no_features"}
 
-    model = train_points_model(dataset, cutoff=game_date, features=BASE_FEATURE_COLS)
+    base, absence = TARGETS[stat]
+    features = base + absence if out is not None else base
+    model = train_points_model(dataset, cutoff=game_date, features=features, target=stat)
+    odds_min, odds_max = (ODDS_MIN, ODDS_MAX) if stat == "PTS" else STAT_ODDS
+    lo, opp, unit = stat.lower(), OPP_FEATURE[stat], STAT_LABEL[stat]
     feats["mu"] = model.mu(feats)
     by_name = {norm_name(n): i for i, n in enumerate(feats["PLAYER_NAME"])}
 
@@ -159,21 +212,22 @@ def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
             "bookmaker": prop.get("bookmaker"), "line": prop["line"],
             "over_odds": prop["over_odds"], "under_odds": prop["under_odds"],
             "mu": round(mu, 2), "p_over": round(p_over, 4), "best_side": side,
-            "best_ev": round(ev, 4), "model_cutoff": game_date,
+            "best_ev": round(ev, 4), "model_cutoff": game_date, "stat": stat,
         })
-        if ev >= EV_MIN and ODDS_MIN <= odds <= ODDS_MAX:
+        if ev >= EV_MIN and odds_min <= odds <= odds_max:
             p_side = p_over if side == "over" else 1 - p_over
             r = row.iloc[0]
             candidates.append({
-                "game": game, "player": r["PLAYER_NAME"], "bet": side,
+                "game": game, "player": r["PLAYER_NAME"], "bet": side, "stat": stat,
                 "line": prop["line"], "odds": odds, "bookmaker": prop.get("bookmaker"),
                 "pts_predicted": round(mu, 1), "p_over": round(p_over, 3),
                 "confidence": int(round(100 * p_side)), "ev": round(ev, 4),
-                "top_features": ["pts_ewm", "min_avg_10", "opp_def_rtg"],
+                "p_market": prop.get("p_market"),
+                "top_features": [f"{lo}_ewm", "min_avg_10", opp],
                 "reasoning": (
-                    f"model {mu:.1f} pkt vs linia {prop['line']} ({prop.get('bookmaker')}), "
-                    f"ewm {r['pts_ewm']:.1f}, min {r['min_avg_10']:.1f}, "
-                    f"opp DEF_RTG {r['opp_def_rtg']:.1f}, EV {ev:+.1%}"
+                    f"model {mu:.1f} {unit} vs linia {prop['line']} ({prop.get('bookmaker')}), "
+                    f"ewm {r[f'{lo}_ewm']:.1f}, min {r['min_avg_10']:.1f}, "
+                    f"{opp} {r[opp]:.1f}, EV {ev:+.1%}"
                 ),
             })
     _save_predictions(preds, db_path)
@@ -186,8 +240,11 @@ def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
 
     coupon = {
         "date": game_date,
-        "model_version": f"points-{game_date}",
+        "model_version": f"{stat.lower()}-{game_date}",
+        "stat": stat,
         "paper_trading": True,
+        "injury_report": out is not None,
+        "n_out": None if out is None else int(len(out)),
         "n_predictions": len(preds),
         "picks": picks,
         "total_picks": len(picks),
@@ -195,22 +252,63 @@ def run_coupon(props: list[dict], game_date: str, db_path: str = DB_PATH,
         "simulated_total_stake": round(stake * len(picks), 2),
     }
     with sqlite3.connect(db_path) as conn:
-        conn.execute("""CREATE TABLE IF NOT EXISTS coupons (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, coupon_json TEXT,
-            created_at TEXT DEFAULT (datetime('now')))""")
-        conn.execute("INSERT INTO coupons (date, coupon_json) VALUES (?, ?)",
-                     (game_date, json.dumps(coupon, ensure_ascii=False)))
-    logger.info("Kupon %s: %d predykcji, %d picków (EV ≥ %.0f%%)",
-                game_date, len(preds), len(picks), EV_MIN * 100)
+        if stat == "PTS":
+            conn.execute("""CREATE TABLE IF NOT EXISTS coupons (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, coupon_json TEXT,
+                created_at TEXT DEFAULT (datetime('now')))""")
+            conn.execute("INSERT INTO coupons (date, coupon_json) VALUES (?, ?)",
+                         (game_date, json.dumps(coupon, ensure_ascii=False)))
+        else:
+            conn.execute(STAT_COUPONS_DDL)
+            conn.execute("INSERT INTO stat_coupons (date, stat, coupon_json) VALUES (?, ?, ?)",
+                         (game_date, stat, json.dumps(coupon, ensure_ascii=False)))
+    logger.info("Kupon %s %s: %d predykcji, %d picków (EV ≥ %.0f%%)",
+                stat, game_date, len(preds), len(picks), EV_MIN * 100)
     return coupon
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Weryfikacja
 # ─────────────────────────────────────────────────────────────────────────────
+STAT_COUPONS_DDL = """CREATE TABLE IF NOT EXISTS stat_coupons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, stat TEXT, coupon_json TEXT,
+    created_at TEXT DEFAULT (datetime('now')))"""
+
+
 def actual_points_fn():
     """Funkcja (player_name, 'YYYY-MM-DD') → punkty albo None, z logów w data/raw."""
     p, _ = load_logs(offline=True)
     p = p.assign(_k=p["PLAYER_NAME"].map(norm_name), _d=p["GAME_DATE"].dt.date.astype(str))
     lookup = {(k, d): float(v) for k, d, v in zip(p["_k"], p["_d"], p["PTS"])}
     return lambda name, d: lookup.get((norm_name(name), d))
+
+
+def actual_stat_fn(stat: str):
+    """Funkcja (player_name, 'YYYY-MM-DD') → wartość statystyki albo None, z logów w data/raw."""
+    p, _ = load_logs(offline=True)
+    p = p.assign(_k=p["PLAYER_NAME"].map(norm_name), _d=p["GAME_DATE"].dt.date.astype(str))
+    lookup = {(k, d): float(v) for k, d, v in zip(p["_k"], p["_d"], p[stat])}
+    return lambda name, d: lookup.get((norm_name(name), d))
+
+
+def stat_results(stat: str, db_path: str = DB_PATH, actual_fn=None) -> list[dict]:
+    """
+    Picki z ostatniego kuponu REB/AST każdego dnia + wynik z logów (paper trading, stawka 1).
+    Bez osobnej tabeli wyników: liczone przy eksporcie, więc późne logi same się „dopisują”.
+    """
+    with sqlite3.connect(db_path) as conn:
+        conn.execute(STAT_COUPONS_DDL)
+        rows = conn.execute("""SELECT date, coupon_json FROM stat_coupons WHERE stat = ?
+                               AND id IN (SELECT MAX(id) FROM stat_coupons GROUP BY date, stat)
+                               ORDER BY date""", (stat,)).fetchall()
+    if not rows:
+        return []
+    actual_fn = actual_fn or actual_stat_fn(stat)
+    out = []
+    for d, cj in rows:
+        for pick in json.loads(cj).get("picks", []):
+            a = actual_fn(pick["player"], d)
+            res = None if a is None else ("WIN" if (a > pick["line"]) == (pick["bet"] == "over") else "LOSS")
+            out.append({**pick, "date": d, "actual": a, "result": res,
+                        "profit": None if res is None else round(pick["odds"] - 1 if res == "WIN" else -1.0, 3)})
+    return out

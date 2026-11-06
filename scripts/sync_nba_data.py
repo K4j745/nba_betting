@@ -8,7 +8,10 @@ pobiera laptop, a Actions czyta je z brancha `data`.
 Co robi:
   1. history.load_logs(refresh_current=True) — 4 zapytania (bieżący sezon P/T, RS/PO);
      zakończone sezony pobierane tylko, jeśli brakuje ich w data/raw.
-  2. Buduje commit z samymi plikami data/raw/*.csv.gz (bez rodzica) i wypycha go
+  2. kalshi.update_history() — nowe rozliczone rynki Kalshi (PTS/REB/AST) → data/raw/kalshi_lines.csv.gz
+     + raporty kontuzji NBA z godziny przed każdym meczem → data/raw/injury_reports.csv.gz
+     (błąd Kalshi / raportów nie blokuje synchronizacji logów).
+  3. Buduje commit z samymi plikami data/raw/*.csv.gz (bez rodzica) i wypycha go
      z --force na refs/heads/data. Branch ma zawsze jeden commit → repo nie puchnie.
      Katalog roboczy, index i bieżący branch NIE są ruszane (plumbing gita).
 
@@ -66,6 +69,16 @@ def main():
     players, _ = load_logs(refresh_current=True)
     last = players["GAME_DATE"].max().date()
     logger.info("Logi: %d wierszy, ostatni mecz %s", len(players), last)
+    try:
+        import kalshi
+        h = kalshi.update_history()
+        # raport kontuzji z chwili start − 1 h dla nowych meczów (market_model.py)
+        import injuries
+        import pandas as pd
+        tips = h.dropna(subset=["tip"]).drop_duplicates("event_ticker")["tip"]
+        injuries.report_history([(t - pd.Timedelta(hours=1)).to_pydatetime() for t in tips])
+    except Exception as e:
+        logger.error("Kalshi / raporty kontuzji: %s — synchronizuję same logi", e)
 
     if args.no_push:
         return
