@@ -26,7 +26,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import requests
 
-from history import norm_name
+from history import RAW_DIR, norm_name
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,7 @@ BASE_URL      = "https://ak-static.cms.nba.com/referee/injury/Injury-Report_{}.p
 ET            = ZoneInfo("America/New_York")
 STATUSES      = ("Out", "Doubtful", "Questionable", "Probable", "Available")
 OUT_STATUSES  = ("Out", "Doubtful")
+HISTORY_PATH  = RAW_DIR / "injury_reports.csv.gz"   # raporty historyczne (do ewaluacji, branch data)
 LOOKBACK_H    = 12
 # nagłówki kolumn w PDF → nazwy pól (granice kolumn liczone z pozycji nagłówków)
 HEADER = [("Game", "game_date"), ("Game", "game_time"), ("Matchup", "matchup"), ("Team", "team"),
@@ -149,6 +150,50 @@ def fetch_out_players(game_date, before: datetime | None = None) -> pd.DataFrame
     logger.info("Raport kontuzji %s ET: %d wierszy, %d Out/Doubtful na %s",
                 t.strftime("%Y-%m-%d %H:%M"), len(df), len(out_players(df, game_date)), game_date)
     return out_players(df, game_date)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Historia: raport obowiązujący w danej chwili (np. 1 h przed meczem)
+# ─────────────────────────────────────────────────────────────────────────────
+def _snap_key(t: datetime) -> str:
+    t = t.astimezone(ET)
+    return (t - timedelta(minutes=t.minute % 15)).strftime("%Y-%m-%d %H:%M")
+
+
+def load_report_history() -> pd.DataFrame:
+    if not HISTORY_PATH.exists():
+        return pd.DataFrame(columns=["snapshot", "report_ts", "game_date", "team", "name_key", "status"])
+    return pd.read_csv(HISTORY_PATH, parse_dates=["game_date"])
+
+
+def report_history(times, save_every: int = 50) -> pd.DataFrame:
+    """
+    Dla każdej chwili t (zaokrąglonej w dół do 15 min ET): najnowszy raport ≤ t → wiersze
+    Out/Doubtful/… z kolumną snapshot = t. Wyniki w HISTORY_PATH (przyrostowo, wznawialne).
+    Pusty raport (brak pliku w LOOKBACK_H) zapisujemy jako wiersz z team = NaN, żeby nie pytać ponownie.
+    """
+    hist = load_report_history()
+    done = set(hist["snapshot"].astype(str))
+    todo = sorted({_snap_key(t) for t in times} - done)
+    logger.info("Raporty kontuzji: %d chwil do pobrania (%d w cache)", len(todo), len(done))
+    s, new = requests.Session(), []
+    for i, key in enumerate(todo, 1):
+        t = datetime.strptime(key, "%Y-%m-%d %H:%M").replace(tzinfo=ET)
+        rep = latest_report(t, session=s)
+        if rep is None:
+            new.append(pd.DataFrame([{"snapshot": key}]))
+        else:
+            df = parse_report(rep[1])
+            df = df[["game_date", "team", "name_key", "status"]].assign(
+                snapshot=key, report_ts=rep[0].strftime("%Y-%m-%d %H:%M"))
+            new.append(df if not df.empty else pd.DataFrame([{"snapshot": key}]))
+        if i % save_every == 0 or i == len(todo):
+            hist = pd.concat([hist, *new], ignore_index=True)
+            new = []
+            HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+            hist.to_csv(HISTORY_PATH, index=False)
+            logger.info("  raporty: %d/%d", i, len(todo))
+    return hist
 
 
 # ─────────────────────────────────────────────────────────────────────────────

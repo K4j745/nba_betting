@@ -5,7 +5,7 @@ Projekt badawczy: przewiduje punkty, zbiórki i asysty zawodników NBA i porówn
 **Dashboard:** https://K4j745.github.io/nba_betting/dashboard.html
 
 > [!WARNING]
-> **Model nie ma przewagi nad rynkiem.** Uczciwa ewaluacja walk-forward ([reports/eval_2026-10-30.json](reports/eval_2026-10-30.json): 905 linii Pinnacle i 1011 Unibet z marca–czerwca i października 2026) pokazuje, że kursy po zdjęciu marży przewidują wynik lepiej niż model. Δ log-loss vs Pinnacle wynosi +0,035, CI95 [+0,016; +0,055]. Kupon na dashboardzie to **symulacja (paper trading)**: zbiera wyniki poza próbą, nie jest rekomendacją zakładów.
+> **Model nie ma przewagi nad rynkiem.** Uczciwa ewaluacja walk-forward ([reports/eval_2026-10-30.json](reports/eval_2026-10-30.json): 905 linii Pinnacle i 1011 Unibet z marca–czerwca i października 2026) pokazuje, że kursy po zdjęciu marży przewidują wynik lepiej niż model. Δ log-loss vs Pinnacle wynosi +0,035, CI95 [+0,016; +0,055]. To samo dla cen Kalshi (punkty, zbiórki, asysty, 13 tys. linii, [reports/eval_stats_2026-11-03.json](reports/eval_stats_2026-11-03.json)). Model, który zaczyna od ceny rynku i ją koryguje, też nie daje poprawy ([reports/market_model_2026-11-03.json](reports/market_model_2026-11-03.json)). Kupon na dashboardzie to **symulacja (paper trading)**: zbiera wyniki poza próbą, nie jest rekomendacją zakładów.
 
 ## Jak to działa
 
@@ -79,14 +79,39 @@ Na liniach bukmacherów revenge wypada pod linią (19 overów na 60 linii). To j
 
 Line shopping obniża marżę, ale **przewagi nie daje**. Od 2026-10-30 pipeline pobiera kursy 10 bukmacherów z regionu `eu`, w tym Betclic FR (`betclic_fr`), bez dodatkowego kosztu w Odds API. Polskiego betclic.pl nie ma w API. Scrapingu nie wdrażam: regulaminu betclic.pl pod tym kątem nie weryfikowałem, a bukmacherzy zwykle zabraniają automatycznego pobierania.
 
+### Zbiórki i asysty vs Kalshi
+
+Walk-forward (model trenowany co tydzień na wcześniejszych meczach), linie główne Kalshi, cena = środek bid/ask ≥ 1 h przed meczem, 11.2025 – 11.2026 ([reports/eval_stats_2026-11-03.json](reports/eval_stats_2026-11-03.json)). Dodatnia Δ = model gorszy od rynku.
+
+| | Linii | Δ log-loss (base) | Δ log-loss (faktyczne absencje) | MAE model / linia |
+|---|---|---|---|---|
+| Punkty | 5537 | +0,021 [+0,015; +0,026] | +0,016 [+0,011; +0,022] | 5,49 / 5,50 |
+| Zbiórki | 4411 | +0,012 [+0,006; +0,018] | +0,011 [+0,005; +0,017] | 2,27 / 2,28 |
+| Asysty | 3493 | +0,017 [+0,010; +0,024] | +0,016 [+0,008; +0,023] | 1,90 / 1,89 |
+
+Średnią model przewiduje tak dobrze jak linia, ale jego prawdopodobieństwa są gorsze od cen.
+
+### Model od rynku
+
+[market_model.py](market_model.py): `logit p = α + β·logit(p_rynku) + γ·(logit p_modelu − logit p_rynku) + δ·absencje`, regresja logistyczna walk-forward. Absencje liczone z **raportu kontuzji z godziny przed meczem**, czyli z tego, co rynek wiedział w chwili ceny. Faktyczne absencje to tylko górna granica, bo zawierają późne skreślenia.
+
+| | Linii | rynek + model | rynek + model + raport kontuzji |
+|---|---|---|---|
+| Punkty | 5016 | +0,0004 [−0,0008; +0,0017] | +0,0007 [−0,0007; +0,0022] |
+| Zbiórki | 3886 | +0,0009 [−0,0006; +0,0023] | +0,0012 [−0,0004; +0,0027] |
+| Asysty | 3004 | +0,0006 [−0,0008; +0,0021] | +0,0003 [−0,0019; +0,0023] |
+
+Rynek jest dobrze skalibrowany (β ≈ 1). Waga modelu γ jest bliska zeru (zbiórki: 0,15 [−0,007; 0,31], na granicy). Zakłady przy EV > 5% mają wszędzie ujemny ROI. Na asystach współczynniki absencji z raportu są istotne na całej próbie, ale poza próbą nie poprawiają prognozy.
+
 ## Struktura
 
 | Plik | Rola |
 |---|---|
 | `history.py` | Logi sezonów 2021-22+ z `nba_api` (`LeagueGameLog`), tabela mecz–zawodnik, cechy point-in-time, zbiór `data/player_games.csv.gz` |
 | `points_model.py` | `PointsModel` i `train_points_model` (PTS / REB / AST) |
-| `injuries.py` | Oficjalny raport kontuzji NBA (PDF) → Out/Doubtful; `--validate` porównuje z logami |
+| `injuries.py` | Oficjalny raport kontuzji NBA (PDF) → Out/Doubtful; historia raportów z godziny przed meczami (`data/raw/injury_reports.csv.gz`); `--validate` porównuje z logami |
 | `kalshi.py` | Ceny Kalshi: historia rozliczonych rynków (`data/raw/kalshi_lines.csv.gz`, archiwum przez bisekcję drabinki progów) i linie na żywo |
+| `market_model.py` | Korekta ceny Kalshi: model + absencje z raportu kontuzji sprzed meczu, walk-forward → `reports/market_model_*.json` |
 | `evaluate_stats.py` | Model vs Kalshi dla PTS / REB / AST (walk-forward tygodniowo) → `reports/eval_stats_*.json` |
 | `evaluate.py` | Ewaluacja walk-forward vs rynek: log-loss/Brier vs kursy bez marży, bootstrap CI, symulacja zakładów EV, ablacja zestawów cech → `reports/` |
 | `hypotheses.py` | Testy hipotez revenge / nemesis na resztach modelu poza próbą → `reports/hypotheses_*.json` |

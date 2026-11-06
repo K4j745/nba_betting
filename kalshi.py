@@ -191,7 +191,7 @@ def load_history() -> pd.DataFrame:
         return pd.DataFrame()
     h = pd.read_csv(HISTORY_PATH, parse_dates=["game_date"])
     for c in ("tip", "snap_ts"):
-        h[c] = pd.to_datetime(h[c], utc=True)
+        h[c] = pd.to_datetime(h[c], utc=True, format="ISO8601")
     return h
 
 

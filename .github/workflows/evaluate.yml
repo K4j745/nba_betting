@@ -48,6 +48,11 @@ jobs:
           if [ -f data/raw/kalshi_lines.csv.gz ]; then python evaluate_stats.py
           else echo "Brak data/raw/kalshi_lines.csv.gz — pomijam"; fi
 
+      - name: Model od rynku (korekta cen Kalshi)
+        run: |
+          if [ -f data/raw/kalshi_lines.csv.gz ] && [ -f data/raw/injury_reports.csv.gz ]; then python market_model.py
+          else echo "Brak historii Kalshi lub raportów kontuzji — pomijam"; fi
+
       - name: Commit raportu
         run: |
           git config user.name  "github-actions[bot]"

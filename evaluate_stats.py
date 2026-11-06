@@ -147,7 +147,7 @@ def run() -> dict:
     REPORT_DIR.mkdir(exist_ok=True)
     stem = REPORT_DIR / f"eval_stats_{report['generated']}"
     Path(f"{stem}.json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
-    cols = ["stat", "game_date", "player_name", "GAME_ID", "PLAYER_ID", "line", "bid", "ask", "p_mid",
+    cols = ["stat", "game_date", "tip", "player_name", "GAME_ID", "PLAYER_ID", "line", "bid", "ask", "p_mid",
             "mu_base", "p_base", "mu_absence", "p_absence", "y_over", "PTS", "REB", "AST"]
     pd.concat(preds)[cols].to_csv(f"{stem}_predictions.csv", index=False)
     logger.info("Raport: %s.json", stem)
