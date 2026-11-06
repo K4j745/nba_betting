@@ -43,6 +43,8 @@ FIRST_SEASON  = 2021          # 2021-22: pierwszy pełny sezon po skróconych 20
 TEAM_WINDOW   = 15            # mecze drużyny do DEF_RTG / pace
 REST_CAP      = 10            # dni odpoczynku obcinamy (przerwa między sezonami ≠ informacja)
 ABSENCE_DAYS  = 14            # nieobecny = grał dla drużyny w ostatnich 14 dniach, a dziś go nie ma
+MIN_HALFLIFE  = 2             # półokres minut (w meczach); statystyki: STAT_HALFLIFE
+STAT_HALFLIFE = {"PTS": 31, "REB": 46, "AST": 24}
 ROTATION_MIN  = 15.0          # … i średnio ≥ 15 min w ostatnich 10 meczach (zawodnik rotacji)
 HOME_COURT    = 2.0           # przewaga własnego parkietu w punktach (do oczekiwanej różnicy)
 
@@ -137,9 +139,9 @@ def team_game_table(team_logs: pd.DataFrame) -> pd.DataFrame:
     """Jeden wiersz na drużynę-mecz z posiadaniami i punktami straconymi."""
     t = team_logs.copy()
     t["POSS"] = t["FGA"] + 0.44 * t["FTA"] - t["OREB"] + t["TOV"]
-    opp = t[["GAME_ID", "TEAM_ID", "PTS", "POSS", "REB", "AST"]].rename(
+    opp = t[["GAME_ID", "TEAM_ID", "PTS", "POSS", "REB", "AST", "FTA"]].rename(
         columns={"TEAM_ID": "OPP_ID", "PTS": "PTS_ALLOWED", "POSS": "OPP_POSS",
-                 "REB": "REB_ALLOWED", "AST": "AST_ALLOWED"}
+                 "REB": "REB_ALLOWED", "AST": "AST_ALLOWED", "FTA": "FTA_ALLOWED"}
     )
     t = t.merge(opp, on="GAME_ID")
     t = t[t["TEAM_ID"] != t["OPP_ID"]]
@@ -147,8 +149,9 @@ def team_game_table(team_logs: pd.DataFrame) -> pd.DataFrame:
     return t[[
         "GAME_ID", "GAME_DATE", "TEAM_ID", "TEAM_ABBREVIATION", "OPP_ID",
         "MIN", "FGA", "FTA", "TOV", "PTS", "PTS_ALLOWED", "GAME_POSS",
-        "REB_ALLOWED", "AST_ALLOWED",
-    ]].rename(columns={"MIN": "TEAM_MIN", "FGA": "TEAM_FGA", "FTA": "TEAM_FTA", "TOV": "TEAM_TOV"})
+        "REB_ALLOWED", "AST_ALLOWED", "FTA_ALLOWED", "PF",
+    ]].rename(columns={"MIN": "TEAM_MIN", "FGA": "TEAM_FGA", "FTA": "TEAM_FTA", "TOV": "TEAM_TOV",
+                       "PF": "TEAM_PF"})
 
 
 def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
@@ -165,6 +168,9 @@ def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
     # zbiórki / asysty rywali na 100 posiadań (cechy dla modeli REB i AST)
     out["reb_allowed"] = 100 * roll("REB_ALLOWED") / roll("GAME_POSS")
     out["ast_allowed"] = 100 * roll("AST_ALLOWED") / roll("GAME_POSS")
+    # rzuty osobiste rywali i własne faule na 100 posiadań („agresywna” obrona)
+    out["fta_allowed"] = 100 * roll("FTA_ALLOWED") / roll("GAME_POSS")
+    out["pf_rate"] = 100 * roll("TEAM_PF") / roll("GAME_POSS")
     out["pace"] = g["GAME_POSS"].transform(lambda s: s.rolling(TEAM_WINDOW, min_periods=3).mean())
     return out.sort_values("GAME_DATE")
 
@@ -291,6 +297,24 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
         df[f"{lo}_avg_vs_opp"] = gh[st].transform(lambda s: s.shift(1).rolling(5, min_periods=1).mean())
     df["oreb_avg_10"] = _roll_mean(g, "OREB", 10)
 
+    # ── foul_baiter: ile zawodnik chodzi na linię i jak sam fauluje
+    sum10 = lambda col: g[col].transform(lambda s: s.shift(1).rolling(10, min_periods=1).sum())
+    fta10, fga10, pf10 = sum10("FTA"), sum10("FGA"), sum10("PF")
+    df["ft_rate_10"]   = np.where(fga10 > 0, fta10 / fga10, np.nan)
+    df["fta_per36_10"] = np.where(min10 > 0, 36 * fta10 / min10, np.nan)
+    df["pf_per36_10"]  = np.where(min10 > 0, 36 * pf10 / min10, np.nan)
+
+    # ── Tempo zapominania osobne dla każdej statystyki (idea z opisu DARKO: minuty i rola
+    # zmieniają się szybko, skuteczność i zbiórki wolno) + rozbicie minuty × produkcja na minutę
+    ewm = lambda col, hl: g[col].transform(lambda s: s.shift(1).ewm(halflife=hl, min_periods=1).mean())
+    df["min_hl2"]  = ewm("MIN", MIN_HALFLIFE)
+    df["usg_hl17"] = ewm("USG", 17)
+    for st, hl in STAT_HALFLIFE.items():
+        lo = st.lower()
+        minutes = ewm("MIN", hl)
+        df[f"{lo}36_hl"] = np.where(minutes > 0, 36 * ewm(st, hl) / minutes, np.nan)
+        df[f"{lo}_exp_hl"] = df["min_hl2"] * df[f"{lo}36_hl"] / 36
+
     # ── Absencje kolegów z rotacji (bff / no_bff — wersja drużynowa)
     for col in ("MIN", "PTS", "FGA", "REB", "AST"):
         df[f"_{col}_post"] = g[col].transform(lambda s: s.rolling(10, min_periods=3).mean())
@@ -312,11 +336,15 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     df = df.sort_values("GAME_DATE")
     opp = form.rename(columns={"TEAM_ID": "OPP_ID", "def_rtg": "opp_def_rtg", "pace": "opp_pace",
                                "off_rtg": "opp_off_rtg", "reb_allowed": "opp_reb_allowed",
-                               "ast_allowed": "opp_ast_allowed"})
+                               "ast_allowed": "opp_ast_allowed", "fta_allowed": "opp_fta_allowed",
+                               "pf_rate": "opp_pf_rate"})
     df = pd.merge_asof(df, opp, on="GAME_DATE", by="OPP_ID", allow_exact_matches=False)
     own = form.rename(columns={"def_rtg": "team_def_rtg", "pace": "team_pace", "off_rtg": "team_off_rtg"}) \
-        .drop(columns=["reb_allowed", "ast_allowed"])
+        .drop(columns=["reb_allowed", "ast_allowed", "fta_allowed", "pf_rate"])
     df = pd.merge_asof(df, own, on="GAME_DATE", by="TEAM_ID", allow_exact_matches=False)
+
+    # foul_baiter × rywal, który dużo fauluje (poziom drużyny: krycia nie znamy przed meczem)
+    df["foul_matchup"] = df["fta_per36_10"] * df["opp_fta_allowed"] / 100
 
     # ── Kontekst meczu (krok 4c): oczekiwany wynik z ratingów drużyn — zastępstwo
     # spreadu i totalu z rynku, których historii nie mamy
@@ -467,6 +495,10 @@ TARGETS = {
     "REB": (REB_BASE_FEATURE_COLS, ["n_out", "vac_min", "vac_min_delta", "vac_reb", "vac_reb_delta"]),
     "AST": (AST_BASE_FEATURE_COLS, ["n_out", "vac_min", "vac_min_delta", "vac_ast", "vac_ast_delta"]),
 }
+FOUL_FEATURE_COLS = ["ft_rate_10", "fta_per36_10", "pf_per36_10", "opp_fta_allowed", "opp_pf_rate",
+                     "foul_matchup"]
+DECAY_FEATURE_COLS = {st: ["min_hl2", "usg_hl17", f"{st.lower()}36_hl", f"{st.lower()}_exp_hl"]
+                      for st in ("PTS", "REB", "AST")}
 FATIGUE_FEATURE_COLS = ["games_7d", "min_7d", "is_3in4", "travel_km", "tz_shift", "road_trip", "at_altitude"]
 GAME_CONTEXT_FEATURE_COLS = ["team_exp_pts", "exp_total", "exp_margin", "abs_margin"]
 TARGETS["PTS"] = (BASE_FEATURE_COLS, ABSENCE_FEATURE_COLS)

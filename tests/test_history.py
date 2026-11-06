@@ -21,7 +21,7 @@ def _logs():
                 SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, TEAM_ID=tid,
                 TEAM_ABBREVIATION=abbr[tid],
                 MATCHUP=f"{abbr[tid]} {'vs.' if home else '@'} {abbr[opp]}",
-                MIN=240, FGA=80, FTA=20, OREB=10, TOV=12, REB=45, AST=25,
+                MIN=240, FGA=80, FTA=20, OREB=10, TOV=12, REB=45, AST=25, PF=20,
                 PTS=100 + 10 * i if tid == BOS else 100,
             ))
         player_rows.append(dict(
@@ -151,3 +151,17 @@ def test_rebound_and_assist_features_use_previous_games(feats):
     # rywal (BOS) oddaje 45 zbiórek przy 90,8 posiadania → ~49,6 na 100
     assert feats.loc[3, "opp_reb_allowed"] == pytest.approx(100 * 45 / 90.8, rel=1e-3)
     assert feats["opp_reb_allowed"].isna().sum() == 3
+
+
+def test_foul_profile_uses_previous_games(feats):
+    # mecze 1–3: po FTA i PF stałe w fikscie → na meczu 3 tylko dwa poprzednie mecze
+    r = feats.loc[2]
+    assert r["pf_per36_10"] == pytest.approx(36 * 4 / 60)
+    assert r["ft_rate_10"] == pytest.approx(feats.loc[0, "FTA"] / feats.loc[0, "FGA"])
+    assert np.isnan(feats.loc[0, "ft_rate_10"])
+
+
+def test_decay_features_split_minutes_and_rate(feats):
+    r = feats.loc[3]
+    assert r["pts_exp_hl"] == pytest.approx(r["min_hl2"] * r["pts36_hl"] / 36)
+    assert np.isnan(feats.loc[0, "min_hl2"])          # pierwszy mecz: brak historii
