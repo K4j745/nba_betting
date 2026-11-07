@@ -406,6 +406,25 @@ def _latest_research_summary(report_dir: str = "reports") -> dict | None:
     }
 
 
+def _research_log(report_dir: str = "reports") -> list[dict]:
+    """Ręcznie prowadzona lista testów i wniosków (zakładka Badania), najnowsze pierwsze."""
+    path = Path(report_dir) / "research_log.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+
+
+def _verdict(tabs: dict) -> dict | None:
+    """Werdykt na górze dashboardu: Δ log-loss modelu (base) względem Kalshi dla każdej statystyki."""
+    stats = {}
+    for stat, tab in tabs.items():
+        rows = (tab.get("kalshi_eval") or {}).get("rows", [])
+        base = next((r for r in rows if r["features"] == "base"), None)
+        if base:
+            stats[stat] = {"diff": base["logloss_diff"], "ci95": base["logloss_diff_ci95"], "n": base["n"]}
+    if not stats:
+        return None
+    return {"has_edge": any(v["ci95"][1] < 0 for v in stats.values()), "stats": stats}
+
+
 def _stat_tabs(today: str, db_path: str = DB_PATH, report_dir: str = "reports") -> dict:
     """
     Zakładki dashboardu Punkty / Zbiórki / Asysty:
@@ -650,6 +669,7 @@ def export_dashboard_data(
 
     conn.close()
 
+    tabs = _stat_tabs(today, db_path=db_path)
     data = {
         "generated_at":    _dt.now().isoformat(),
         "game_date":       today,
@@ -669,7 +689,9 @@ def export_dashboard_data(
         "bet_history":      bet_history,
         "model_stats":      model_stats,
         "research":         _latest_research_summary(),
-        "stats":            _stat_tabs(today, db_path=db_path),
+        "stats":            tabs,
+        "verdict":          _verdict(tabs),
+        "research_log":     _research_log(),
     }
 
     with open(output_path, "w", encoding="utf-8") as f:
