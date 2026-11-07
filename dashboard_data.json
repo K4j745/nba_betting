@@ -1,9 +1,122 @@
 {
-  "generated_at": "2026-11-05T15:01:41.761108",
-  "game_date": "2026-11-05",
-  "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "generated_at": "2026-11-07T11:42:50.488175",
+  "game_date": "2026-11-07",
+  "today_coupon": {
+    "date": "2026-11-07",
+    "model_version": "pts-2026-11-07",
+    "stat": "PTS",
+    "paper_trading": true,
+    "injury_report": true,
+    "n_out": 23,
+    "n_predictions": 81,
+    "picks": [
+      {
+        "game": "Orlando Magic @ Golden State Warriors",
+        "player": "Anthony Black",
+        "bet": "under",
+        "stat": "PTS",
+        "line": 14.5,
+        "odds": 1.89,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 11.8,
+        "p_over": 0.326,
+        "confidence": 67,
+        "ev": 0.2739,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 11.8 pkt vs linia 14.5 (pinnacle), ewm 12.5, min 29.3, opp_def_rtg 114.0, EV +27.3%"
+      },
+      {
+        "game": "Houston Rockets @ Phoenix Suns",
+        "player": "Marcus Smart",
+        "bet": "over",
+        "stat": "PTS",
+        "line": 6.5,
+        "odds": 1.85,
+        "bookmaker": "unibet",
+        "pts_predicted": 8.3,
+        "p_over": 0.641,
+        "confidence": 64,
+        "ev": 0.1859,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 8.3 pkt vs linia 6.5 (unibet), ewm 10.1, min 27.1, opp_def_rtg 118.0, EV +18.5%"
+      },
+      {
+        "game": "New York Knicks @ Cleveland Cavaliers",
+        "player": "Karl-Anthony Towns",
+        "bet": "under",
+        "stat": "PTS",
+        "line": 20.5,
+        "odds": 1.85,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 17.9,
+        "p_over": 0.36,
+        "confidence": 64,
+        "ev": 0.184,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 17.9 pkt vs linia 20.5 (pinnacle), ewm 17.5, min 29.9, opp_def_rtg 110.9, EV +18.3%"
+      },
+      {
+        "game": "Denver Nuggets @ Indiana Pacers",
+        "player": "Jamal Murray",
+        "bet": "over",
+        "stat": "PTS",
+        "line": 22.5,
+        "odds": 1.89,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 24.9,
+        "p_over": 0.606,
+        "confidence": 61,
+        "ev": 0.1453,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 24.9 pkt vs linia 22.5 (pinnacle), ewm 25.0, min 37.9, opp_def_rtg 111.5, EV +14.5%"
+      },
+      {
+        "game": "Brooklyn Nets @ Atlanta Hawks",
+        "player": "Jalen Johnson",
+        "bet": "under",
+        "stat": "PTS",
+        "line": 20.5,
+        "odds": 1.88,
+        "bookmaker": "unibet",
+        "pts_predicted": 18.6,
+        "p_over": 0.398,
+        "confidence": 60,
+        "ev": 0.1318,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 18.6 pkt vs linia 20.5 (unibet), ewm 18.3, min 33.1, opp_def_rtg 115.0, EV +13.1%"
+      }
+    ],
+    "total_picks": 5,
+    "simulated_stake_per_pick": 10.0,
+    "simulated_total_stake": 50.0
+  },
+  "no_games_reason": null,
+  "status_message": "",
   "kpi": {
     "win_rate": 0.4286,
     "roi_30d": -0.2129,
@@ -490,5 +603,1123 @@
         ]
       }
     ]
-  }
+  },
+  "stats": {
+    "PTS": {
+      "kalshi_eval": {
+        "report": "eval_stats_2026-11-03.json",
+        "dates": [
+          "2025-11-18",
+          "2026-10-29"
+        ],
+        "matched": 5537,
+        "rows": [
+          {
+            "features": "base",
+            "n": 5537,
+            "logloss_model": 0.6903,
+            "logloss_market": 0.6697,
+            "logloss_diff": 0.0207,
+            "logloss_diff_ci95": [
+              0.0153,
+              0.0263
+            ],
+            "mae_model": 5.494,
+            "mae_line": 5.5,
+            "bets_ev5": {
+              "ev_threshold": 0.05,
+              "bets": 2673,
+              "hit_rate": 0.484,
+              "roi": -0.0571,
+              "roi_ci95": [
+                -0.0927,
+                -0.0209
+              ]
+            }
+          },
+          {
+            "features": "absence",
+            "n": 5537,
+            "logloss_model": 0.6861,
+            "logloss_market": 0.6697,
+            "logloss_diff": 0.0164,
+            "logloss_diff_ci95": [
+              0.0107,
+              0.0217
+            ],
+            "mae_model": 5.46,
+            "mae_line": 5.5,
+            "bets_ev5": {
+              "ev_threshold": 0.05,
+              "bets": 2502,
+              "hit_rate": 0.505,
+              "roi": -0.0266,
+              "roi_ci95": [
+                -0.0656,
+                0.0106
+              ]
+            }
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "p": 0.224,
+            "market": 0.352,
+            "actual": 0.34,
+            "n": 379.0
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "p": 0.357,
+            "market": 0.419,
+            "actual": 0.377,
+            "n": 778.0
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "p": 0.426,
+            "market": 0.445,
+            "actual": 0.446,
+            "n": 673.0
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "p": 0.476,
+            "market": 0.476,
+            "actual": 0.434,
+            "n": 805.0
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "p": 0.525,
+            "market": 0.499,
+            "actual": 0.49,
+            "n": 861.0
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "p": 0.574,
+            "market": 0.53,
+            "actual": 0.522,
+            "n": 781.0
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "p": 0.642,
+            "market": 0.572,
+            "actual": 0.561,
+            "n": 970.0
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "p": 0.748,
+            "market": 0.62,
+            "actual": 0.607,
+            "n": 290.0
+          }
+        ]
+      }
+    },
+    "REB": {
+      "kalshi_eval": {
+        "report": "eval_stats_2026-11-03.json",
+        "dates": [
+          "2025-11-18",
+          "2026-10-29"
+        ],
+        "matched": 4411,
+        "rows": [
+          {
+            "features": "base",
+            "n": 4411,
+            "logloss_model": 0.6929,
+            "logloss_market": 0.6812,
+            "logloss_diff": 0.0117,
+            "logloss_diff_ci95": [
+              0.006,
+              0.0176
+            ],
+            "mae_model": 2.265,
+            "mae_line": 2.276,
+            "bets_ev5": {
+              "ev_threshold": 0.05,
+              "bets": 1790,
+              "hit_rate": 0.499,
+              "roi": -0.0351,
+              "roi_ci95": [
+                -0.0825,
+                0.0124
+              ]
+            }
+          },
+          {
+            "features": "absence",
+            "n": 4411,
+            "logloss_model": 0.692,
+            "logloss_market": 0.6812,
+            "logloss_diff": 0.0107,
+            "logloss_diff_ci95": [
+              0.005,
+              0.0169
+            ],
+            "mae_model": 2.262,
+            "mae_line": 2.276,
+            "bets_ev5": {
+              "ev_threshold": 0.05,
+              "bets": 1767,
+              "hit_rate": 0.506,
+              "roi": -0.0296,
+              "roi_ci95": [
+                -0.0746,
+                0.017
+              ]
+            }
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "p": 0.234,
+            "market": 0.386,
+            "actual": 0.401,
+            "n": 207.0
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "p": 0.363,
+            "market": 0.447,
+            "actual": 0.419,
+            "n": 718.0
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "p": 0.426,
+            "market": 0.469,
+            "actual": 0.473,
+            "n": 849.0
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "p": 0.475,
+            "market": 0.491,
+            "actual": 0.498,
+            "n": 970.0
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "p": 0.523,
+            "market": 0.511,
+            "actual": 0.503,
+            "n": 789.0
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "p": 0.572,
+            "market": 0.537,
+            "actual": 0.551,
+            "n": 515.0
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "p": 0.636,
+            "market": 0.562,
+            "actual": 0.597,
+            "n": 300.0
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "p": 0.76,
+            "market": 0.637,
+            "actual": 0.698,
+            "n": 63.0
+          }
+        ]
+      },
+      "coupon": {
+        "date": "2026-11-07",
+        "model_version": "reb-2026-11-07",
+        "stat": "REB",
+        "paper_trading": true,
+        "injury_report": true,
+        "n_out": 23,
+        "n_predictions": 71,
+        "picks": [
+          {
+            "game": "Washington Wizards @ Oklahoma City Thunder",
+            "player": "Kenrich Williams",
+            "bet": "under",
+            "stat": "REB",
+            "line": 3.5,
+            "odds": 2.564,
+            "bookmaker": "kalshi",
+            "pts_predicted": 3.4,
+            "p_over": 0.426,
+            "confidence": 57,
+            "ev": 0.4707,
+            "p_market": 0.665,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 3.4 zb. vs linia 3.5 (kalshi), ewm 3.8, min 16.5, opp_reb_allowed 45.5, EV +47.1%"
+          },
+          {
+            "game": "Brooklyn Nets @ Atlanta Hawks",
+            "player": "Day'Ron Sharpe",
+            "bet": "under",
+            "stat": "REB",
+            "line": 7.5,
+            "odds": 2.041,
+            "bookmaker": "kalshi",
+            "pts_predicted": 6.7,
+            "p_over": 0.359,
+            "confidence": 64,
+            "ev": 0.3091,
+            "p_market": 0.565,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 6.7 zb. vs linia 7.5 (kalshi), ewm 7.0, min 22.4, opp_reb_allowed 43.9, EV +30.9%"
+          },
+          {
+            "game": "San Antonio Spurs @ Portland Trail Blazers",
+            "player": "Donovan Clingan",
+            "bet": "under",
+            "stat": "REB",
+            "line": 11.5,
+            "odds": 1.724,
+            "bookmaker": "kalshi",
+            "pts_predicted": 9.2,
+            "p_over": 0.257,
+            "confidence": 74,
+            "ev": 0.2802,
+            "p_market": 0.45499999999999996,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 9.2 zb. vs linia 11.5 (kalshi), ewm 10.5, min 24.2, opp_reb_allowed 43.9, EV +28.0%"
+          },
+          {
+            "game": "Orlando Magic @ Golden State Warriors",
+            "player": "Tristan da Silva",
+            "bet": "under",
+            "stat": "REB",
+            "line": 3.5,
+            "odds": 2.222,
+            "bookmaker": "kalshi",
+            "pts_predicted": 3.4,
+            "p_over": 0.43,
+            "confidence": 57,
+            "ev": 0.2669,
+            "p_market": 0.59,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 3.4 zb. vs linia 3.5 (kalshi), ewm 3.3, min 26.6, opp_reb_allowed 41.2, EV +26.7%"
+          },
+          {
+            "game": "Denver Nuggets @ Indiana Pacers",
+            "player": "Aaron Gordon",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 1.961,
+            "bookmaker": "kalshi",
+            "pts_predicted": 4.9,
+            "p_over": 0.369,
+            "confidence": 63,
+            "ev": 0.2383,
+            "p_market": 0.515,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 4.9 zb. vs linia 5.5 (kalshi), ewm 5.1, min 29.5, opp_reb_allowed 45.8, EV +23.8%"
+          },
+          {
+            "game": "Houston Rockets @ Phoenix Suns",
+            "player": "Khaman Maluach",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 1.754,
+            "bookmaker": "kalshi",
+            "pts_predicted": 4.7,
+            "p_over": 0.334,
+            "confidence": 67,
+            "ev": 0.168,
+            "p_market": 0.46499999999999997,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 4.7 zb. vs linia 5.5 (kalshi), ewm 5.2, min 17.0, opp_reb_allowed 40.9, EV +16.8%"
+          },
+          {
+            "game": "New York Knicks @ Cleveland Cavaliers",
+            "player": "OG Anunoby",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 1.852,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.2,
+            "p_over": 0.419,
+            "confidence": 58,
+            "ev": 0.0755,
+            "p_market": 0.485,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 5.2 zb. vs linia 5.5 (kalshi), ewm 5.4, min 33.8, opp_reb_allowed 44.1, EV +7.6%"
+          }
+        ],
+        "total_picks": 7,
+        "simulated_stake_per_pick": 10.0,
+        "simulated_total_stake": 70.0
+      },
+      "history": [
+        {
+          "game": "New York Knicks @ Cleveland Cavaliers",
+          "player": "OG Anunoby",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 1.852,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.2,
+          "p_over": 0.419,
+          "confidence": 58,
+          "ev": 0.0755,
+          "p_market": 0.485,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 5.2 zb. vs linia 5.5 (kalshi), ewm 5.4, min 33.8, opp_reb_allowed 44.1, EV +7.6%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Houston Rockets @ Phoenix Suns",
+          "player": "Khaman Maluach",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 1.754,
+          "bookmaker": "kalshi",
+          "pts_predicted": 4.7,
+          "p_over": 0.334,
+          "confidence": 67,
+          "ev": 0.168,
+          "p_market": 0.46499999999999997,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 4.7 zb. vs linia 5.5 (kalshi), ewm 5.2, min 17.0, opp_reb_allowed 40.9, EV +16.8%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Denver Nuggets @ Indiana Pacers",
+          "player": "Aaron Gordon",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 1.961,
+          "bookmaker": "kalshi",
+          "pts_predicted": 4.9,
+          "p_over": 0.369,
+          "confidence": 63,
+          "ev": 0.2383,
+          "p_market": 0.515,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 4.9 zb. vs linia 5.5 (kalshi), ewm 5.1, min 29.5, opp_reb_allowed 45.8, EV +23.8%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Orlando Magic @ Golden State Warriors",
+          "player": "Tristan da Silva",
+          "bet": "under",
+          "stat": "REB",
+          "line": 3.5,
+          "odds": 2.222,
+          "bookmaker": "kalshi",
+          "pts_predicted": 3.4,
+          "p_over": 0.43,
+          "confidence": 57,
+          "ev": 0.2669,
+          "p_market": 0.59,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 3.4 zb. vs linia 3.5 (kalshi), ewm 3.3, min 26.6, opp_reb_allowed 41.2, EV +26.7%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "San Antonio Spurs @ Portland Trail Blazers",
+          "player": "Donovan Clingan",
+          "bet": "under",
+          "stat": "REB",
+          "line": 11.5,
+          "odds": 1.724,
+          "bookmaker": "kalshi",
+          "pts_predicted": 9.2,
+          "p_over": 0.257,
+          "confidence": 74,
+          "ev": 0.2802,
+          "p_market": 0.45499999999999996,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 9.2 zb. vs linia 11.5 (kalshi), ewm 10.5, min 24.2, opp_reb_allowed 43.9, EV +28.0%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Brooklyn Nets @ Atlanta Hawks",
+          "player": "Day'Ron Sharpe",
+          "bet": "under",
+          "stat": "REB",
+          "line": 7.5,
+          "odds": 2.041,
+          "bookmaker": "kalshi",
+          "pts_predicted": 6.7,
+          "p_over": 0.359,
+          "confidence": 64,
+          "ev": 0.3091,
+          "p_market": 0.565,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 6.7 zb. vs linia 7.5 (kalshi), ewm 7.0, min 22.4, opp_reb_allowed 43.9, EV +30.9%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Washington Wizards @ Oklahoma City Thunder",
+          "player": "Kenrich Williams",
+          "bet": "under",
+          "stat": "REB",
+          "line": 3.5,
+          "odds": 2.564,
+          "bookmaker": "kalshi",
+          "pts_predicted": 3.4,
+          "p_over": 0.426,
+          "confidence": 57,
+          "ev": 0.4707,
+          "p_market": 0.665,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 3.4 zb. vs linia 3.5 (kalshi), ewm 3.8, min 16.5, opp_reb_allowed 45.5, EV +47.1%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        }
+      ],
+      "kpi": {
+        "picks": 0,
+        "wins": 0,
+        "pnl": 0,
+        "roi": null
+      }
+    },
+    "AST": {
+      "kalshi_eval": {
+        "report": "eval_stats_2026-11-03.json",
+        "dates": [
+          "2025-11-21",
+          "2026-10-29"
+        ],
+        "matched": 3493,
+        "rows": [
+          {
+            "features": "base",
+            "n": 3493,
+            "logloss_model": 0.6962,
+            "logloss_market": 0.6795,
+            "logloss_diff": 0.0168,
+            "logloss_diff_ci95": [
+              0.0101,
+              0.0238
+            ],
+            "mae_model": 1.897,
+            "mae_line": 1.889,
+            "bets_ev5": {
+              "ev_threshold": 0.05,
+              "bets": 1639,
+              "hit_rate": 0.493,
+              "roi": -0.0521,
+              "roi_ci95": [
+                -0.102,
+                -0.004
+              ]
+            }
+          },
+          {
+            "features": "absence",
+            "n": 3493,
+            "logloss_model": 0.695,
+            "logloss_market": 0.6795,
+            "logloss_diff": 0.0155,
+            "logloss_diff_ci95": [
+              0.0084,
+              0.0225
+            ],
+            "mae_model": 1.892,
+            "mae_line": 1.889,
+            "bets_ev5": {
+              "ev_threshold": 0.05,
+              "bets": 1632,
+              "hit_rate": 0.502,
+              "roi": -0.0325,
+              "roi_ci95": [
+                -0.0803,
+                0.016
+              ]
+            }
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "p": 0.221,
+            "market": 0.374,
+            "actual": 0.362,
+            "n": 246.0
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "p": 0.358,
+            "market": 0.439,
+            "actual": 0.408,
+            "n": 571.0
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "p": 0.426,
+            "market": 0.472,
+            "actual": 0.49,
+            "n": 533.0
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "p": 0.474,
+            "market": 0.496,
+            "actual": 0.479,
+            "n": 708.0
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "p": 0.524,
+            "market": 0.514,
+            "actual": 0.49,
+            "n": 563.0
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "p": 0.572,
+            "market": 0.54,
+            "actual": 0.502,
+            "n": 412.0
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "p": 0.642,
+            "market": 0.565,
+            "actual": 0.539,
+            "n": 373.0
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "p": 0.741,
+            "market": 0.624,
+            "actual": 0.678,
+            "n": 87.0
+          }
+        ]
+      },
+      "coupon": {
+        "date": "2026-11-07",
+        "model_version": "ast-2026-11-07",
+        "stat": "AST",
+        "paper_trading": true,
+        "injury_report": true,
+        "n_out": 23,
+        "n_predictions": 62,
+        "picks": [
+          {
+            "game": "San Antonio Spurs @ Portland Trail Blazers",
+            "player": "Scoot Henderson",
+            "bet": "under",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 1.639,
+            "bookmaker": "kalshi",
+            "pts_predicted": 1.2,
+            "p_over": 0.056,
+            "confidence": 94,
+            "ev": 0.5467,
+            "p_market": 0.42,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 1.2 as. vs linia 3.5 (kalshi), ewm 1.5, min 22.2, opp_ast_allowed 23.5, EV +54.7%"
+          },
+          {
+            "game": "Washington Wizards @ Oklahoma City Thunder",
+            "player": "Trae Young",
+            "bet": "under",
+            "stat": "AST",
+            "line": 9.5,
+            "odds": 1.818,
+            "bookmaker": "kalshi",
+            "pts_predicted": 7.7,
+            "p_over": 0.279,
+            "confidence": 72,
+            "ev": 0.3102,
+            "p_market": 0.475,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 7.7 as. vs linia 9.5 (kalshi), ewm 8.8, min 34.4, opp_ast_allowed 24.5, EV +31.0%"
+          },
+          {
+            "game": "New York Knicks @ Cleveland Cavaliers",
+            "player": "Jalen Brunson",
+            "bet": "under",
+            "stat": "AST",
+            "line": 5.5,
+            "odds": 2.5,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.8,
+            "p_over": 0.5,
+            "confidence": 50,
+            "ev": 0.2493,
+            "p_market": 0.64,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 5.8 as. vs linia 5.5 (kalshi), ewm 5.5, min 35.5, opp_ast_allowed 25.3, EV +24.9%"
+          },
+          {
+            "game": "Denver Nuggets @ Indiana Pacers",
+            "player": "Jamal Murray",
+            "bet": "under",
+            "stat": "AST",
+            "line": 5.5,
+            "odds": 2.326,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.7,
+            "p_over": 0.487,
+            "confidence": 51,
+            "ev": 0.1925,
+            "p_market": 0.615,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 5.7 as. vs linia 5.5 (kalshi), ewm 6.1, min 37.9, opp_ast_allowed 25.7, EV +19.2%"
+          },
+          {
+            "game": "Brooklyn Nets @ Atlanta Hawks",
+            "player": "Nolan Traore",
+            "bet": "under",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 2.041,
+            "bookmaker": "kalshi",
+            "pts_predicted": 3.4,
+            "p_over": 0.435,
+            "confidence": 56,
+            "ev": 0.1529,
+            "p_market": 0.5800000000000001,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 3.4 as. vs linia 3.5 (kalshi), ewm 3.3, min 20.2, opp_ast_allowed 25.6, EV +15.3%"
+          },
+          {
+            "game": "Orlando Magic @ Golden State Warriors",
+            "player": "Tristan da Silva",
+            "bet": "under",
+            "stat": "AST",
+            "line": 1.5,
+            "odds": 2.083,
+            "bookmaker": "kalshi",
+            "pts_predicted": 1.6,
+            "p_over": 0.461,
+            "confidence": 54,
+            "ev": 0.1225,
+            "p_market": 0.5549999999999999,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 1.6 as. vs linia 1.5 (kalshi), ewm 1.4, min 26.6, opp_ast_allowed 27.5, EV +12.2%"
+          },
+          {
+            "game": "Houston Rockets @ Phoenix Suns",
+            "player": "Kevin Durant",
+            "bet": "over",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 2.222,
+            "bookmaker": "kalshi",
+            "pts_predicted": 3.7,
+            "p_over": 0.489,
+            "confidence": 49,
+            "ev": 0.0858,
+            "p_market": 0.41500000000000004,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 3.7 as. vs linia 3.5 (kalshi), ewm 3.7, min 34.5, opp_ast_allowed 27.0, EV +8.6%"
+          }
+        ],
+        "total_picks": 7,
+        "simulated_stake_per_pick": 10.0,
+        "simulated_total_stake": 70.0
+      },
+      "history": [
+        {
+          "game": "Houston Rockets @ Phoenix Suns",
+          "player": "Kevin Durant",
+          "bet": "over",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 2.222,
+          "bookmaker": "kalshi",
+          "pts_predicted": 3.7,
+          "p_over": 0.489,
+          "confidence": 49,
+          "ev": 0.0858,
+          "p_market": 0.41500000000000004,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 3.7 as. vs linia 3.5 (kalshi), ewm 3.7, min 34.5, opp_ast_allowed 27.0, EV +8.6%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Orlando Magic @ Golden State Warriors",
+          "player": "Tristan da Silva",
+          "bet": "under",
+          "stat": "AST",
+          "line": 1.5,
+          "odds": 2.083,
+          "bookmaker": "kalshi",
+          "pts_predicted": 1.6,
+          "p_over": 0.461,
+          "confidence": 54,
+          "ev": 0.1225,
+          "p_market": 0.5549999999999999,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 1.6 as. vs linia 1.5 (kalshi), ewm 1.4, min 26.6, opp_ast_allowed 27.5, EV +12.2%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Brooklyn Nets @ Atlanta Hawks",
+          "player": "Nolan Traore",
+          "bet": "under",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 2.041,
+          "bookmaker": "kalshi",
+          "pts_predicted": 3.4,
+          "p_over": 0.435,
+          "confidence": 56,
+          "ev": 0.1529,
+          "p_market": 0.5800000000000001,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 3.4 as. vs linia 3.5 (kalshi), ewm 3.3, min 20.2, opp_ast_allowed 25.6, EV +15.3%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Denver Nuggets @ Indiana Pacers",
+          "player": "Jamal Murray",
+          "bet": "under",
+          "stat": "AST",
+          "line": 5.5,
+          "odds": 2.326,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.7,
+          "p_over": 0.487,
+          "confidence": 51,
+          "ev": 0.1925,
+          "p_market": 0.615,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 5.7 as. vs linia 5.5 (kalshi), ewm 6.1, min 37.9, opp_ast_allowed 25.7, EV +19.2%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "New York Knicks @ Cleveland Cavaliers",
+          "player": "Jalen Brunson",
+          "bet": "under",
+          "stat": "AST",
+          "line": 5.5,
+          "odds": 2.5,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.8,
+          "p_over": 0.5,
+          "confidence": 50,
+          "ev": 0.2493,
+          "p_market": 0.64,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 5.8 as. vs linia 5.5 (kalshi), ewm 5.5, min 35.5, opp_ast_allowed 25.3, EV +24.9%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Washington Wizards @ Oklahoma City Thunder",
+          "player": "Trae Young",
+          "bet": "under",
+          "stat": "AST",
+          "line": 9.5,
+          "odds": 1.818,
+          "bookmaker": "kalshi",
+          "pts_predicted": 7.7,
+          "p_over": 0.279,
+          "confidence": 72,
+          "ev": 0.3102,
+          "p_market": 0.475,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 7.7 as. vs linia 9.5 (kalshi), ewm 8.8, min 34.4, opp_ast_allowed 24.5, EV +31.0%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "San Antonio Spurs @ Portland Trail Blazers",
+          "player": "Scoot Henderson",
+          "bet": "under",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 1.639,
+          "bookmaker": "kalshi",
+          "pts_predicted": 1.2,
+          "p_over": 0.056,
+          "confidence": 94,
+          "ev": 0.5467,
+          "p_market": 0.42,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 1.2 as. vs linia 3.5 (kalshi), ewm 1.5, min 22.2, opp_ast_allowed 23.5, EV +54.7%",
+          "date": "2026-11-07",
+          "actual": null,
+          "result": null,
+          "profit": null
+        }
+      ],
+      "kpi": {
+        "picks": 0,
+        "wins": 0,
+        "pnl": 0,
+        "roi": null
+      }
+    }
+  },
+  "verdict": {
+    "has_edge": false,
+    "stats": {
+      "PTS": {
+        "diff": 0.0207,
+        "ci95": [
+          0.0153,
+          0.0263
+        ],
+        "n": 5537
+      },
+      "REB": {
+        "diff": 0.0117,
+        "ci95": [
+          0.006,
+          0.0176
+        ],
+        "n": 4411
+      },
+      "AST": {
+        "diff": 0.0168,
+        "ci95": [
+          0.0101,
+          0.0238
+        ],
+        "n": 3493
+      }
+    }
+  },
+  "research_log": [
+    {
+      "date": "2026-11-06",
+      "name": "Wejście wcześniej (10 h i 4 h przed meczem)",
+      "status": "no_edge",
+      "question": "Czy wcześniejsza cena Kalshi da się pobić?",
+      "result": "Rynek wcześniej wie mniej, ale korekta modelem nie poprawia prognozy. CLV po prowizji ujemne."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "Zbiórki 10 h przed meczem",
+      "status": "watch",
+      "question": "Jedyny ślad w teście wejścia wcześniej.",
+      "result": "γ 0,28 [0,09; 0,47] na całej próbie, ale bez poprawy poza próbą. Kandydat do obserwacji, nie przewaga."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "foul_baiter × agresywny rywal",
+      "status": "no_edge",
+      "question": "Czy zawodnicy wymuszający faule zyskują przeciw faulującym drużynom?",
+      "result": "O 0,43 rzutu osobistego więcej niż w modelu, ale bez przełożenia na punkty i bez poprawy względem rynku."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "mini-DARKO: osobne tempo minut i produkcji",
+      "status": "forecast_only",
+      "question": "Czy różne okresy półtrwania poprawiają prognozę?",
+      "result": "MAE lepsze o ułamek procenta (PTS −0,009, REB −0,013, AST −0,004), ale rynek już to zawiera."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "Kalshi − Pinnacle",
+      "status": "inconclusive",
+      "question": "Czy Kalshi spóźnia się za Pinnacle?",
+      "result": "Brak sygnału (γ 0,01), ale tylko 818 linii i bardzo szeroki przedział: [−0,88; 0,86]."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "Przereakcja, jet lag, początek sezonu, pora meczu",
+      "status": "no_edge",
+      "question": "Czy proste cechy kontekstu przesuwają cenę?",
+      "result": "0 z 12 testów przeszło próg z poprawką na wielokrotne testowanie."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "Trening na top 7, minuty × produkcja",
+      "status": "no_edge",
+      "question": "Czy węższy trening albo model dwuczęściowy poprawiają prognozę?",
+      "result": "Różnice MAE mieszczą się w szumie."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "bff/no_bff",
+      "status": "no_edge",
+      "question": "Czy nieobecność konkretnego kolegi mówi więcej niż ogólne absencje?",
+      "result": "Bez poprawy względem rynku dla punktów, zbiórek i asyst."
+    },
+    {
+      "date": "2026-11-06",
+      "name": "Model od rynku + raport kontuzji",
+      "status": "no_edge",
+      "question": "Czy korekta ceny Kalshi o model i raport kontuzji coś daje?",
+      "result": "Δ log-loss ≈ 0, ROI zakładów ujemny. Cena z godziny przed meczem zawiera to, co wiemy."
+    },
+    {
+      "date": "2026-10-30",
+      "name": "Line shopping",
+      "status": "no_edge",
+      "question": "Czy wybór najlepszego kursu daje przewagę?",
+      "result": "Marża spada z ok. 7% do 4,9%, ale przewagi nad Pinnacle nie ma."
+    },
+    {
+      "date": "2026-10-30",
+      "name": "Revenge i nemesis",
+      "status": "no_edge",
+      "question": "Czy zawodnicy grają lepiej przeciw byłej drużynie lub ulubionemu rywalowi?",
+      "result": "Revenge bez efektu, nemesis ok. 0,07 pkt na odchylenie standardowe: pomijalne."
+    }
+  ]
 }
