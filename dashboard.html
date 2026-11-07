@@ -163,7 +163,6 @@ main { position: relative; z-index: 1; padding: 28px 0 0; }
   gap: 16px;
 }
 @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 500px) { .kpi-grid { grid-template-columns: 1fr; } }
 
 .kpi-card {
   background: var(--surface);
@@ -173,7 +172,7 @@ main { position: relative; z-index: 1; padding: 28px 0 0; }
   box-shadow: var(--shadow);
 }
 .kpi-label { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
-.kpi-value { font-size: 32px; font-weight: 700; letter-spacing: -.02em; margin: 6px 0 4px; font-family: var(--font-mono); }
+.kpi-value { font-size: clamp(22px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.02em; margin: 6px 0 4px; font-family: var(--font-mono); white-space: nowrap; }
 .kpi-sub   { font-size: 12px; color: var(--muted); }
 .text-green  { color: var(--green); }
 .text-red    { color: var(--red); }
@@ -304,6 +303,42 @@ tr:hover td { background: var(--surface-2); }
 /* Zakładki statystyk */
 .stat-tabs { display: flex; gap: 6px; margin: 18px 0 4px; flex-wrap: wrap; }
 .stat-tabs .filter-btn { font-size: 13px; padding: 7px 18px; }
+@media (max-width: 600px) {
+  .logo { white-space: nowrap; }
+  .logo-sub { display: none; }
+  .updated-at { font-size: 10px; text-align: right; white-space: normal; max-width: 92px; }
+  .kpi-grid { gap: 10px; }
+  .kpi-card { padding: 14px; }
+  .kpi-value { font-size: 19px; }
+}
+.verdict {
+  margin-top: 18px; padding: 14px 18px; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--yellow);
+  box-shadow: var(--shadow); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.verdict.has-edge { border-left-color: var(--green); }
+.verdict-title { font-size: 15px; font-weight: 700; }
+.verdict-body  { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+.chip {
+  display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 11px; white-space: nowrap;
+  background: var(--yellow-dim); color: var(--yellow);
+}
+.chip.green { background: var(--green-dim); color: var(--green); }
+.chip.red   { background: var(--red-dim); color: var(--red); }
+.chip.muted { background: var(--border); color: var(--muted); }
+.coupon-empty { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.coupon-empty strong { color: var(--text); font-weight: 600; }
+.coupon-empty-icon { font-size: 22px; }
+details.fold > summary { cursor: pointer; font-size: 14px; line-height: 1.5; font-weight: 600; }
+details.fold > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+details.fold[open] > summary { margin-bottom: 12px; }
+.lab-list { display: grid; gap: 12px; }
+.lab-item { padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.lab-item:last-child { padding-bottom: 0; border-bottom: 0; }
+.lab-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.lab-name { font-size: 14px; font-weight: 600; }
+.lab-question, .lab-result { font-size: 13px; line-height: 1.5; margin-top: 3px; }
+.lab-question { color: var(--muted); }
 .stat-note { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
 
 .pnl-pos { color: var(--green); font-family: var(--font-mono); font-size: 12px; }
@@ -315,18 +350,6 @@ tr:hover td { background: var(--surface-2); }
 .empty-icon  { font-size: 48px; margin-bottom: 12px; }
 .empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
 .empty-body  { font-size: 13px; line-height: 1.6; max-width: 460px; margin: 0 auto; }
-.empty-reason {
-  display: inline-block;
-  margin-top: 14px;
-  padding: 4px 12px;
-  border-radius: 99px;
-  background: var(--surface-3);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 11px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
 
 /* ── Error Banner ──────────────────────────────────────────────────────────── */
 .error-banner {
@@ -482,10 +505,16 @@ footer.court-footer {
     i otwórz <code>http://localhost:8080/dashboard.html</code>
   </div>
 
+  <div class="verdict" id="verdict" style="display:none">
+    <div class="verdict-title" id="verdictTitle"></div>
+    <div class="verdict-body" id="verdictBody"></div>
+  </div>
+
   <nav class="stat-tabs" aria-label="Statystyka">
     <button class="filter-btn active" data-stat="PTS" onclick="setStat('PTS')">🏀 Punkty</button>
     <button class="filter-btn" data-stat="REB" onclick="setStat('REB')">🧱 Zbiórki</button>
     <button class="filter-btn" data-stat="AST" onclick="setStat('AST')">🎯 Asysty</button>
+    <button class="filter-btn" data-stat="LAB" onclick="setStat('LAB')">🔬 Badania</button>
   </nav>
 
   <div id="tabPTS">
@@ -495,7 +524,7 @@ footer.court-footer {
       <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="kWinRate">—</div><div class="kpi-sub" id="kWinSub">picks ogółem</div></div>
       <div class="kpi-card"><div class="kpi-label">ROI (30d)</div><div class="kpi-value" id="kRoi30">—</div><div class="kpi-sub" id="kRoiSub">ostatnie 30 dni</div></div>
       <div class="kpi-card"><div class="kpi-label">P&amp;L Total</div><div class="kpi-value" id="kPnl">—</div><div class="kpi-sub" id="kPnlSub">skumulowany wynik</div></div>
-      <div class="kpi-card"><div class="kpi-label">Model</div><div class="kpi-value text-blue" id="kModel">—</div><div class="kpi-sub" id="kModelSub">wersja · metryki</div></div>
+      <div class="kpi-card"><div class="kpi-label">Model vs Kalshi</div><div class="kpi-value" id="kEdge">—</div><div class="kpi-sub" id="kEdgeSub">Δ log-loss (base)</div></div>
     </div>
   </section>
 
@@ -506,27 +535,6 @@ footer.court-footer {
       <div class="empty-state">
         <div class="empty-icon">🔄</div>
         <div class="empty-title">Ładowanie…</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Research: model vs rynek -->
-  <section class="section" id="researchSection" style="display:none">
-    <div class="section-title">Model vs rynek (ewaluacja walk-forward)</div>
-    <div class="card">
-      <div class="kpi-sub" id="researchMeta" style="margin-bottom:10px"></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Bukmacher</th><th>Cechy</th><th>n</th>
-            <th>Log-loss model / rynek</th><th>Δ CI95</th>
-            <th>MAE model / linia</th><th>Zakłady EV&gt;5%</th><th>ROI (CI95)</th>
-          </tr></thead>
-          <tbody id="researchBody"></tbody>
-        </table>
-      </div>
-      <div class="kpi-sub" style="margin-top:10px">
-        Δ log-loss &gt; 0 → model gorszy od kursów bez marży. Przewaga istnieje tylko, gdy cały przedział CI95 jest poniżej zera.
       </div>
     </div>
   </section>
@@ -583,6 +591,27 @@ footer.court-footer {
       </div>
     </div>
   </section>
+  <!-- Research: model vs rynek -->
+  <section class="section" id="researchSection" style="display:none">
+    <div class="section-title">Model vs bukmacherzy</div>
+    <details class="card fold">
+      <summary id="researchSummary"></summary>
+      <div class="kpi-sub" id="researchMeta" style="margin-bottom:10px"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Bukmacher</th><th>Cechy</th><th>n</th>
+            <th>Log-loss model / rynek</th><th>Δ CI95</th>
+            <th>MAE model / linia</th><th>Zakłady EV&gt;5%</th><th>ROI (CI95)</th>
+          </tr></thead>
+          <tbody id="researchBody"></tbody>
+        </table>
+      </div>
+      <div class="stat-note">
+        Δ log-loss &gt; 0 → model gorszy od kursów bez marży. Przewaga istnieje tylko, gdy cały przedział CI95 jest poniżej zera.
+      </div>
+    </details>
+  </section>
   </div><!-- /tabPTS -->
 
   <!-- Zbiórki / Asysty (linie z Kalshi) -->
@@ -590,7 +619,7 @@ footer.court-footer {
     <section class="section">
       <div class="kpi-grid">
         <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="sWin">—</div><div class="kpi-sub" id="sWinSub">—</div></div>
-        <div class="kpi-card"><div class="kpi-label">ROI</div><div class="kpi-value" id="sRoi">—</div><div class="kpi-sub">na zakład, po prowizji Kalshi</div></div>
+        <div class="kpi-card"><div class="kpi-label">ROI</div><div class="kpi-value" id="sRoi">—</div><div class="kpi-sub" id="sRoiSub">na zakład, po prowizji Kalshi</div></div>
         <div class="kpi-card"><div class="kpi-label">P&amp;L</div><div class="kpi-value" id="sPnl">—</div><div class="kpi-sub">stawka 1 j. na pick</div></div>
         <div class="kpi-card"><div class="kpi-label">Model vs Kalshi</div><div class="kpi-value" id="sEdge">—</div><div class="kpi-sub" id="sEdgeSub">Δ log-loss (base)</div></div>
       </div>
@@ -605,10 +634,19 @@ footer.court-footer {
     </section>
   </div>
 
+  <!-- Badania: lista testów -->
+  <div id="tabLab" style="display:none">
+    <section class="section">
+      <div class="section-title">Co sprawdziliśmy</div>
+      <div class="card"><div class="lab-list" id="labList"></div></div>
+    </section>
+  </div>
+
   <!-- Model vs Kalshi (wszystkie zakładki) -->
   <section class="section" id="kalshiSection" style="display:none">
     <div class="section-title" id="kalshiTitle">Model vs Kalshi</div>
-    <div class="card">
+    <details class="card fold">
+      <summary id="kalshiSummary"></summary>
       <div class="kpi-sub" id="kalshiMeta" style="margin-bottom:10px"></div>
       <div class="table-wrap">
         <table>
@@ -628,7 +666,7 @@ footer.court-footer {
         tylko na wcześniejszych meczach. „absence” używa faktycznych absencji — to górna granica tego, co da raport kontuzji.
         Kalshi działa tylko w USA; tu służy jako darmowy punkt odniesienia rynkowego.
       </div>
-    </div>
+    </details>
   </section>
 
 </div><!-- /container -->
@@ -730,9 +768,11 @@ async function loadData() {
 /* ── Main Render ────────────────────────────────────────────────────────────── */
 function render(d) {
   const ts = d.generated_at ? d.generated_at.replace('T', ' ').slice(0, 16) : '—';
-  document.getElementById('updatedAt').textContent = 'Aktualizacja: ' + ts;
+  document.getElementById('updatedAt').textContent = ts;
+  document.getElementById('updatedAt').title = 'Ostatnia aktualizacja danych';
+  renderVerdict(d.verdict);
   renderKPI(d);
-  renderCoupon(d.today_coupon, d.status_message, d.no_games_reason);
+  renderCoupon(d.today_coupon, d.status_message);
   renderStatTab(d);
   renderCharts(d);
   renderHistory(d.bet_history, _filterDays);
@@ -741,7 +781,7 @@ function render(d) {
 
 /* ── Zakładki Punkty / Zbiórki / Asysty ─────────────────────────────────────────── */
 let _stat = (location.hash.slice(1) || 'PTS').toUpperCase();
-if (!['PTS', 'REB', 'AST'].includes(_stat)) _stat = 'PTS';
+if (!['PTS', 'REB', 'AST', 'LAB'].includes(_stat)) _stat = 'PTS';
 const STAT_NAME = { PTS: 'punkty', REB: 'zbiórki', AST: 'asysty' };
 
 function setStat(s) {
@@ -756,22 +796,25 @@ function renderStatTab(d) {
   document.querySelectorAll('.stat-tabs .filter-btn')
     .forEach(b => b.classList.toggle('active', b.dataset.stat === _stat));
   document.getElementById('tabPTS').style.display  = _stat === 'PTS' ? '' : 'none';
-  document.getElementById('tabStat').style.display = _stat === 'PTS' ? 'none' : '';
+  document.getElementById('tabStat').style.display = ['REB', 'AST'].includes(_stat) ? '' : 'none';
+  document.getElementById('tabLab').style.display  = _stat === 'LAB' ? '' : 'none';
   const tab = (d.stats || {})[_stat] || {};
   renderKalshiEval(tab.kalshi_eval);
+  if (_stat === 'LAB') { renderLab(d.research_log); return; }
   if (_stat === 'PTS') return;
 
   const k = tab.kpi || {};
   const wr = k.picks ? k.wins / k.picks : null;
   document.getElementById('sWin').textContent = pct(wr, 1);
-  document.getElementById('sWin').className = 'kpi-value ' + clrVal(wr == null ? null : wr - 0.5);
-  document.getElementById('sWinSub').textContent = `${k.wins ?? 0}W / ${(k.picks ?? 0) - (k.wins ?? 0)}L · ${k.picks ?? 0} picks`;
+  document.getElementById('sWin').className = 'kpi-value ' + sampleClr(wr == null ? null : wr - 0.5, k.picks);
+  document.getElementById('sWinSub').innerHTML = winSub(k.wins ?? 0, k.picks ?? 0);
   document.getElementById('sRoi').textContent = pct(k.roi, 1);
-  document.getElementById('sRoi').className = 'kpi-value ' + clrVal(k.roi);
+  document.getElementById('sRoi').className = 'kpi-value ' + sampleClr(k.roi, k.picks);
+  document.getElementById('sRoiSub').innerHTML = `na zakład, po prowizji Kalshi ${smallSample(k.picks)}`;
   document.getElementById('sPnl').textContent = signed(k.pnl, 2) + ' j.';
   document.getElementById('sPnl').className = 'kpi-value ' + clrVal(k.pnl);
   const base = tab.kalshi_eval && tab.kalshi_eval.rows.find(r => r.features === 'base');
-  document.getElementById('sEdge').textContent = base ? signed(base.logloss_diff) : '—';
+  document.getElementById('sEdge').textContent = base ? decPl(base.logloss_diff) : '—';
   document.getElementById('sEdge').className = 'kpi-value ' + (base ? clrVal(-base.logloss_diff) : '');
   document.getElementById('sEdgeSub').textContent = base ? `> 0 = model gorszy od rynku · n=${base.n}` : 'brak raportu eval_stats';
 
@@ -780,10 +823,9 @@ function renderStatTab(d) {
   document.getElementById('sCouponTitle').textContent = `Kupon Dnia · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
   const card = document.getElementById('sCouponCard');
   if (!c || !c.picks || !c.picks.length) {
-    card.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div>
-      <div class="empty-title">Brak picków na dziś</div>
-      <div class="empty-body">${c ? `${c.n_predictions} linii Kalshi sprawdzonych, żadna nie przeszła progu EV ≥ 5%.`
-        : 'Brak linii Kalshi dla dzisiejszych meczów albo pipeline jeszcze nie działał.'}</div></div>`;
+    card.innerHTML = couponEmpty('Brak typów na dziś', c
+      ? `${c.n_predictions} linii Kalshi sprawdzonych, żadna nie przeszła progu EV ≥ 5%.`
+      : 'Brak linii Kalshi dla dzisiejszych meczów albo pipeline jeszcze nie działał.');
   } else {
     card.innerHTML = `<div class="table-wrap"><table>
       <thead><tr><th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs*</th><th>Rynek P(over)</th><th>Model P(over)</th><th>Reasoning</th></tr></thead>
@@ -818,6 +860,7 @@ function renderKalshiEval(e) {
   if (!e) { sec.style.display = 'none'; return; }
   sec.style.display = '';
   document.getElementById('kalshiTitle').textContent = `Model vs Kalshi · ${STAT_NAME[_stat]}`;
+  document.getElementById('kalshiSummary').textContent = foldSummary(e.rows.map(x => x.logloss_diff_ci95), 'cen Kalshi');
   document.getElementById('kalshiMeta').textContent =
     `${e.report} · ${e.matched} linii · ${e.dates[0]} → ${e.dates[1]}`;
   const ci = c => c ? `[${signed(c[0])}; ${signed(c[1])}]` : '—';
@@ -836,12 +879,79 @@ function renderKalshiEval(e) {
   ).join('');
 }
 
+/* ── Werdykt i małe próby ────────────────────────────────────────────────────── */
+const MIN_SAMPLE = 100;     // poniżej tego wynik to głównie szum
+const decPl = (x, d = 3) => signed(x, d).replace('.', ',');
+
+function renderVerdict(v) {
+  const box = document.getElementById('verdict');
+  box.style.display = v ? '' : 'none';
+  if (!v) return;
+  box.classList.toggle('has-edge', v.has_edge);
+  document.getElementById('verdictTitle').textContent = v.has_edge
+    ? 'Model wygrywa z rynkiem w części statystyk'
+    : 'Model nie ma przewagi nad rynkiem';
+  const parts = Object.entries(v.stats).map(([s, x]) => `${STAT_NAME[s]} ${decPl(x.diff)}`);
+  document.getElementById('verdictBody').textContent =
+    `Zakłady papierowe, nie rekomendacje. Δ log-loss vs Kalshi (dodatnia = gorzej od rynku): ${parts.join(', ')}.`;
+}
+
+function wilson(wins, n, z = 1.96) {
+  if (!n) return null;
+  const p = wins / n, d = 1 + z * z / n, mid = p + z * z / (2 * n);
+  const half = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n));
+  return [(mid - half) / d, (mid + half) / d];
+}
+
+const smallSample = n => n > 0 && n < MIN_SAMPLE ? '<span class="chip">mała próba</span>' : '';
+const sampleClr = (v, n) => (n ?? 0) < MIN_SAMPLE ? '' : clrVal(v);
+
+function winSub(wins, n) {
+  if (!n) return 'brak rozliczonych typów';
+  const ci = wilson(wins, n);
+  const range = ci ? ` · 95%: ${Math.round(ci[0] * 100)}–${Math.round(ci[1] * 100)}%` : '';
+  return `${wins}W / ${n - wins}L${range} ${smallSample(n)}`;
+}
+
+function foldSummary(cis, market) {
+  const worse = cis.filter(c => c && c[0] > 0).length, better = cis.filter(c => c && c[1] < 0).length;
+  const unclear = cis.length - worse - better;
+  return `Lepszy od ${market}: ${better} z ${cis.length} zestawów cech · gorszy: ${worse} · bez rozstrzygnięcia: ${unclear}`;
+}
+
+function couponEmpty(title, body) {
+  return `<div class="coupon-empty"><span class="coupon-empty-icon" aria-hidden="true">📋</span>
+    <div><strong>${title}</strong><br>${body}</div></div>`;
+}
+
+const LAB_STATUS = {
+  no_edge:       ['bez przewagi', 'red'],
+  forecast_only: ['lepsza prognoza, bez przewagi', 'muted'],
+  inconclusive:  ['za mała próba', ''],
+  watch:         ['do obserwacji', ''],
+  edge:          ['przewaga', 'green'],
+};
+
+function renderLab(log) {
+  const list = document.getElementById('labList');
+  if (!log || !log.length) { list.innerHTML = '<div class="no-data">Brak zapisanych testów</div>'; return; }
+  list.innerHTML = log.map(t => {
+    const [label, cls] = LAB_STATUS[t.status] || [t.status, 'muted'];
+    return `<div class="lab-item">
+      <div class="lab-head"><div class="lab-name">${t.name}</div><span class="chip ${cls}">${label}</span></div>
+      <div class="lab-question">${t.question}</div>
+      <div class="lab-result">${t.result}</div>
+    </div>`;
+  }).join('');
+}
+
 /* ── Research (evaluate.py) ─────────────────────────────────────────────────── */
 function renderResearch(r) {
   const sec = document.getElementById('researchSection');
   if (!r || !r.rows || !r.rows.length) { sec.style.display = 'none'; return; }
   sec.style.display = '';
   const dates = r.game_dates || [];
+  document.getElementById('researchSummary').textContent = foldSummary(r.rows.map(x => x.logloss_diff_ci95), 'kursów Pinnacle i Unibet');
   document.getElementById('researchMeta').textContent =
     `Raport ${r.generated} · ${dates.length} dni meczowych (${dates[0] ?? '—'} → ${dates[dates.length - 1] ?? '—'})`;
   const ci = c => c ? `[${c[0] >= 0 ? '+' : ''}${c[0].toFixed(3)}; ${c[1] >= 0 ? '+' : ''}${c[1].toFixed(3)}]` : '—';
@@ -863,32 +973,32 @@ function renderResearch(r) {
 /* ── KPI ─────────────────────────────────────────────────────────────────────── */
 function renderKPI(d) {
   const k = d.kpi || {};
-  const ms = d.model_stats || {};
 
   const wr = k.win_rate;
   document.getElementById('kWinRate').textContent = pct(wr, 1);
-  document.getElementById('kWinRate').className   = 'kpi-value ' + clrVal(wr - 0.5);
-  document.getElementById('kWinSub').textContent  = `${k.total_wins ?? 0}W / ${(k.total_picks - k.total_wins) ?? 0}L · ${k.total_picks ?? 0} picks`;
+  document.getElementById('kWinRate').className   = 'kpi-value ' + sampleClr(wr == null ? null : wr - 0.5, k.total_picks);
+  document.getElementById('kWinSub').innerHTML    = winSub(k.total_wins ?? 0, k.total_picks ?? 0);
 
   const roi = k.roi_30d;
   document.getElementById('kRoi30').textContent  = pct(roi, 2);
-  document.getElementById('kRoi30').className    = 'kpi-value ' + clrVal(roi);
-  document.getElementById('kRoiSub').textContent = 'zwrot na wkładzie · 30d';
+  const n30 = (d.bet_history || []).filter(r => r.result && daysAgo(r.date, 30)).length;
+  document.getElementById('kRoi30').className    = 'kpi-value ' + sampleClr(roi, n30);
+  document.getElementById('kRoiSub').innerHTML   = `${n30} typów · 30 dni ${smallSample(n30)}`;
 
   const pnl = k.pnl_total;
   document.getElementById('kPnl').textContent  = plnFmt(pnl);
   document.getElementById('kPnl').className    = 'kpi-value ' + clrVal(pnl);
   document.getElementById('kPnlSub').textContent = 'symulowany P&L';
 
-  const ver = ms.version ?? '—';
-  document.getElementById('kModel').textContent = 'v' + ver;
-  const mae = ms.cv_mae != null ? ms.cv_mae.toFixed(2) : '—';
-  const auc = ms.cv_auc != null ? ms.cv_auc.toFixed(3) : '—';
-  document.getElementById('kModelSub').textContent = `MAE ${mae} · AUC ${auc}`;
+  const rows = ((d.stats || {}).PTS?.kalshi_eval || {}).rows || [];
+  const base = rows.find(r => r.features === 'base');
+  document.getElementById('kEdge').textContent = base ? decPl(base.logloss_diff) : '—';
+  document.getElementById('kEdge').className = 'kpi-value ' + (base ? clrVal(-base.logloss_diff) : '');
+  document.getElementById('kEdgeSub').textContent = base ? `> 0 = model gorszy od rynku · n=${base.n}` : 'brak raportu eval_stats';
 }
 
 /* ── Coupon ──────────────────────────────────────────────────────────────────── */
-function renderCoupon(coupon, statusMessage, reason) {
+function renderCoupon(coupon, statusMessage) {
   const today = (_data && _data.game_date) ? _data.game_date : new Date().toISOString().slice(0, 10);
   const dateLabel = (coupon && coupon.date) ? coupon.date : today;
   document.getElementById('couponTitle').textContent = `Kupon Dnia · ${dateLabel}`;
@@ -898,16 +1008,8 @@ function renderCoupon(coupon, statusMessage, reason) {
   if (!coupon || !coupon.picks || coupon.picks.length === 0) {
     // Komunikat z backendu (status_message / no_games_reason) tłumaczy DLACZEGO
     // kupon jest pusty: brak meczów, brak propsów, brak picków po filtrach itd.
-    const body = statusMessage
-      ? statusMessage
-      : 'Pipeline nie wygenerował picków spełniających kryteria filtrowania.';
-    const tag = reason ? `<div class="empty-reason mono">${reason}</div>` : '';
-    card.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">📋</div>
-      <div class="empty-title">Brak kuponu na dziś</div>
-      <div class="empty-body">${body}</div>
-      ${tag}
-    </div>`;
+    card.innerHTML = couponEmpty('Brak kuponu na dziś',
+      statusMessage || 'Pipeline nie wygenerował typów spełniających kryteria filtrowania.');
     return;
   }
 

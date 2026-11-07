@@ -51,10 +51,10 @@ def _cluster_ci(values: np.ndarray, clusters: np.ndarray, rng) -> list[float]:
     return [round(float(np.percentile(b, q)), 4) for q in (2.5, 97.5)]
 
 
-def walk_forward(lines: pd.DataFrame, data: pd.DataFrame, stat: str) -> pd.DataFrame:
+def walk_forward(lines: pd.DataFrame, data: pd.DataFrame, stat: str, sets: dict | None = None) -> pd.DataFrame:
     """Kolumny mu_<set>, p_<set> dla każdej linii; model na tydzień (cutoff = poniedziałek)."""
     base, absn = TARGETS[stat]
-    sets = {"base": base, "absence": base + absn}
+    sets = sets or {"base": base, "absence": base + absn}
     lines = lines.copy()
     lines["week"] = lines["game_date"] - pd.to_timedelta(lines["game_date"].dt.weekday, unit="D")
     out = []

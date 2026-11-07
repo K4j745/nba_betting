@@ -1,0 +1,110 @@
+{
+  "generated": "2026-11-06",
+  "n": 818,
+  "n_games": 95,
+  "from": "2026-03-13",
+  "to": "2026-11-04",
+  "hours_pin_before_price": 1.6,
+  "gap_abs_mean": 0.082,
+  "pinnacle_minus_kalshi_logloss": 0.0024,
+  "sharpness_ci95": [
+    -0.001,
+    0.0059
+  ],
+  "coefs_full_sample": {
+    "lm": {
+      "coef": 1.165,
+      "ci95": [
+        0.826,
+        1.499
+      ]
+    },
+    "gap": {
+      "coef": 0.012,
+      "ci95": [
+        -0.883,
+        0.858
+      ]
+    }
+  },
+  "corrected_n": 384,
+  "corrected_diff": 0.0018,
+  "corrected_ci95": [
+    -0.001,
+    0.0046
+  ],
+  "bets_pinnacle_shift": [
+    {
+      "ev_threshold": 0.0,
+      "bets": 186,
+      "hit_rate": 0.478,
+      "roi": -0.115,
+      "roi_ci95": [
+        -0.2606,
+        0.0298
+      ]
+    },
+    {
+      "ev_threshold": 0.03,
+      "bets": 48,
+      "hit_rate": 0.479,
+      "roi": -0.1107,
+      "roi_ci95": [
+        -0.3659,
+        0.1462
+      ]
+    },
+    {
+      "ev_threshold": 0.05,
+      "bets": 23,
+      "hit_rate": 0.478,
+      "roi": -0.0932,
+      "roi_ci95": [
+        -0.4498,
+        0.2735
+      ]
+    },
+    {
+      "ev_threshold": 0.1,
+      "bets": 5,
+      "hit_rate": 0.6,
+      "roi": 0.2269,
+      "roi_ci95": [
+        -0.6721,
+        1.1157
+      ]
+    }
+  ],
+  "by_gap": [
+    {
+      "gap": "(-inf, -0.2]",
+      "n": 12,
+      "over_rate": 0.583,
+      "kalshi_mean": 0.466
+    },
+    {
+      "gap": "(-0.2, -0.05]",
+      "n": 104,
+      "over_rate": 0.49,
+      "kalshi_mean": 0.518
+    },
+    {
+      "gap": "(-0.05, 0.05]",
+      "n": 316,
+      "over_rate": 0.525,
+      "kalshi_mean": 0.511
+    },
+    {
+      "gap": "(0.05, 0.2]",
+      "n": 355,
+      "over_rate": 0.518,
+      "kalshi_mean": 0.512
+    },
+    {
+      "gap": "(0.2, inf]",
+      "n": 31,
+      "over_rate": 0.581,
+      "kalshi_mean": 0.52
+    }
+  ]
+}

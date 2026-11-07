@@ -1,0 +1,1135 @@
+{
+  "generated": "2026-11-06",
+  "offsets_h": [
+    10,
+    4
+  ],
+  "results": {
+    "10h": {
+      "AST": {
+        "n": 2621,
+        "spread_mean": 0.042,
+        "logloss_early": 0.6884,
+        "logloss_late": 0.6843,
+        "early_minus_late": 0.004,
+        "early_minus_late_ci95": [
+          0.0011,
+          0.0068
+        ],
+        "price_move_abs": 0.0251,
+        "variants": {
+          "market+model": {
+            "n": 2192,
+            "logloss_diff": -0.0012,
+            "logloss_diff_ci95": [
+              -0.0045,
+              0.0021
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 762,
+                "hit_rate": 0.424,
+                "roi": -0.0361,
+                "roi_ci95": [
+                  -0.1185,
+                  0.0515
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 413,
+                "hit_rate": 0.441,
+                "roi": 0.0368,
+                "roi_ci95": [
+                  -0.0786,
+                  0.1537
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 271,
+                "hit_rate": 0.432,
+                "roi": 0.0385,
+                "roi_ci95": [
+                  -0.1023,
+                  0.1867
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 88,
+                "hit_rate": 0.409,
+                "roi": 0.088,
+                "roi_ci95": [
+                  -0.1879,
+                  0.3356
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 687,
+              "mean_cents": -0.13,
+              "ci95": [
+                -0.42,
+                0.2
+              ],
+              "share_positive": 0.394
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.671,
+                "ci95": [
+                  0.453,
+                  0.933
+                ]
+              },
+              "d_base": {
+                "coef": 0.172,
+                "ci95": [
+                  0.005,
+                  0.352
+                ]
+              }
+            }
+          },
+          "market+model+report": {
+            "n": 2192,
+            "logloss_diff": -0.001,
+            "logloss_diff_ci95": [
+              -0.0046,
+              0.0022
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 783,
+                "hit_rate": 0.446,
+                "roi": 0.0028,
+                "roi_ci95": [
+                  -0.0782,
+                  0.0821
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 451,
+                "hit_rate": 0.435,
+                "roi": 0.0102,
+                "roi_ci95": [
+                  -0.1049,
+                  0.1258
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 302,
+                "hit_rate": 0.424,
+                "roi": 0.0075,
+                "roi_ci95": [
+                  -0.1244,
+                  0.1475
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 103,
+                "hit_rate": 0.398,
+                "roi": 0.0401,
+                "roi_ci95": [
+                  -0.2016,
+                  0.2737
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 728,
+              "mean_cents": -0.2,
+              "ci95": [
+                -0.51,
+                0.13
+              ],
+              "share_positive": 0.398
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.671,
+                "ci95": [
+                  0.456,
+                  0.904
+                ]
+              },
+              "d_base": {
+                "coef": 0.181,
+                "ci95": [
+                  -0.042,
+                  0.414
+                ]
+              },
+              "vac_min_rep": {
+                "coef": -0.018,
+                "ci95": [
+                  -0.422,
+                  0.431
+                ]
+              },
+              "vac_stat_rep": {
+                "coef": 0.238,
+                "ci95": [
+                  -0.483,
+                  0.886
+                ]
+              }
+            }
+          }
+        },
+        "clv_raw_model": {
+          "bets": 1567,
+          "mean_cents": -0.81,
+          "ci95": [
+            -1.0,
+            -0.62
+          ],
+          "share_positive": 0.35
+        }
+      },
+      "PTS": {
+        "n": 3858,
+        "spread_mean": 0.039,
+        "logloss_early": 0.673,
+        "logloss_late": 0.6682,
+        "early_minus_late": 0.0048,
+        "early_minus_late_ci95": [
+          0.0023,
+          0.0075
+        ],
+        "price_move_abs": 0.0257,
+        "variants": {
+          "market+model": {
+            "n": 3437,
+            "logloss_diff": -0.0,
+            "logloss_diff_ci95": [
+              -0.0023,
+              0.0024
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 1138,
+                "hit_rate": 0.422,
+                "roi": -0.0299,
+                "roi_ci95": [
+                  -0.0973,
+                  0.0394
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 616,
+                "hit_rate": 0.377,
+                "roi": -0.0681,
+                "roi_ci95": [
+                  -0.1605,
+                  0.0224
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 395,
+                "hit_rate": 0.357,
+                "roi": -0.0665,
+                "roi_ci95": [
+                  -0.1888,
+                  0.0606
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 138,
+                "hit_rate": 0.362,
+                "roi": 0.0744,
+                "roi_ci95": [
+                  -0.194,
+                  0.3497
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 1043,
+              "mean_cents": 0.39,
+              "ci95": [
+                0.04,
+                0.76
+              ],
+              "share_positive": 0.432
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.932,
+                "ci95": [
+                  0.795,
+                  1.093
+                ]
+              },
+              "d_base": {
+                "coef": 0.155,
+                "ci95": [
+                  -0.015,
+                  0.32
+                ]
+              }
+            }
+          },
+          "market+model+report": {
+            "n": 3437,
+            "logloss_diff": 0.0004,
+            "logloss_diff_ci95": [
+              -0.0021,
+              0.003
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 1155,
+                "hit_rate": 0.426,
+                "roi": -0.0249,
+                "roi_ci95": [
+                  -0.0919,
+                  0.0422
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 621,
+                "hit_rate": 0.372,
+                "roi": -0.0818,
+                "roi_ci95": [
+                  -0.1792,
+                  0.013
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 394,
+                "hit_rate": 0.363,
+                "roi": -0.0576,
+                "roi_ci95": [
+                  -0.1868,
+                  0.0686
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 145,
+                "hit_rate": 0.366,
+                "roi": 0.0547,
+                "roi_ci95": [
+                  -0.2011,
+                  0.3252
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 1054,
+              "mean_cents": 0.33,
+              "ci95": [
+                -0.0,
+                0.72
+              ],
+              "share_positive": 0.428
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.931,
+                "ci95": [
+                  0.762,
+                  1.096
+                ]
+              },
+              "d_base": {
+                "coef": 0.148,
+                "ci95": [
+                  -0.007,
+                  0.335
+                ]
+              },
+              "vac_min_rep": {
+                "coef": 0.076,
+                "ci95": [
+                  -0.461,
+                  0.734
+                ]
+              },
+              "vac_stat_rep": {
+                "coef": -0.042,
+                "ci95": [
+                  -0.275,
+                  0.18
+                ]
+              }
+            }
+          }
+        },
+        "clv_raw_model": {
+          "bets": 2332,
+          "mean_cents": -0.6,
+          "ci95": [
+            -0.81,
+            -0.38
+          ],
+          "share_positive": 0.349
+        }
+      },
+      "REB": {
+        "n": 3338,
+        "spread_mean": 0.042,
+        "logloss_early": 0.6887,
+        "logloss_late": 0.685,
+        "early_minus_late": 0.0037,
+        "early_minus_late_ci95": [
+          0.0014,
+          0.0062
+        ],
+        "price_move_abs": 0.023,
+        "variants": {
+          "market+model": {
+            "n": 2878,
+            "logloss_diff": -0.0007,
+            "logloss_diff_ci95": [
+              -0.0035,
+              0.0022
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 857,
+                "hit_rate": 0.505,
+                "roi": 0.0176,
+                "roi_ci95": [
+                  -0.0501,
+                  0.0846
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 465,
+                "hit_rate": 0.512,
+                "roi": 0.0478,
+                "roi_ci95": [
+                  -0.0471,
+                  0.1403
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 309,
+                "hit_rate": 0.502,
+                "roi": 0.0341,
+                "roi_ci95": [
+                  -0.08,
+                  0.1536
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 116,
+                "hit_rate": 0.466,
+                "roi": -0.0349,
+                "roi_ci95": [
+                  -0.2322,
+                  0.1454
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 749,
+              "mean_cents": 0.02,
+              "ci95": [
+                -0.23,
+                0.29
+              ],
+              "share_positive": 0.427
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.756,
+                "ci95": [
+                  0.536,
+                  0.94
+                ]
+              },
+              "d_base": {
+                "coef": 0.276,
+                "ci95": [
+                  0.091,
+                  0.473
+                ]
+              }
+            }
+          },
+          "market+model+report": {
+            "n": 2878,
+            "logloss_diff": -0.0002,
+            "logloss_diff_ci95": [
+              -0.0032,
+              0.0026
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 901,
+                "hit_rate": 0.494,
+                "roi": -0.0065,
+                "roi_ci95": [
+                  -0.0756,
+                  0.0606
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 467,
+                "hit_rate": 0.501,
+                "roi": 0.0325,
+                "roi_ci95": [
+                  -0.0606,
+                  0.1287
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 326,
+                "hit_rate": 0.497,
+                "roi": 0.0169,
+                "roi_ci95": [
+                  -0.0909,
+                  0.123
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 116,
+                "hit_rate": 0.474,
+                "roi": -0.0186,
+                "roi_ci95": [
+                  -0.1918,
+                  0.1733
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 763,
+              "mean_cents": -0.08,
+              "ci95": [
+                -0.36,
+                0.2
+              ],
+              "share_positive": 0.425
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.765,
+                "ci95": [
+                  0.574,
+                  0.993
+                ]
+              },
+              "d_base": {
+                "coef": 0.267,
+                "ci95": [
+                  0.048,
+                  0.444
+                ]
+              },
+              "vac_min_rep": {
+                "coef": -0.383,
+                "ci95": [
+                  -0.812,
+                  0.066
+                ]
+              },
+              "vac_stat_rep": {
+                "coef": 0.348,
+                "ci95": [
+                  -0.185,
+                  0.823
+                ]
+              }
+            }
+          }
+        },
+        "clv_raw_model": {
+          "bets": 1781,
+          "mean_cents": -0.84,
+          "ci95": [
+            -0.99,
+            -0.67
+          ],
+          "share_positive": 0.337
+        }
+      }
+    },
+    "4h": {
+      "AST": {
+        "n": 3187,
+        "spread_mean": 0.033,
+        "logloss_early": 0.6853,
+        "logloss_late": 0.6824,
+        "early_minus_late": 0.0028,
+        "early_minus_late_ci95": [
+          0.0011,
+          0.0046
+        ],
+        "price_move_abs": 0.0147,
+        "variants": {
+          "market+model": {
+            "n": 2782,
+            "logloss_diff": -0.0003,
+            "logloss_diff_ci95": [
+              -0.0024,
+              0.002
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 786,
+                "hit_rate": 0.427,
+                "roi": -0.0018,
+                "roi_ci95": [
+                  -0.0792,
+                  0.0751
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 385,
+                "hit_rate": 0.405,
+                "roi": -0.0051,
+                "roi_ci95": [
+                  -0.1217,
+                  0.1152
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 240,
+                "hit_rate": 0.375,
+                "roi": -0.0579,
+                "roi_ci95": [
+                  -0.2143,
+                  0.0957
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 56,
+                "hit_rate": 0.339,
+                "roi": -0.0912,
+                "roi_ci95": [
+                  -0.4276,
+                  0.2424
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 740,
+              "mean_cents": -0.68,
+              "ci95": [
+                -0.89,
+                -0.45
+              ],
+              "share_positive": 0.25
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.746,
+                "ci95": [
+                  0.572,
+                  0.968
+                ]
+              },
+              "d_base": {
+                "coef": 0.066,
+                "ci95": [
+                  -0.066,
+                  0.206
+                ]
+              }
+            }
+          },
+          "market+model+report": {
+            "n": 2782,
+            "logloss_diff": -0.0006,
+            "logloss_diff_ci95": [
+              -0.0032,
+              0.0021
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 935,
+                "hit_rate": 0.459,
+                "roi": 0.0294,
+                "roi_ci95": [
+                  -0.0415,
+                  0.1016
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 507,
+                "hit_rate": 0.426,
+                "roi": -0.0194,
+                "roi_ci95": [
+                  -0.1169,
+                  0.0725
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 333,
+                "hit_rate": 0.402,
+                "roi": -0.0522,
+                "roi_ci95": [
+                  -0.1793,
+                  0.0732
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 112,
+                "hit_rate": 0.286,
+                "roi": -0.2933,
+                "roi_ci95": [
+                  -0.5005,
+                  -0.0786
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 856,
+              "mean_cents": -0.75,
+              "ci95": [
+                -0.96,
+                -0.53
+              ],
+              "share_positive": 0.243
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.751,
+                "ci95": [
+                  0.563,
+                  0.972
+                ]
+              },
+              "d_base": {
+                "coef": 0.093,
+                "ci95": [
+                  -0.069,
+                  0.23
+                ]
+              },
+              "vac_min_rep": {
+                "coef": -0.344,
+                "ci95": [
+                  -0.639,
+                  -0.011
+                ]
+              },
+              "vac_stat_rep": {
+                "coef": 0.68,
+                "ci95": [
+                  0.131,
+                  1.21
+                ]
+              }
+            }
+          }
+        },
+        "clv_raw_model": {
+          "bets": 1995,
+          "mean_cents": -1.12,
+          "ci95": [
+            -1.23,
+            -1.0
+          ],
+          "share_positive": 0.209
+        }
+      },
+      "PTS": {
+        "n": 4924,
+        "spread_mean": 0.032,
+        "logloss_early": 0.6729,
+        "logloss_late": 0.6709,
+        "early_minus_late": 0.002,
+        "early_minus_late_ci95": [
+          0.0005,
+          0.0036
+        ],
+        "price_move_abs": 0.0153,
+        "variants": {
+          "market+model": {
+            "n": 4391,
+            "logloss_diff": 0.0,
+            "logloss_diff_ci95": [
+              -0.0014,
+              0.0015
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 788,
+                "hit_rate": 0.44,
+                "roi": -0.05,
+                "roi_ci95": [
+                  -0.1299,
+                  0.0321
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 210,
+                "hit_rate": 0.405,
+                "roi": -0.0399,
+                "roi_ci95": [
+                  -0.2108,
+                  0.1232
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 84,
+                "hit_rate": 0.369,
+                "roi": -0.0505,
+                "roi_ci95": [
+                  -0.3377,
+                  0.2908
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 17,
+                "hit_rate": 0.353,
+                "roi": 0.0607,
+                "roi_ci95": [
+                  -0.6902,
+                  0.9018
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 637,
+              "mean_cents": -0.21,
+              "ci95": [
+                -0.39,
+                -0.01
+              ],
+              "share_positive": 0.317
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.969,
+                "ci95": [
+                  0.838,
+                  1.121
+                ]
+              },
+              "d_base": {
+                "coef": 0.067,
+                "ci95": [
+                  -0.066,
+                  0.161
+                ]
+              }
+            }
+          },
+          "market+model+report": {
+            "n": 4391,
+            "logloss_diff": 0.0005,
+            "logloss_diff_ci95": [
+              -0.0011,
+              0.002
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 990,
+                "hit_rate": 0.453,
+                "roi": -0.055,
+                "roi_ci95": [
+                  -0.1184,
+                  0.0093
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 315,
+                "hit_rate": 0.4,
+                "roi": -0.0976,
+                "roi_ci95": [
+                  -0.2339,
+                  0.0516
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 141,
+                "hit_rate": 0.397,
+                "roi": -0.0771,
+                "roi_ci95": [
+                  -0.2959,
+                  0.1456
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 28,
+                "hit_rate": 0.393,
+                "roi": -0.035,
+                "roi_ci95": [
+                  -0.5574,
+                  0.5536
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 805,
+              "mean_cents": -0.35,
+              "ci95": [
+                -0.52,
+                -0.17
+              ],
+              "share_positive": 0.301
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.968,
+                "ci95": [
+                  0.831,
+                  1.132
+                ]
+              },
+              "d_base": {
+                "coef": 0.064,
+                "ci95": [
+                  -0.068,
+                  0.178
+                ]
+              },
+              "vac_min_rep": {
+                "coef": 0.171,
+                "ci95": [
+                  -0.266,
+                  0.646
+                ]
+              },
+              "vac_stat_rep": {
+                "coef": -0.059,
+                "ci95": [
+                  -0.236,
+                  0.109
+                ]
+              }
+            }
+          }
+        },
+        "clv_raw_model": {
+          "bets": 3075,
+          "mean_cents": -1.2,
+          "ci95": [
+            -1.3,
+            -1.1
+          ],
+          "share_positive": 0.209
+        }
+      },
+      "REB": {
+        "n": 4052,
+        "spread_mean": 0.034,
+        "logloss_early": 0.6851,
+        "logloss_late": 0.6835,
+        "early_minus_late": 0.0017,
+        "early_minus_late_ci95": [
+          0.0005,
+          0.003
+        ],
+        "price_move_abs": 0.0136,
+        "variants": {
+          "market+model": {
+            "n": 3623,
+            "logloss_diff": 0.0006,
+            "logloss_diff_ci95": [
+              -0.0014,
+              0.0028
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 712,
+                "hit_rate": 0.511,
+                "roi": -0.0184,
+                "roi_ci95": [
+                  -0.0924,
+                  0.0528
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 297,
+                "hit_rate": 0.492,
+                "roi": -0.048,
+                "roi_ci95": [
+                  -0.1566,
+                  0.0648
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 171,
+                "hit_rate": 0.52,
+                "roi": 0.0089,
+                "roi_ci95": [
+                  -0.1387,
+                  0.1621
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 68,
+                "hit_rate": 0.456,
+                "roi": -0.1014,
+                "roi_ci95": [
+                  -0.3466,
+                  0.1696
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 529,
+              "mean_cents": -0.57,
+              "ci95": [
+                -0.75,
+                -0.39
+              ],
+              "share_positive": 0.27
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.901,
+                "ci95": [
+                  0.685,
+                  1.078
+                ]
+              },
+              "d_base": {
+                "coef": 0.189,
+                "ci95": [
+                  0.008,
+                  0.353
+                ]
+              }
+            }
+          },
+          "market+model+report": {
+            "n": 3623,
+            "logloss_diff": 0.0012,
+            "logloss_diff_ci95": [
+              -0.001,
+              0.0034
+            ],
+            "bets": [
+              {
+                "ev_threshold": 0.0,
+                "bets": 771,
+                "hit_rate": 0.518,
+                "roi": -0.0027,
+                "roi_ci95": [
+                  -0.0757,
+                  0.0689
+                ]
+              },
+              {
+                "ev_threshold": 0.03,
+                "bets": 315,
+                "hit_rate": 0.508,
+                "roi": -0.0155,
+                "roi_ci95": [
+                  -0.1243,
+                  0.0943
+                ]
+              },
+              {
+                "ev_threshold": 0.05,
+                "bets": 183,
+                "hit_rate": 0.497,
+                "roi": -0.0524,
+                "roi_ci95": [
+                  -0.1947,
+                  0.095
+                ]
+              },
+              {
+                "ev_threshold": 0.1,
+                "bets": 64,
+                "hit_rate": 0.438,
+                "roi": -0.1478,
+                "roi_ci95": [
+                  -0.4125,
+                  0.117
+                ]
+              }
+            ],
+            "clv": {
+              "bets": 579,
+              "mean_cents": -0.62,
+              "ci95": [
+                -0.8,
+                -0.45
+              ],
+              "share_positive": 0.264
+            },
+            "coefs_full_sample": {
+              "lm": {
+                "coef": 0.907,
+                "ci95": [
+                  0.707,
+                  1.14
+                ]
+              },
+              "d_base": {
+                "coef": 0.189,
+                "ci95": [
+                  0.007,
+                  0.363
+                ]
+              },
+              "vac_min_rep": {
+                "coef": -0.174,
+                "ci95": [
+                  -0.541,
+                  0.15
+                ]
+              },
+              "vac_stat_rep": {
+                "coef": 0.196,
+                "ci95": [
+                  -0.16,
+                  0.606
+                ]
+              }
+            }
+          }
+        },
+        "clv_raw_model": {
+          "bets": 2255,
+          "mean_cents": -1.07,
+          "ci95": [
+            -1.18,
+            -0.97
+          ],
+          "share_positive": 0.208
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,369 @@
+{
+  "generated": "2026-11-06",
+  "final_from": "2026-04-01",
+  "foul_profile": {
+    "n": 20102,
+    "fta_delta_mae": 0.0038,
+    "fta_ci95": [
+      0.0008,
+      0.0067
+    ],
+    "baiter_min_fta36": 4.83,
+    "aggressive_min_fta100": 24.51,
+    "table": [
+      {
+        "baiter": false,
+        "aggressive_opp": false,
+        "n": 11352,
+        "fta_mean": 2.02,
+        "res_fta": 0.055,
+        "res_fta_ci95": [
+          0.0145,
+          0.097
+        ],
+        "res_pts": 0.213,
+        "res_pts_ci95": [
+          0.0976,
+          0.332
+        ]
+      },
+      {
+        "baiter": false,
+        "aggressive_opp": true,
+        "n": 3721,
+        "fta_mean": 2.21,
+        "res_fta": 0.254,
+        "res_fta_ci95": [
+          0.1795,
+          0.331
+        ],
+        "res_pts": 0.161,
+        "res_pts_ci95": [
+          -0.0566,
+          0.3796
+        ]
+      },
+      {
+        "baiter": true,
+        "aggressive_opp": false,
+        "n": 3718,
+        "fta_mean": 5.27,
+        "res_fta": 0.101,
+        "res_fta_ci95": [
+          -0.0121,
+          0.2204
+        ],
+        "res_pts": -0.075,
+        "res_pts_ci95": [
+          -0.329,
+          0.1702
+        ]
+      },
+      {
+        "baiter": true,
+        "aggressive_opp": true,
+        "n": 1311,
+        "fta_mean": 5.55,
+        "res_fta": 0.43,
+        "res_fta_ci95": [
+          0.2313,
+          0.6475
+        ],
+        "res_pts": 0.126,
+        "res_pts_ci95": [
+          -0.3047,
+          0.5718
+        ]
+      }
+    ]
+  },
+  "holdout": {
+    "PTS": {
+      "n": 31181,
+      "n_top7": 20102,
+      "mae_ref": 4.4337,
+      "mae_ref_top7": 5.0436,
+      "sets": {
+        "foul": {
+          "delta_mae": 0.0014,
+          "ci95": [
+            -0.002,
+            0.0047
+          ],
+          "delta_mae_top7": 0.0028,
+          "ci95_top7": [
+            -0.0019,
+            0.0079
+          ]
+        },
+        "decay": {
+          "delta_mae": -0.0092,
+          "ci95": [
+            -0.015,
+            -0.0036
+          ],
+          "delta_mae_top7": -0.008,
+          "ci95_top7": [
+            -0.0162,
+            0.0002
+          ]
+        }
+      }
+    },
+    "REB": {
+      "n": 31181,
+      "n_top7": 20102,
+      "mae_ref": 1.8503,
+      "mae_ref_top7": 2.0032,
+      "sets": {
+        "foul": {
+          "delta_mae": -0.0021,
+          "ci95": [
+            -0.0037,
+            -0.0005
+          ],
+          "delta_mae_top7": -0.0023,
+          "ci95_top7": [
+            -0.0045,
+            -0.0001
+          ]
+        },
+        "decay": {
+          "delta_mae": -0.0125,
+          "ci95": [
+            -0.0158,
+            -0.0092
+          ],
+          "delta_mae_top7": -0.0127,
+          "ci95_top7": [
+            -0.0171,
+            -0.0087
+          ]
+        }
+      }
+    },
+    "AST": {
+      "n": 31181,
+      "n_top7": 20102,
+      "mae_ref": 1.3141,
+      "mae_ref_top7": 1.5171,
+      "sets": {
+        "foul": {
+          "delta_mae": -0.0001,
+          "ci95": [
+            -0.001,
+            0.0008
+          ],
+          "delta_mae_top7": 0.0008,
+          "ci95_top7": [
+            -0.0006,
+            0.0022
+          ]
+        },
+        "decay": {
+          "delta_mae": -0.0037,
+          "ci95": [
+            -0.0059,
+            -0.0014
+          ],
+          "delta_mae_top7": -0.0048,
+          "ci95_top7": [
+            -0.008,
+            -0.0019
+          ]
+        }
+      }
+    }
+  },
+  "kalshi": {
+    "PTS": {
+      "sample": "dev (< 2026-04-01)",
+      "base": {
+        "n": 2817,
+        "raw_diff": 0.015,
+        "raw_ci95": [
+          0.0084,
+          0.0216
+        ],
+        "corrected_diff": 0.0014,
+        "corrected_ci95": [
+          -0.0002,
+          0.0029
+        ],
+        "gamma": {
+          "coef": 0.049,
+          "ci95": [
+            -0.133,
+            0.202
+          ]
+        }
+      },
+      "foul": {
+        "n": 2817,
+        "raw_diff": 0.0141,
+        "raw_ci95": [
+          0.0079,
+          0.0208
+        ],
+        "corrected_diff": 0.0011,
+        "corrected_ci95": [
+          -0.0004,
+          0.0027
+        ],
+        "gamma": {
+          "coef": 0.088,
+          "ci95": [
+            -0.116,
+            0.268
+          ]
+        }
+      },
+      "decay": {
+        "n": 2817,
+        "raw_diff": 0.0141,
+        "raw_ci95": [
+          0.008,
+          0.0201
+        ],
+        "corrected_diff": 0.0014,
+        "corrected_ci95": [
+          -0.0002,
+          0.0029
+        ],
+        "gamma": {
+          "coef": 0.031,
+          "ci95": [
+            -0.173,
+            0.22
+          ]
+        }
+      }
+    },
+    "REB": {
+      "sample": "dev (< 2026-04-01)",
+      "base": {
+        "n": 2103,
+        "raw_diff": 0.0068,
+        "raw_ci95": [
+          0.0002,
+          0.0132
+        ],
+        "corrected_diff": 0.0009,
+        "corrected_ci95": [
+          -0.0007,
+          0.0026
+        ],
+        "gamma": {
+          "coef": 0.226,
+          "ci95": [
+            -0.028,
+            0.453
+          ]
+        }
+      },
+      "foul": {
+        "n": 2103,
+        "raw_diff": 0.0066,
+        "raw_ci95": [
+          0.0001,
+          0.0131
+        ],
+        "corrected_diff": 0.0009,
+        "corrected_ci95": [
+          -0.001,
+          0.0027
+        ],
+        "gamma": {
+          "coef": 0.246,
+          "ci95": [
+            -0.002,
+            0.499
+          ]
+        }
+      },
+      "decay": {
+        "n": 2103,
+        "raw_diff": 0.0041,
+        "raw_ci95": [
+          -0.0016,
+          0.0098
+        ],
+        "corrected_diff": 0.0007,
+        "corrected_ci95": [
+          -0.0013,
+          0.0027
+        ],
+        "gamma": {
+          "coef": 0.298,
+          "ci95": [
+            -0.029,
+            0.579
+          ]
+        }
+      }
+    },
+    "AST": {
+      "sample": "dev (< 2026-04-01)",
+      "base": {
+        "n": 1530,
+        "raw_diff": 0.014,
+        "raw_ci95": [
+          0.0063,
+          0.0221
+        ],
+        "corrected_diff": 0.0011,
+        "corrected_ci95": [
+          -0.0009,
+          0.0031
+        ],
+        "gamma": {
+          "coef": -0.079,
+          "ci95": [
+            -0.329,
+            0.177
+          ]
+        }
+      },
+      "foul": {
+        "n": 1530,
+        "raw_diff": 0.0138,
+        "raw_ci95": [
+          0.0049,
+          0.0221
+        ],
+        "corrected_diff": 0.0011,
+        "corrected_ci95": [
+          -0.0008,
+          0.0031
+        ],
+        "gamma": {
+          "coef": -0.05,
+          "ci95": [
+            -0.296,
+            0.225
+          ]
+        }
+      },
+      "decay": {
+        "n": 1530,
+        "raw_diff": 0.0143,
+        "raw_ci95": [
+          0.0062,
+          0.022
+        ],
+        "corrected_diff": 0.001,
+        "corrected_ci95": [
+          -0.0009,
+          0.0029
+        ],
+        "gamma": {
+          "coef": -0.097,
+          "ci95": [
+            -0.385,
+            0.175
+          ]
+        }
+      }
+    }
+  }
+}

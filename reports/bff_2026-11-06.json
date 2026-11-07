@@ -1,0 +1,63 @@
+{
+  "generated": "2026-11-06",
+  "sample": "dev",
+  "final_from": "2026-04-01",
+  "ci_level": 0.9833,
+  "AST": {
+    "bff": {
+      "n": 1530,
+      "share_nonzero": 0.384,
+      "delta_logloss": 0.00018,
+      "ci": [
+        -0.00052,
+        0.00092
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.278,
+        "ci95": [
+          -1.322,
+          0.592
+        ]
+      }
+    }
+  },
+  "PTS": {
+    "bff": {
+      "n": 2817,
+      "share_nonzero": 0.405,
+      "delta_logloss": -0.00023,
+      "ci": [
+        -0.00214,
+        0.00176
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.419,
+        "ci95": [
+          0.028,
+          0.779
+        ]
+      }
+    }
+  },
+  "REB": {
+    "bff": {
+      "n": 2103,
+      "share_nonzero": 0.393,
+      "delta_logloss": 0.00029,
+      "ci": [
+        -2e-05,
+        0.0006
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.127,
+        "ci95": [
+          -0.956,
+          0.997
+        ]
+      }
+    }
+  }
+}

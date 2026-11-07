@@ -65,7 +65,8 @@ def add_terms(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def absence_features(pred: pd.DataFrame, reports: pd.DataFrame | None = None) -> pd.DataFrame:
+def absence_features(pred: pd.DataFrame, reports: pd.DataFrame | None = None,
+                     hours_before: int = 1) -> pd.DataFrame:
     """Dokleja vac_{min,stat}_{rep,act} (skala: minuty/48, statystyka/10) do każdej linii."""
     import injuries
 
@@ -89,7 +90,7 @@ def absence_features(pred: pd.DataFrame, reports: pd.DataFrame | None = None) ->
     rows = []
     cache = {}
     for r in pred.itertuples():
-        snap = injuries._snap_key((pd.Timestamp(r.tip) - pd.Timedelta(hours=1)).to_pydatetime()) \
+        snap = injuries._snap_key((pd.Timestamp(r.tip) - pd.Timedelta(hours=hours_before)).to_pydatetime()) \
             if pd.notna(r.tip) else None
         key = (r.TEAM_ID, r.game_date)
         if key not in cache:
