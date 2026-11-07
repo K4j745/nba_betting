@@ -92,6 +92,7 @@ jobs:
           # Commit tylko jeśli są zmiany; [skip ci] zapobiega pętli
           if ! git diff --staged --quiet; then
             git commit -m "data: pipeline $(date -u +'%Y-%m-%dT%H:%M')Z [skip ci]"
+            git pull --rebase origin main
             git push
           else
             echo "Brak zmian do commitowania."

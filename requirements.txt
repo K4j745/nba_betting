@@ -37,7 +37,7 @@ optuna==4.7.0
 orjson==3.11.7
 packaging==25.0
 pandas==2.3.3
-pillow==12.0.0
+pillow==12.2.0
 playwright==1.58.0
 playwright-stealth==2.0.2
 plotly==6.6.0
