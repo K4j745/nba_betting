@@ -87,6 +87,7 @@ jobs:
           git add -f models/regressor_v*.pkl    2>/dev/null || true
           git add -f models/classifier_v*.pkl   2>/dev/null || true
           git add    dashboard_data.json        2>/dev/null || true
+          git add    upcoming.json              2>/dev/null || true
           git add    "coupon_*.json"            2>/dev/null || true
 
           # Commit tylko jeśli są zmiany; [skip ci] zapobiega pętli

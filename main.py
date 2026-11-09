@@ -37,6 +37,7 @@ from tracker import ResultTracker
 import injuries
 import kalshi
 import live
+import upcoming
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 LOG_DIR  = Path("logs")
@@ -225,6 +226,7 @@ def run_daily_pipeline(game_date: str | None = None):
         out = None
     logger.info("DIAG: raport kontuzji = %s", "brak" if out is None else f"{len(out)} Out/Doubtful")
     run_stat_coupons(game_date, out)
+    save_upcoming(odds_fetcher, out)
 
     if not props:
         logger.warning("Brak propsów — pipeline zakończony bez kuponu")
@@ -261,6 +263,22 @@ def run_daily_pipeline(game_date: str | None = None):
     )
 
     export_dashboard_data(db_path=DB_PATH, reason=reason)
+
+
+def save_upcoming(odds_fetcher, out) -> None:
+    """Zakładka Zawodnicy: najbliższe mecze (/events, bez kredytów) i ostatnie mecze rotacji z logów."""
+    try:
+        games, _ = live.load_live_games()
+        try:
+            k_events, lines = upcoming.kalshi_lines()
+        except Exception as e:   # Kalshi niedostępne: zakładka bez linii
+            logger.error("Kalshi (zawodnicy): %s", e)
+            k_events, lines = [], {}
+        data = upcoming.build(odds_fetcher.api_client.get_events() or k_events, games, out, lines=lines)
+        upcoming.save(data)
+        logger.info("DIAG: zawodnicy na najbliższe mecze — meczów %d", len(data["games"]))
+    except Exception as e:   # brak logów, Odds API niedostępne itp.
+        logger.error("Zawodnicy na najbliższe mecze: %s", e)
 
 
 def run_stat_coupons(game_date: str, out, stats=("REB", "AST"), db_path: str = DB_PATH) -> dict:
@@ -692,6 +710,7 @@ def export_dashboard_data(
         "stats":            tabs,
         "verdict":          _verdict(tabs),
         "research_log":     _research_log(),
+        "upcoming":         upcoming.load(),
     }
 
     with open(output_path, "w", encoding="utf-8") as f:
