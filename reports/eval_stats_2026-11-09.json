@@ -1,0 +1,576 @@
+{
+  "generated": "2026-11-09",
+  "source": "kalshi (środek bid/ask ≥ 1 h przed meczem)",
+  "stats": {
+    "PTS": {
+      "lines": 6614,
+      "matched": 6390,
+      "dates": [
+        "2025-11-18",
+        "2026-11-07"
+      ],
+      "sets": {
+        "base": {
+          "scores": {
+            "n": 6390,
+            "n_games": 1112,
+            "over_rate": 0.467,
+            "market_p_mean": 0.486,
+            "logloss_model": 0.6877,
+            "logloss_market": 0.6656,
+            "logloss_diff": 0.0221,
+            "logloss_diff_ci95": [
+              0.0168,
+              0.027
+            ],
+            "brier_model": 0.2464,
+            "brier_market": 0.2369,
+            "mae_model": 5.456,
+            "mae_line": 5.471
+          },
+          "bets": [
+            {
+              "ev_threshold": 0.0,
+              "bets": 4474,
+              "hit_rate": 0.486,
+              "roi": -0.0703,
+              "roi_ci95": [
+                -0.0988,
+                -0.0416
+              ]
+            },
+            {
+              "ev_threshold": 0.03,
+              "bets": 3631,
+              "hit_rate": 0.481,
+              "roi": -0.066,
+              "roi_ci95": [
+                -0.0971,
+                -0.0344
+              ]
+            },
+            {
+              "ev_threshold": 0.05,
+              "bets": 3158,
+              "hit_rate": 0.472,
+              "roi": -0.0749,
+              "roi_ci95": [
+                -0.1091,
+                -0.0393
+              ]
+            },
+            {
+              "ev_threshold": 0.1,
+              "bets": 2126,
+              "hit_rate": 0.459,
+              "roi": -0.0796,
+              "roi_ci95": [
+                -0.1223,
+                -0.0376
+              ]
+            }
+          ]
+        },
+        "absence": {
+          "scores": {
+            "n": 6390,
+            "n_games": 1112,
+            "over_rate": 0.467,
+            "market_p_mean": 0.486,
+            "logloss_model": 0.6831,
+            "logloss_market": 0.6656,
+            "logloss_diff": 0.0175,
+            "logloss_diff_ci95": [
+              0.0124,
+              0.0228
+            ],
+            "brier_model": 0.2442,
+            "brier_market": 0.2369,
+            "mae_model": 5.417,
+            "mae_line": 5.471
+          },
+          "bets": [
+            {
+              "ev_threshold": 0.0,
+              "bets": 4306,
+              "hit_rate": 0.498,
+              "roi": -0.0517,
+              "roi_ci95": [
+                -0.0822,
+                -0.0213
+              ]
+            },
+            {
+              "ev_threshold": 0.03,
+              "bets": 3439,
+              "hit_rate": 0.494,
+              "roi": -0.0512,
+              "roi_ci95": [
+                -0.083,
+                -0.0154
+              ]
+            },
+            {
+              "ev_threshold": 0.05,
+              "bets": 2960,
+              "hit_rate": 0.495,
+              "roi": -0.0398,
+              "roi_ci95": [
+                -0.0769,
+                -0.0024
+              ]
+            },
+            {
+              "ev_threshold": 0.1,
+              "bets": 1967,
+              "hit_rate": 0.489,
+              "roi": -0.0246,
+              "roi_ci95": [
+                -0.0684,
+                0.02
+              ]
+            }
+          ]
+        }
+      },
+      "calibration_base": [
+        {
+          "bin": "(0.0, 0.3]",
+          "p": 0.221,
+          "market": 0.328,
+          "actual": 0.308,
+          "n": 480.0
+        },
+        {
+          "bin": "(0.3, 0.4]",
+          "p": 0.357,
+          "market": 0.414,
+          "actual": 0.38,
+          "n": 909.0
+        },
+        {
+          "bin": "(0.4, 0.45]",
+          "p": 0.426,
+          "market": 0.444,
+          "actual": 0.446,
+          "n": 776.0
+        },
+        {
+          "bin": "(0.45, 0.5]",
+          "p": 0.476,
+          "market": 0.474,
+          "actual": 0.438,
+          "n": 938.0
+        },
+        {
+          "bin": "(0.5, 0.55]",
+          "p": 0.525,
+          "market": 0.498,
+          "actual": 0.483,
+          "n": 957.0
+        },
+        {
+          "bin": "(0.55, 0.6]",
+          "p": 0.574,
+          "market": 0.53,
+          "actual": 0.508,
+          "n": 882.0
+        },
+        {
+          "bin": "(0.6, 0.7]",
+          "p": 0.642,
+          "market": 0.569,
+          "actual": 0.557,
+          "n": 1115.0
+        },
+        {
+          "bin": "(0.7, 1.0]",
+          "p": 0.746,
+          "market": 0.619,
+          "actual": 0.613,
+          "n": 333.0
+        }
+      ]
+    },
+    "REB": {
+      "lines": 5409,
+      "matched": 5235,
+      "dates": [
+        "2025-11-18",
+        "2026-11-07"
+      ],
+      "sets": {
+        "base": {
+          "scores": {
+            "n": 5235,
+            "n_games": 1061,
+            "over_rate": 0.495,
+            "market_p_mean": 0.491,
+            "logloss_model": 0.691,
+            "logloss_market": 0.6784,
+            "logloss_diff": 0.0127,
+            "logloss_diff_ci95": [
+              0.0073,
+              0.0182
+            ],
+            "brier_model": 0.2486,
+            "brier_market": 0.2431,
+            "mae_model": 2.217,
+            "mae_line": 2.235
+          },
+          "bets": [
+            {
+              "ev_threshold": 0.0,
+              "bets": 3327,
+              "hit_rate": 0.497,
+              "roi": -0.0497,
+              "roi_ci95": [
+                -0.0845,
+                -0.0161
+              ]
+            },
+            {
+              "ev_threshold": 0.03,
+              "bets": 2589,
+              "hit_rate": 0.498,
+              "roi": -0.0399,
+              "roi_ci95": [
+                -0.0806,
+                -0.0013
+              ]
+            },
+            {
+              "ev_threshold": 0.05,
+              "bets": 2168,
+              "hit_rate": 0.491,
+              "roi": -0.0492,
+              "roi_ci95": [
+                -0.0928,
+                -0.0062
+              ]
+            },
+            {
+              "ev_threshold": 0.1,
+              "bets": 1356,
+              "hit_rate": 0.473,
+              "roi": -0.0747,
+              "roi_ci95": [
+                -0.1301,
+                -0.0198
+              ]
+            }
+          ]
+        },
+        "absence": {
+          "scores": {
+            "n": 5235,
+            "n_games": 1061,
+            "over_rate": 0.495,
+            "market_p_mean": 0.491,
+            "logloss_model": 0.6887,
+            "logloss_market": 0.6784,
+            "logloss_diff": 0.0103,
+            "logloss_diff_ci95": [
+              0.0051,
+              0.0158
+            ],
+            "brier_model": 0.2475,
+            "brier_market": 0.2431,
+            "mae_model": 2.212,
+            "mae_line": 2.235
+          },
+          "bets": [
+            {
+              "ev_threshold": 0.0,
+              "bets": 3301,
+              "hit_rate": 0.513,
+              "roi": -0.0265,
+              "roi_ci95": [
+                -0.0613,
+                0.0074
+              ]
+            },
+            {
+              "ev_threshold": 0.03,
+              "bets": 2588,
+              "hit_rate": 0.512,
+              "roi": -0.0234,
+              "roi_ci95": [
+                -0.0589,
+                0.0135
+              ]
+            },
+            {
+              "ev_threshold": 0.05,
+              "bets": 2151,
+              "hit_rate": 0.506,
+              "roi": -0.03,
+              "roi_ci95": [
+                -0.0712,
+                0.0105
+              ]
+            },
+            {
+              "ev_threshold": 0.1,
+              "bets": 1343,
+              "hit_rate": 0.487,
+              "roi": -0.052,
+              "roi_ci95": [
+                -0.1067,
+                -0.0025
+              ]
+            }
+          ]
+        }
+      },
+      "calibration_base": [
+        {
+          "bin": "(0.0, 0.3]",
+          "p": 0.234,
+          "market": 0.373,
+          "actual": 0.39,
+          "n": 277.0
+        },
+        {
+          "bin": "(0.3, 0.4]",
+          "p": 0.361,
+          "market": 0.442,
+          "actual": 0.419,
+          "n": 888.0
+        },
+        {
+          "bin": "(0.4, 0.45]",
+          "p": 0.426,
+          "market": 0.467,
+          "actual": 0.474,
+          "n": 964.0
+        },
+        {
+          "bin": "(0.45, 0.5]",
+          "p": 0.475,
+          "market": 0.492,
+          "actual": 0.498,
+          "n": 1107.0
+        },
+        {
+          "bin": "(0.5, 0.55]",
+          "p": 0.523,
+          "market": 0.513,
+          "actual": 0.504,
+          "n": 881.0
+        },
+        {
+          "bin": "(0.55, 0.6]",
+          "p": 0.572,
+          "market": 0.542,
+          "actual": 0.557,
+          "n": 625.0
+        },
+        {
+          "bin": "(0.6, 0.7]",
+          "p": 0.638,
+          "market": 0.572,
+          "actual": 0.608,
+          "n": 408.0
+        },
+        {
+          "bin": "(0.7, 1.0]",
+          "p": 0.754,
+          "market": 0.64,
+          "actual": 0.718,
+          "n": 85.0
+        }
+      ]
+    },
+    "AST": {
+      "lines": 4318,
+      "matched": 4189,
+      "dates": [
+        "2025-11-21",
+        "2026-11-07"
+      ],
+      "sets": {
+        "base": {
+          "scores": {
+            "n": 4189,
+            "n_games": 1020,
+            "over_rate": 0.481,
+            "market_p_mean": 0.493,
+            "logloss_model": 0.6968,
+            "logloss_market": 0.6796,
+            "logloss_diff": 0.0172,
+            "logloss_diff_ci95": [
+              0.0111,
+              0.0235
+            ],
+            "brier_model": 0.251,
+            "brier_market": 0.2435,
+            "mae_model": 1.866,
+            "mae_line": 1.866
+          },
+          "bets": [
+            {
+              "ev_threshold": 0.0,
+              "bets": 2812,
+              "hit_rate": 0.5,
+              "roi": -0.0489,
+              "roi_ci95": [
+                -0.0844,
+                -0.0138
+              ]
+            },
+            {
+              "ev_threshold": 0.03,
+              "bets": 2312,
+              "hit_rate": 0.497,
+              "roi": -0.0465,
+              "roi_ci95": [
+                -0.0861,
+                -0.0046
+              ]
+            },
+            {
+              "ev_threshold": 0.05,
+              "bets": 1977,
+              "hit_rate": 0.491,
+              "roi": -0.0528,
+              "roi_ci95": [
+                -0.0991,
+                -0.0084
+              ]
+            },
+            {
+              "ev_threshold": 0.1,
+              "bets": 1337,
+              "hit_rate": 0.481,
+              "roi": -0.0531,
+              "roi_ci95": [
+                -0.1068,
+                0.0025
+              ]
+            }
+          ]
+        },
+        "absence": {
+          "scores": {
+            "n": 4189,
+            "n_games": 1020,
+            "over_rate": 0.481,
+            "market_p_mean": 0.493,
+            "logloss_model": 0.6948,
+            "logloss_market": 0.6796,
+            "logloss_diff": 0.0152,
+            "logloss_diff_ci95": [
+              0.0085,
+              0.0221
+            ],
+            "brier_model": 0.2499,
+            "brier_market": 0.2435,
+            "mae_model": 1.863,
+            "mae_line": 1.866
+          },
+          "bets": [
+            {
+              "ev_threshold": 0.0,
+              "bets": 2805,
+              "hit_rate": 0.507,
+              "roi": -0.0397,
+              "roi_ci95": [
+                -0.077,
+                -0.0016
+              ]
+            },
+            {
+              "ev_threshold": 0.03,
+              "bets": 2278,
+              "hit_rate": 0.512,
+              "roi": -0.0251,
+              "roi_ci95": [
+                -0.0681,
+                0.0163
+              ]
+            },
+            {
+              "ev_threshold": 0.05,
+              "bets": 1977,
+              "hit_rate": 0.505,
+              "roi": -0.0295,
+              "roi_ci95": [
+                -0.0739,
+                0.0149
+              ]
+            },
+            {
+              "ev_threshold": 0.1,
+              "bets": 1324,
+              "hit_rate": 0.498,
+              "roi": -0.0217,
+              "roi_ci95": [
+                -0.0783,
+                0.0344
+              ]
+            }
+          ]
+        }
+      },
+      "calibration_base": [
+        {
+          "bin": "(0.0, 0.3]",
+          "p": 0.217,
+          "market": 0.361,
+          "actual": 0.374,
+          "n": 313.0
+        },
+        {
+          "bin": "(0.3, 0.4]",
+          "p": 0.357,
+          "market": 0.434,
+          "actual": 0.415,
+          "n": 686.0
+        },
+        {
+          "bin": "(0.4, 0.45]",
+          "p": 0.426,
+          "market": 0.472,
+          "actual": 0.485,
+          "n": 629.0
+        },
+        {
+          "bin": "(0.45, 0.5]",
+          "p": 0.475,
+          "market": 0.495,
+          "actual": 0.473,
+          "n": 812.0
+        },
+        {
+          "bin": "(0.5, 0.55]",
+          "p": 0.524,
+          "market": 0.516,
+          "actual": 0.494,
+          "n": 660.0
+        },
+        {
+          "bin": "(0.55, 0.6]",
+          "p": 0.573,
+          "market": 0.544,
+          "actual": 0.508,
+          "n": 490.0
+        },
+        {
+          "bin": "(0.6, 0.7]",
+          "p": 0.643,
+          "market": 0.569,
+          "actual": 0.555,
+          "n": 465.0
+        },
+        {
+          "bin": "(0.7, 1.0]",
+          "p": 0.74,
+          "market": 0.636,
+          "actual": 0.672,
+          "n": 134.0
+        }
+      ]
+    }
+  }
+}
