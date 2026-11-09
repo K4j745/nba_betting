@@ -1,9 +1,82 @@
 {
-  "generated_at": "2026-11-08T13:58:06.576200",
+  "generated_at": "2026-11-09T01:06:41.289351",
   "game_date": "2026-11-08",
-  "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "today_coupon": {
+    "date": "2026-11-08",
+    "model_version": "pts-2026-11-08",
+    "stat": "PTS",
+    "paper_trading": true,
+    "injury_report": true,
+    "n_out": 47,
+    "n_predictions": 65,
+    "picks": [
+      {
+        "game": "Boston Celtics @ Milwaukee Bucks",
+        "player": "Ryan Rollins",
+        "bet": "over",
+        "stat": "PTS",
+        "line": 9.5,
+        "odds": 1.88,
+        "bookmaker": "unibet",
+        "pts_predicted": 12.2,
+        "p_over": 0.673,
+        "confidence": 67,
+        "ev": 0.2652,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 12.2 pkt vs linia 9.5 (unibet), ewm 13.7, min 24.6, opp_def_rtg 107.2, EV +26.5%"
+      },
+      {
+        "game": "New Orleans Pelicans @ Los Angeles Clippers",
+        "player": "Saddiq Bey",
+        "bet": "over",
+        "stat": "PTS",
+        "line": 12.5,
+        "odds": 1.8,
+        "bookmaker": "unibet",
+        "pts_predicted": 15.8,
+        "p_over": 0.685,
+        "confidence": 68,
+        "ev": 0.233,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 15.8 pkt vs linia 12.5 (unibet), ewm 18.0, min 28.2, opp_def_rtg 112.8, EV +23.3%"
+      },
+      {
+        "game": "Miami Heat @ Sacramento Kings",
+        "player": "Keegan Murray",
+        "bet": "over",
+        "stat": "PTS",
+        "line": 9.5,
+        "odds": 1.87,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 11.0,
+        "p_over": 0.606,
+        "confidence": 61,
+        "ev": 0.1332,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 11.0 pkt vs linia 9.5 (pinnacle), ewm 11.0, min 29.3, opp_def_rtg 118.0, EV +13.3%"
+      }
+    ],
+    "total_picks": 3,
+    "simulated_stake_per_pick": 10.0,
+    "simulated_total_stake": 30.0
+  },
+  "no_games_reason": null,
+  "status_message": "",
   "kpi": {
     "win_rate": 0.32,
     "roi_30d": -0.422,
@@ -910,8 +983,285 @@
           }
         ]
       },
-      "coupon": null,
+      "coupon": {
+        "date": "2026-11-08",
+        "model_version": "reb-2026-11-08",
+        "stat": "REB",
+        "paper_trading": true,
+        "injury_report": true,
+        "n_out": 47,
+        "n_predictions": 75,
+        "picks": [
+          {
+            "game": "Miami Heat @ Sacramento Kings",
+            "player": "Klay Thompson",
+            "bet": "under",
+            "stat": "REB",
+            "line": 1.5,
+            "odds": 2.564,
+            "bookmaker": "kalshi",
+            "pts_predicted": 1.7,
+            "p_over": 0.464,
+            "confidence": 54,
+            "ev": 0.3748,
+            "p_market": 0.635,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 1.7 zb. vs linia 1.5 (kalshi), ewm 1.4, min 22.0, opp_reb_allowed 40.6, EV +37.5%"
+          },
+          {
+            "game": "Utah Jazz @ Minnesota Timberwolves",
+            "player": "Jonathan Kuminga",
+            "bet": "over",
+            "stat": "REB",
+            "line": 3.5,
+            "odds": 1.786,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.6,
+            "p_over": 0.762,
+            "confidence": 76,
+            "ev": 0.3611,
+            "p_market": 0.495,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 5.6 zb. vs linia 3.5 (kalshi), ewm 5.8, min 31.2, opp_reb_allowed 44.0, EV +36.1%"
+          },
+          {
+            "game": "Brooklyn Nets @ Dallas Mavericks",
+            "player": "Nolan Traore",
+            "bet": "over",
+            "stat": "REB",
+            "line": 1.5,
+            "odds": 2.174,
+            "bookmaker": "kalshi",
+            "pts_predicted": 2.4,
+            "p_over": 0.625,
+            "confidence": 63,
+            "ev": 0.3592,
+            "p_market": 0.43,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 2.4 zb. vs linia 1.5 (kalshi), ewm 2.2, min 21.6, opp_reb_allowed 44.3, EV +35.9%"
+          },
+          {
+            "game": "New Orleans Pelicans @ Los Angeles Clippers",
+            "player": "Zion Williamson",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 2.083,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.1,
+            "p_over": 0.401,
+            "confidence": 60,
+            "ev": 0.2474,
+            "p_market": 0.545,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 5.1 zb. vs linia 5.5 (kalshi), ewm 5.7, min 32.8, opp_reb_allowed 44.5, EV +24.7%"
+          },
+          {
+            "game": "Los Angeles Lakers @ Detroit Pistons",
+            "player": "Ausar Thompson",
+            "bet": "under",
+            "stat": "REB",
+            "line": 11.5,
+            "odds": 1.408,
+            "bookmaker": "kalshi",
+            "pts_predicted": 7.4,
+            "p_over": 0.117,
+            "confidence": 88,
+            "ev": 0.243,
+            "p_market": 0.35,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 7.4 zb. vs linia 11.5 (kalshi), ewm 8.4, min 28.6, opp_reb_allowed 40.2, EV +24.3%"
+          },
+          {
+            "game": "Boston Celtics @ Milwaukee Bucks",
+            "player": "Neemias Queta",
+            "bet": "under",
+            "stat": "REB",
+            "line": 7.5,
+            "odds": 1.754,
+            "bookmaker": "kalshi",
+            "pts_predicted": 6.4,
+            "p_over": 0.33,
+            "confidence": 67,
+            "ev": 0.1758,
+            "p_market": 0.45999999999999996,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 6.4 zb. vs linia 7.5 (kalshi), ewm 7.0, min 22.8, opp_reb_allowed 44.3, EV +17.6%"
+          }
+        ],
+        "total_picks": 6,
+        "simulated_stake_per_pick": 10.0,
+        "simulated_total_stake": 60.0
+      },
       "history": [
+        {
+          "game": "Boston Celtics @ Milwaukee Bucks",
+          "player": "Neemias Queta",
+          "bet": "under",
+          "stat": "REB",
+          "line": 7.5,
+          "odds": 1.754,
+          "bookmaker": "kalshi",
+          "pts_predicted": 6.4,
+          "p_over": 0.33,
+          "confidence": 67,
+          "ev": 0.1758,
+          "p_market": 0.45999999999999996,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 6.4 zb. vs linia 7.5 (kalshi), ewm 7.0, min 22.8, opp_reb_allowed 44.3, EV +17.6%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Los Angeles Lakers @ Detroit Pistons",
+          "player": "Ausar Thompson",
+          "bet": "under",
+          "stat": "REB",
+          "line": 11.5,
+          "odds": 1.408,
+          "bookmaker": "kalshi",
+          "pts_predicted": 7.4,
+          "p_over": 0.117,
+          "confidence": 88,
+          "ev": 0.243,
+          "p_market": 0.35,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 7.4 zb. vs linia 11.5 (kalshi), ewm 8.4, min 28.6, opp_reb_allowed 40.2, EV +24.3%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "New Orleans Pelicans @ Los Angeles Clippers",
+          "player": "Zion Williamson",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 2.083,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.1,
+          "p_over": 0.401,
+          "confidence": 60,
+          "ev": 0.2474,
+          "p_market": 0.545,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 5.1 zb. vs linia 5.5 (kalshi), ewm 5.7, min 32.8, opp_reb_allowed 44.5, EV +24.7%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Brooklyn Nets @ Dallas Mavericks",
+          "player": "Nolan Traore",
+          "bet": "over",
+          "stat": "REB",
+          "line": 1.5,
+          "odds": 2.174,
+          "bookmaker": "kalshi",
+          "pts_predicted": 2.4,
+          "p_over": 0.625,
+          "confidence": 63,
+          "ev": 0.3592,
+          "p_market": 0.43,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 2.4 zb. vs linia 1.5 (kalshi), ewm 2.2, min 21.6, opp_reb_allowed 44.3, EV +35.9%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Utah Jazz @ Minnesota Timberwolves",
+          "player": "Jonathan Kuminga",
+          "bet": "over",
+          "stat": "REB",
+          "line": 3.5,
+          "odds": 1.786,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.6,
+          "p_over": 0.762,
+          "confidence": 76,
+          "ev": 0.3611,
+          "p_market": 0.495,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 5.6 zb. vs linia 3.5 (kalshi), ewm 5.8, min 31.2, opp_reb_allowed 44.0, EV +36.1%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Miami Heat @ Sacramento Kings",
+          "player": "Klay Thompson",
+          "bet": "under",
+          "stat": "REB",
+          "line": 1.5,
+          "odds": 2.564,
+          "bookmaker": "kalshi",
+          "pts_predicted": 1.7,
+          "p_over": 0.464,
+          "confidence": 54,
+          "ev": 0.3748,
+          "p_market": 0.635,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 1.7 zb. vs linia 1.5 (kalshi), ewm 1.4, min 22.0, opp_reb_allowed 40.6, EV +37.5%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
         {
           "game": "Houston Rockets @ Phoenix Suns",
           "player": "Alperen Sengun",
@@ -1179,8 +1529,285 @@
           }
         ]
       },
-      "coupon": null,
+      "coupon": {
+        "date": "2026-11-08",
+        "model_version": "ast-2026-11-08",
+        "stat": "AST",
+        "paper_trading": true,
+        "injury_report": true,
+        "n_out": 47,
+        "n_predictions": 69,
+        "picks": [
+          {
+            "game": "Utah Jazz @ Minnesota Timberwolves",
+            "player": "Keyonte George",
+            "bet": "under",
+            "stat": "AST",
+            "line": 7.5,
+            "odds": 1.923,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.5,
+            "p_over": 0.22,
+            "confidence": 78,
+            "ev": 0.4998,
+            "p_market": 0.52,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 5.5 as. vs linia 7.5 (kalshi), ewm 5.6, min 31.1, opp_ast_allowed 24.0, EV +50.0%"
+          },
+          {
+            "game": "Los Angeles Lakers @ Detroit Pistons",
+            "player": "Walker Kessler",
+            "bet": "under",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 1.587,
+            "bookmaker": "kalshi",
+            "pts_predicted": 1.7,
+            "p_over": 0.115,
+            "confidence": 88,
+            "ev": 0.4041,
+            "p_market": 0.395,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 1.7 as. vs linia 3.5 (kalshi), ewm 1.5, min 31.2, opp_ast_allowed 22.8, EV +40.4%"
+          },
+          {
+            "game": "Brooklyn Nets @ Dallas Mavericks",
+            "player": "Nolan Traore",
+            "bet": "under",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 1.961,
+            "bookmaker": "kalshi",
+            "pts_predicted": 2.8,
+            "p_over": 0.321,
+            "confidence": 68,
+            "ev": 0.3322,
+            "p_market": 0.54,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 2.8 as. vs linia 3.5 (kalshi), ewm 3.2, min 21.6, opp_ast_allowed 26.1, EV +33.2%"
+          },
+          {
+            "game": "New Orleans Pelicans @ Los Angeles Clippers",
+            "player": "Rui Hachimura",
+            "bet": "over",
+            "stat": "AST",
+            "line": 1.5,
+            "odds": 2.273,
+            "bookmaker": "kalshi",
+            "pts_predicted": 2.0,
+            "p_over": 0.572,
+            "confidence": 57,
+            "ev": 0.3008,
+            "p_market": 0.415,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 2.0 as. vs linia 1.5 (kalshi), ewm 1.8, min 34.5, opp_ast_allowed 26.7, EV +30.1%"
+          },
+          {
+            "game": "Miami Heat @ Sacramento Kings",
+            "player": "Giannis Antetokounmpo",
+            "bet": "under",
+            "stat": "AST",
+            "line": 5.5,
+            "odds": 2.326,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.7,
+            "p_over": 0.483,
+            "confidence": 52,
+            "ev": 0.2028,
+            "p_market": 0.595,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 5.7 as. vs linia 5.5 (kalshi), ewm 5.6, min 31.8, opp_ast_allowed 27.3, EV +20.3%"
+          },
+          {
+            "game": "Boston Celtics @ Milwaukee Bucks",
+            "player": "Myles Turner",
+            "bet": "over",
+            "stat": "AST",
+            "line": 1.5,
+            "odds": 2.041,
+            "bookmaker": "kalshi",
+            "pts_predicted": 2.0,
+            "p_over": 0.572,
+            "confidence": 57,
+            "ev": 0.1666,
+            "p_market": 0.44999999999999996,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 2.0 as. vs linia 1.5 (kalshi), ewm 2.0, min 27.4, opp_ast_allowed 24.4, EV +16.7%"
+          }
+        ],
+        "total_picks": 6,
+        "simulated_stake_per_pick": 10.0,
+        "simulated_total_stake": 60.0
+      },
       "history": [
+        {
+          "game": "Boston Celtics @ Milwaukee Bucks",
+          "player": "Myles Turner",
+          "bet": "over",
+          "stat": "AST",
+          "line": 1.5,
+          "odds": 2.041,
+          "bookmaker": "kalshi",
+          "pts_predicted": 2.0,
+          "p_over": 0.572,
+          "confidence": 57,
+          "ev": 0.1666,
+          "p_market": 0.44999999999999996,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 2.0 as. vs linia 1.5 (kalshi), ewm 2.0, min 27.4, opp_ast_allowed 24.4, EV +16.7%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Miami Heat @ Sacramento Kings",
+          "player": "Giannis Antetokounmpo",
+          "bet": "under",
+          "stat": "AST",
+          "line": 5.5,
+          "odds": 2.326,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.7,
+          "p_over": 0.483,
+          "confidence": 52,
+          "ev": 0.2028,
+          "p_market": 0.595,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 5.7 as. vs linia 5.5 (kalshi), ewm 5.6, min 31.8, opp_ast_allowed 27.3, EV +20.3%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "New Orleans Pelicans @ Los Angeles Clippers",
+          "player": "Rui Hachimura",
+          "bet": "over",
+          "stat": "AST",
+          "line": 1.5,
+          "odds": 2.273,
+          "bookmaker": "kalshi",
+          "pts_predicted": 2.0,
+          "p_over": 0.572,
+          "confidence": 57,
+          "ev": 0.3008,
+          "p_market": 0.415,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 2.0 as. vs linia 1.5 (kalshi), ewm 1.8, min 34.5, opp_ast_allowed 26.7, EV +30.1%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Brooklyn Nets @ Dallas Mavericks",
+          "player": "Nolan Traore",
+          "bet": "under",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 1.961,
+          "bookmaker": "kalshi",
+          "pts_predicted": 2.8,
+          "p_over": 0.321,
+          "confidence": 68,
+          "ev": 0.3322,
+          "p_market": 0.54,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 2.8 as. vs linia 3.5 (kalshi), ewm 3.2, min 21.6, opp_ast_allowed 26.1, EV +33.2%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Los Angeles Lakers @ Detroit Pistons",
+          "player": "Walker Kessler",
+          "bet": "under",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 1.587,
+          "bookmaker": "kalshi",
+          "pts_predicted": 1.7,
+          "p_over": 0.115,
+          "confidence": 88,
+          "ev": 0.4041,
+          "p_market": 0.395,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 1.7 as. vs linia 3.5 (kalshi), ewm 1.5, min 31.2, opp_ast_allowed 22.8, EV +40.4%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Utah Jazz @ Minnesota Timberwolves",
+          "player": "Keyonte George",
+          "bet": "under",
+          "stat": "AST",
+          "line": 7.5,
+          "odds": 1.923,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.5,
+          "p_over": 0.22,
+          "confidence": 78,
+          "ev": 0.4998,
+          "p_market": 0.52,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 5.5 as. vs linia 7.5 (kalshi), ewm 5.6, min 31.1, opp_ast_allowed 24.0, EV +50.0%",
+          "date": "2026-11-08",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
         {
           "game": "Houston Rockets @ Phoenix Suns",
           "player": "Reed Sheppard",
