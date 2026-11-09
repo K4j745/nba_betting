@@ -1,0 +1,218 @@
+{
+  "generated": "2026-11-09",
+  "source": "eval_stats_2026-11-09_predictions.csv",
+  "sample": "dev (< 2026-04-01)",
+  "lines": 7959,
+  "params": {
+    "alpha": 0.25,
+    "ridge": 1.0,
+    "warmup": 400,
+    "ev_min": 0.05
+  },
+  "policies": {
+    "never": {
+      "bets": 0,
+      "share_of_lines": 0.0
+    },
+    "random": {
+      "bets": 827,
+      "share_of_lines": 0.104,
+      "roi": -0.0917,
+      "roi_ci95": [
+        -0.1577,
+        -0.0201
+      ],
+      "units": -75.83,
+      "hit_rate": 0.487,
+      "over_share": 0.49
+    },
+    "ev5": {
+      "bets": 3095,
+      "share_of_lines": 0.389,
+      "roi": -0.0682,
+      "roi_ci95": [
+        -0.1039,
+        -0.0347
+      ],
+      "units": -211.16,
+      "hit_rate": 0.479,
+      "over_share": 0.539
+    },
+    "linucb": {
+      "bets": 745,
+      "share_of_lines": 0.094,
+      "roi": -0.1375,
+      "roi_ci95": [
+        -0.2138,
+        -0.0606
+      ],
+      "units": -102.42,
+      "hit_rate": 0.439,
+      "over_share": 0.303
+    },
+    "full_info": {
+      "bets": 251,
+      "share_of_lines": 0.032,
+      "roi": -0.1987,
+      "roi_ci95": [
+        -0.3029,
+        -0.0865
+      ],
+      "units": -49.88,
+      "hit_rate": 0.442,
+      "over_share": 0.367
+    }
+  },
+  "by_stat": {
+    "PTS": {
+      "random": {
+        "bets": 359,
+        "share_of_lines": 0.108,
+        "roi": -0.0671,
+        "roi_ci95": [
+          -0.166,
+          0.0275
+        ],
+        "units": -24.08,
+        "hit_rate": 0.501,
+        "over_share": 0.513
+      },
+      "ev5": {
+        "bets": 1447,
+        "share_of_lines": 0.435,
+        "roi": -0.0541,
+        "roi_ci95": [
+          -0.1039,
+          -0.0034
+        ],
+        "units": -78.23,
+        "hit_rate": 0.486,
+        "over_share": 0.626
+      },
+      "linucb": {
+        "bets": 215,
+        "share_of_lines": 0.065,
+        "roi": -0.2282,
+        "roi_ci95": [
+          -0.3629,
+          -0.092
+        ],
+        "units": -49.06,
+        "hit_rate": 0.409,
+        "over_share": 0.865
+      },
+      "full_info": {
+        "bets": 108,
+        "share_of_lines": 0.032,
+        "roi": -0.2104,
+        "roi_ci95": [
+          -0.3764,
+          -0.0477
+        ],
+        "units": -22.73,
+        "hit_rate": 0.444,
+        "over_share": 0.574
+      }
+    },
+    "REB": {
+      "random": {
+        "bets": 272,
+        "share_of_lines": 0.104,
+        "roi": -0.1392,
+        "roi_ci95": [
+          -0.2562,
+          -0.0265
+        ],
+        "units": -37.85,
+        "hit_rate": 0.463,
+        "over_share": 0.456
+      },
+      "ev5": {
+        "bets": 879,
+        "share_of_lines": 0.335,
+        "roi": -0.0587,
+        "roi_ci95": [
+          -0.1224,
+          0.0053
+        ],
+        "units": -51.58,
+        "hit_rate": 0.487,
+        "over_share": 0.413
+      },
+      "linucb": {
+        "bets": 180,
+        "share_of_lines": 0.069,
+        "roi": -0.0966,
+        "roi_ci95": [
+          -0.2527,
+          0.0694
+        ],
+        "units": -17.39,
+        "hit_rate": 0.444,
+        "over_share": 0.211
+      },
+      "full_info": {
+        "bets": 44,
+        "share_of_lines": 0.017,
+        "roi": -0.3048,
+        "roi_ci95": [
+          -0.5916,
+          -0.035
+        ],
+        "units": -13.41,
+        "hit_rate": 0.409,
+        "over_share": 0.568
+      }
+    },
+    "AST": {
+      "random": {
+        "bets": 196,
+        "share_of_lines": 0.097,
+        "roi": -0.0709,
+        "roi_ci95": [
+          -0.2157,
+          0.0651
+        ],
+        "units": -13.9,
+        "hit_rate": 0.495,
+        "over_share": 0.495
+      },
+      "ev5": {
+        "bets": 769,
+        "share_of_lines": 0.382,
+        "roi": -0.1058,
+        "roi_ci95": [
+          -0.1814,
+          -0.0331
+        ],
+        "units": -81.35,
+        "hit_rate": 0.459,
+        "over_share": 0.518
+      },
+      "linucb": {
+        "bets": 350,
+        "share_of_lines": 0.174,
+        "roi": -0.1028,
+        "roi_ci95": [
+          -0.2061,
+          0.0044
+        ],
+        "units": -35.97,
+        "hit_rate": 0.454,
+        "over_share": 0.006
+      },
+      "full_info": {
+        "bets": 99,
+        "share_of_lines": 0.049,
+        "roi": -0.1388,
+        "roi_ci95": [
+          -0.3221,
+          0.054
+        ],
+        "units": -13.74,
+        "hit_rate": 0.455,
+        "over_share": 0.051
+      }
+    }
+  }
+}

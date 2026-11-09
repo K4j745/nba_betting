@@ -1,35 +1,86 @@
 [
-  {"date": "2026-11-06", "name": "Wejście wcześniej (10 h i 4 h przed meczem)", "status": "no_edge",
-   "question": "Czy wcześniejsza cena Kalshi da się pobić?",
-   "result": "Rynek wcześniej wie mniej, ale korekta modelem nie poprawia prognozy. CLV po prowizji ujemne."},
-  {"date": "2026-11-06", "name": "Zbiórki 10 h przed meczem", "status": "watch",
-   "question": "Jedyny ślad w teście wejścia wcześniej.",
-   "result": "γ 0,28 [0,09; 0,47] na całej próbie, ale bez poprawy poza próbą. Kandydat do obserwacji, nie przewaga."},
-  {"date": "2026-11-06", "name": "foul_baiter × agresywny rywal", "status": "no_edge",
-   "question": "Czy zawodnicy wymuszający faule zyskują przeciw faulującym drużynom?",
-   "result": "O 0,43 rzutu osobistego więcej niż w modelu, ale bez przełożenia na punkty i bez poprawy względem rynku."},
-  {"date": "2026-11-06", "name": "mini-DARKO: osobne tempo minut i produkcji", "status": "forecast_only",
-   "question": "Czy różne okresy półtrwania poprawiają prognozę?",
-   "result": "MAE lepsze o ułamek procenta (PTS −0,009, REB −0,013, AST −0,004), ale rynek już to zawiera."},
-  {"date": "2026-11-06", "name": "Kalshi − Pinnacle", "status": "inconclusive",
-   "question": "Czy Kalshi spóźnia się za Pinnacle?",
-   "result": "Brak sygnału (γ 0,01), ale tylko 818 linii i bardzo szeroki przedział: [−0,88; 0,86]."},
-  {"date": "2026-11-06", "name": "Przereakcja, jet lag, początek sezonu, pora meczu", "status": "no_edge",
-   "question": "Czy proste cechy kontekstu przesuwają cenę?",
-   "result": "0 z 12 testów przeszło próg z poprawką na wielokrotne testowanie."},
-  {"date": "2026-11-06", "name": "Trening na top 7, minuty × produkcja", "status": "no_edge",
-   "question": "Czy węższy trening albo model dwuczęściowy poprawiają prognozę?",
-   "result": "Różnice MAE mieszczą się w szumie."},
-  {"date": "2026-11-06", "name": "bff/no_bff", "status": "no_edge",
-   "question": "Czy nieobecność konkretnego kolegi mówi więcej niż ogólne absencje?",
-   "result": "Bez poprawy względem rynku dla punktów, zbiórek i asyst."},
-  {"date": "2026-11-06", "name": "Model od rynku + raport kontuzji", "status": "no_edge",
-   "question": "Czy korekta ceny Kalshi o model i raport kontuzji coś daje?",
-   "result": "Δ log-loss ≈ 0, ROI zakładów ujemny. Cena z godziny przed meczem zawiera to, co wiemy."},
-  {"date": "2026-10-30", "name": "Line shopping", "status": "no_edge",
-   "question": "Czy wybór najlepszego kursu daje przewagę?",
-   "result": "Marża spada z ok. 7% do 4,9%, ale przewagi nad Pinnacle nie ma."},
-  {"date": "2026-10-30", "name": "Revenge i nemesis", "status": "no_edge",
-   "question": "Czy zawodnicy grają lepiej przeciw byłej drużynie lub ulubionemu rywalowi?",
-   "result": "Revenge bez efektu, nemesis ok. 0,07 pkt na odchylenie standardowe: pomijalne."}
+  {
+    "date": "2026-11-09",
+    "name": "Bandyta offline (uczenie przez nagrodę)",
+    "status": "no_edge",
+    "question": "Czy polityka ucząca się z zysku stawia lepiej niż „nie stawiaj”?",
+    "result": "Najlepsza jest polityka „nigdy nie stawiaj”. LinUCB −13,8% [−21; −6], uczenie z obu stron −19,9%, obecna reguła EV −6,8%, losowo −9,2%."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "Wejście wcześniej (10 h i 4 h przed meczem)",
+    "status": "no_edge",
+    "question": "Czy wcześniejsza cena Kalshi da się pobić?",
+    "result": "Rynek wcześniej wie mniej, ale korekta modelem nie poprawia prognozy. CLV po prowizji ujemne."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "Zbiórki 10 h przed meczem",
+    "status": "watch",
+    "question": "Jedyny ślad w teście wejścia wcześniej.",
+    "result": "γ 0,28 [0,09; 0,47] na całej próbie, ale bez poprawy poza próbą. Kandydat do obserwacji, nie przewaga."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "foul_baiter × agresywny rywal",
+    "status": "no_edge",
+    "question": "Czy zawodnicy wymuszający faule zyskują przeciw faulującym drużynom?",
+    "result": "O 0,43 rzutu osobistego więcej niż w modelu, ale bez przełożenia na punkty i bez poprawy względem rynku."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "mini-DARKO: osobne tempo minut i produkcji",
+    "status": "forecast_only",
+    "question": "Czy różne okresy półtrwania poprawiają prognozę?",
+    "result": "MAE lepsze o ułamek procenta (PTS −0,009, REB −0,013, AST −0,004), ale rynek już to zawiera."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "Kalshi − Pinnacle",
+    "status": "inconclusive",
+    "question": "Czy Kalshi spóźnia się za Pinnacle?",
+    "result": "Brak sygnału (γ 0,01), ale tylko 818 linii i bardzo szeroki przedział: [−0,88; 0,86]."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "Przereakcja, jet lag, początek sezonu, pora meczu",
+    "status": "no_edge",
+    "question": "Czy proste cechy kontekstu przesuwają cenę?",
+    "result": "0 z 12 testów przeszło próg z poprawką na wielokrotne testowanie."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "Trening na top 7, minuty × produkcja",
+    "status": "no_edge",
+    "question": "Czy węższy trening albo model dwuczęściowy poprawiają prognozę?",
+    "result": "Różnice MAE mieszczą się w szumie."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "bff/no_bff",
+    "status": "no_edge",
+    "question": "Czy nieobecność konkretnego kolegi mówi więcej niż ogólne absencje?",
+    "result": "Bez poprawy względem rynku dla punktów, zbiórek i asyst."
+  },
+  {
+    "date": "2026-11-06",
+    "name": "Model od rynku + raport kontuzji",
+    "status": "no_edge",
+    "question": "Czy korekta ceny Kalshi o model i raport kontuzji coś daje?",
+    "result": "Δ log-loss ≈ 0, ROI zakładów ujemny. Cena z godziny przed meczem zawiera to, co wiemy."
+  },
+  {
+    "date": "2026-10-30",
+    "name": "Line shopping",
+    "status": "no_edge",
+    "question": "Czy wybór najlepszego kursu daje przewagę?",
+    "result": "Marża spada z ok. 7% do 4,9%, ale przewagi nad Pinnacle nie ma."
+  },
+  {
+    "date": "2026-10-30",
+    "name": "Revenge i nemesis",
+    "status": "no_edge",
+    "question": "Czy zawodnicy grają lepiej przeciw byłej drużynie lub ulubionemu rywalowi?",
+    "result": "Revenge bez efektu, nemesis ok. 0,07 pkt na odchylenie standardowe: pomijalne."
+  }
 ]
