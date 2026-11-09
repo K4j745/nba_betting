@@ -309,6 +309,40 @@ details.fold[open] > summary { margin-bottom: 12px; }
 }
 .error-banner code { font-family: var(--font-mono); background: rgba(0, 0, 0, .2); padding: 1px 5px; border-radius: 4px; }
 
+/* ── Zawodnicy ─────────────────────────────────────────────────────────────── */
+.players-meta {
+  display: inline-block; margin: 0 0 14px; padding: 6px 12px; border-radius: var(--r-control);
+  background: var(--glass-tint), var(--surface); border: 1px solid var(--border);
+  backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+.players-meta:empty { display: none; }
+.games-list { display: grid; gap: var(--gap); }
+.game-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: 1; }
+.game-teams { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.game-time { font-size: 13px; color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.team-name { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px 2px; }
+.player { border-radius: var(--r-control); transition: background var(--duration) var(--ease); }
+.player + .player { border-top: 1px solid var(--border); }
+.player > summary {
+  list-style: none; cursor: pointer; padding: 9px 10px; border-radius: var(--r-control);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center;
+}
+.player > summary::-webkit-details-marker { display: none; }
+.player-top { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.player-top .player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.avg-row { display: flex; gap: 12px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; grid-column: 1 / -1; flex-wrap: wrap; }
+.avg-row b { color: var(--text); font-weight: 600; }
+.avg-row .hit { color: var(--accent-text); }
+.player .min { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.player[open] { background: var(--surface-2); }
+.player-games { padding: 0 10px 10px; }
+.player-games table { font-size: 12px; }
+.player-games th, .player-games td { padding: 5px 8px; }
+.player-games td.over { color: var(--green); font-weight: 600; }
+.player.is-out .player-name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--red); }
+@media (max-width: 760px) { .team-grid { grid-template-columns: 1fr; } }
+
 /* ── Hover: tylko na urządzeniach ze wskaźnikiem ───────────────────────────── */
 @media (hover: hover) {
   .card, .kpi-card, .chart-card {
@@ -324,7 +358,7 @@ details.fold[open] > summary { margin-bottom: 12px; }
   .btn-icon:hover { background: var(--surface-3); border-color: var(--accent-text); }
   .filter-btn:hover:not(.active) { background: var(--surface-3); color: var(--text); }
   tbody tr:hover td { background: var(--surface-2); }
-  .lab-item:hover { background: var(--surface-2); }
+  .lab-item:hover, .player:hover { background: var(--surface-2); }
   details.fold > summary:hover .icon { color: var(--accent-text); }
 }
 
@@ -352,8 +386,8 @@ details.fold[open] > summary { margin-bottom: 12px; }
   .kpi-grid { gap: 10px; }
   .kpi-card { padding: 14px; }
   .kpi-value { font-size: 19px; }
-  .stat-tabs { display: grid; grid-template-columns: repeat(4, 1fr); overflow: visible; }
-  .nav-btn { flex-direction: column; gap: 3px; padding: 7px 4px; font-size: 11px; }
+  .stat-tabs { display: grid; grid-template-columns: repeat(5, 1fr); overflow: visible; }
+  .nav-btn { flex-direction: column; gap: 3px; padding: 7px 2px; font-size: 10.5px; }
 }
 
 /* ── Boisko w tle ──────────────────────────────────────────────────────────── */
@@ -481,6 +515,7 @@ footer.court-footer {
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 4.1 2.8 17.5A2 2 0 0 0 4.5 20.5h15a2 2 0 0 0 1.7-3L13.7 4.1a2 2 0 0 0-3.4 0zM12 9.5v4M12 17h.01"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.4 2.8 2.8L16.2 9.8"/></symbol>
   <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.3A6.5 6.5 0 0 1 21.5 20"/></symbol>
   <symbol id="i-loader" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></symbol>
 </svg>
 <div class="shell">
@@ -497,6 +532,7 @@ footer.court-footer {
     <button class="nav-btn active" data-stat="PTS" onclick="setStat('PTS')"><svg class="icon"><use href="#i-ball"/></svg>Punkty</button>
     <button class="nav-btn" data-stat="REB" onclick="setStat('REB')"><svg class="icon"><use href="#i-rebound"/></svg>Zbiórki</button>
     <button class="nav-btn" data-stat="AST" onclick="setStat('AST')"><svg class="icon"><use href="#i-assist"/></svg>Asysty</button>
+    <button class="nav-btn" data-stat="PLAYERS" onclick="setStat('PLAYERS')"><svg class="icon"><use href="#i-users"/></svg>Zawodnicy</button>
     <button class="nav-btn" data-stat="LAB" onclick="setStat('LAB')"><svg class="icon"><use href="#i-flask"/></svg>Badania</button>
   </nav>
   <div class="sidebar-foot">
@@ -640,6 +676,15 @@ footer.court-footer {
     <section class="section">
       <div class="section-title">Historia (weryfikacja z logów NBA)</div>
       <div class="card"><div class="table-wrap" id="sHistory"></div></div>
+    </section>
+  </div>
+
+  <!-- Zawodnicy: najbliższe mecze -->
+  <div id="tabPlayers" style="display:none">
+    <section class="section">
+      <div class="section-title" id="playersTitle">Najbliższe mecze</div>
+      <div><div class="kpi-sub players-meta" id="playersMeta"></div></div>
+      <div class="games-list" id="gamesList"></div>
     </section>
   </div>
 
@@ -800,7 +845,7 @@ function render(d) {
 
 /* ── Zakładki Punkty / Zbiórki / Asysty ─────────────────────────────────────────── */
 let _stat = (location.hash.slice(1) || 'PTS').toUpperCase();
-if (!['PTS', 'REB', 'AST', 'LAB'].includes(_stat)) _stat = 'PTS';
+if (!['PTS', 'REB', 'AST', 'PLAYERS', 'LAB'].includes(_stat)) _stat = 'PTS';
 const STAT_NAME = { PTS: 'punkty', REB: 'zbiórki', AST: 'asysty' };
 
 function setStat(s) {
@@ -817,9 +862,11 @@ function renderStatTab(d) {
   document.getElementById('tabPTS').style.display  = _stat === 'PTS' ? '' : 'none';
   document.getElementById('tabStat').style.display = ['REB', 'AST'].includes(_stat) ? '' : 'none';
   document.getElementById('tabLab').style.display  = _stat === 'LAB' ? '' : 'none';
+  document.getElementById('tabPlayers').style.display = _stat === 'PLAYERS' ? '' : 'none';
   const tab = (d.stats || {})[_stat] || {};
   renderKalshiEval(tab.kalshi_eval);
   if (_stat === 'LAB') { renderLab(d.research_log); return; }
+  if (_stat === 'PLAYERS') { renderPlayers(d.upcoming); return; }
   if (_stat === 'PTS') return;
 
   const k = tab.kpi || {};
@@ -963,6 +1010,65 @@ function renderLab(log) {
       <div class="lab-result">${t.result}</div>
     </div>`;
   }).join('');
+}
+
+/* ── Zawodnicy na najbliższe mecze ─────────────────────────────────────────── */
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtTip = iso => new Date(iso).toLocaleString('pl-PL', { weekday: 'short', day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+function playerRow(p) {
+  const line = p.lines || {};
+  const hits = st => {
+    if (line[st] == null || !p.games.length) return '';
+    const n = p.games.filter(g => g[st.toLowerCase()] > line[st]).length;
+    return ` <span class="hit" title="mecze powyżej linii Kalshi ${line[st]}">${n}/${p.games.length}↑${line[st]}</span>`;
+  };
+  const cell = (g, st) => {
+    const v = g[st.toLowerCase()];
+    return `<td class="${line[st] != null && v > line[st] ? 'over' : ''}">${v}</td>`;
+  };
+  return `<details class="player${p.status ? ' is-out' : ''}">
+    <summary>
+      <div class="player-top"><span class="player-name">${esc(p.player)}</span>
+        ${p.status ? '<span class="chip red">Out / Doubtful</span>' : ''}</div>
+      <span class="min">${p.avg5.MIN} min</span>
+      <div class="avg-row">
+        <span>PTS <b>${p.avg5.PTS}</b>${hits('PTS')}</span>
+        <span>REB <b>${p.avg5.REB}</b>${hits('REB')}</span>
+        <span>AST <b>${p.avg5.AST}</b>${hits('AST')}</span>
+      </div>
+    </summary>
+    <div class="player-games table-wrap"><table>
+      <thead><tr><th>Data</th><th>Rywal</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th></tr></thead>
+      <tbody>${p.games.map(g => `<tr><td>${g.date.slice(5)}</td><td>${g.home ? 'vs' : '@'} ${esc(g.opp)}</td>
+        <td>${g.min}</td>${cell(g, 'PTS')}${cell(g, 'REB')}${cell(g, 'AST')}</tr>`).join('')}
+        <tr><td colspan="2" class="game-label">średnia sezonu</td><td>${p.season.MIN}</td><td>${p.season.PTS}</td><td>${p.season.REB}</td><td>${p.season.AST}</td></tr>
+      </tbody></table></div>
+  </details>`;
+}
+
+function renderPlayers(u) {
+  const list = document.getElementById('gamesList');
+  const games = (u && u.games) || [];
+  document.getElementById('playersMeta').textContent = games.length
+    ? `${games.length} meczów · 7 zawodników z największą liczbą minut w drużynie · średnie i ostatnie 5 meczów`
+      + (u.injury_report ? ' · statusy z raportu kontuzji NBA' : ' · bez raportu kontuzji')
+      + ' · „4/5↑19.5” = 4 z 5 ostatnich meczów powyżej linii Kalshi 19.5'
+    : '';
+  if (!games.length) {
+    list.innerHTML = `<div class="card">${couponEmpty('Brak najbliższych meczów',
+      'Lista pojawi się po wieczornym przebiegu pipeline\'u, gdy będą zaplanowane mecze.')}</div>`;
+    return;
+  }
+  list.innerHTML = games.map((g, i) => `<details class="card fold"${i === 0 ? ' open' : ''}>
+    <summary>${icon('chevron')}<div class="game-head">
+      <span class="game-teams">${esc(g.away)} @ ${esc(g.home)}</span>
+      <span class="game-time">${fmtTip(g.tip)}</span></div></summary>
+    <div class="team-grid">${[g.away, g.home].map(t => `<div>
+      <div class="team-name">${esc(t === g.home ? g.home_name : g.away_name)}</div>
+      ${(g.teams[t] || []).map(playerRow).join('') || '<div class="no-data">Brak danych w logach</div>'}
+    </div>`).join('')}</div>
+  </details>`).join('');
 }
 
 /* ── Research (evaluate.py) ─────────────────────────────────────────────────── */
