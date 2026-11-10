@@ -1,9 +1,142 @@
 {
-  "generated_at": "2026-11-10T15:18:17.728975",
+  "generated_at": "2026-11-10T18:22:05.955792",
   "game_date": "2026-11-10",
-  "today_coupon": null,
-  "no_games_reason": "no_props_today",
-  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
+  "today_coupon": {
+    "date": "2026-11-10",
+    "model_version": "pts-2026-11-10",
+    "stat": "PTS",
+    "paper_trading": true,
+    "injury_report": true,
+    "n_out": 32,
+    "n_predictions": 140,
+    "picks": [
+      {
+        "game": "Miami Heat @ Utah Jazz",
+        "player": "Josh Green",
+        "bet": "under",
+        "stat": "PTS",
+        "line": 7.5,
+        "odds": 1.8,
+        "bookmaker": "unibet",
+        "pts_predicted": 5.0,
+        "p_over": 0.279,
+        "confidence": 72,
+        "ev": 0.2978,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 5.0 pkt vs linia 7.5 (unibet), ewm 3.9, min 16.5, opp_def_rtg 115.6, EV +29.8%"
+      },
+      {
+        "game": "Milwaukee Bucks @ New York Knicks",
+        "player": "Myles Turner",
+        "bet": "under",
+        "stat": "PTS",
+        "line": 9.5,
+        "odds": 1.85,
+        "bookmaker": "unibet",
+        "pts_predicted": 7.1,
+        "p_over": 0.304,
+        "confidence": 70,
+        "ev": 0.2876,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 7.1 pkt vs linia 9.5 (unibet), ewm 7.6, min 27.1, opp_def_rtg 103.4, EV +28.7%"
+      },
+      {
+        "game": "Oklahoma City Thunder @ Portland Trail Blazers",
+        "player": "Isaiah Hartenstein",
+        "bet": "under",
+        "stat": "PTS",
+        "line": 9.5,
+        "odds": 1.69,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 6.4,
+        "p_over": 0.248,
+        "confidence": 75,
+        "ev": 0.2709,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 6.4 pkt vs linia 9.5 (pinnacle), ewm 6.6, min 24.2, opp_def_rtg 111.4, EV +27.1%"
+      },
+      {
+        "game": "Orlando Magic @ Sacramento Kings",
+        "player": "Anthony Black",
+        "bet": "under",
+        "stat": "PTS",
+        "line": 16.5,
+        "odds": 1.68,
+        "bookmaker": "pinnacle",
+        "pts_predicted": 12.5,
+        "p_over": 0.252,
+        "confidence": 75,
+        "ev": 0.2566,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 12.5 pkt vs linia 16.5 (pinnacle), ewm 13.2, min 30.5, opp_def_rtg 118.6, EV +25.6%"
+      },
+      {
+        "game": "Los Angeles Clippers @ Phoenix Suns",
+        "player": "Kobe Sanders",
+        "bet": "over",
+        "stat": "PTS",
+        "line": 6.5,
+        "odds": 1.77,
+        "bookmaker": "unibet",
+        "pts_predicted": 9.2,
+        "p_over": 0.697,
+        "confidence": 70,
+        "ev": 0.2337,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 9.2 pkt vs linia 6.5 (unibet), ewm 10.1, min 24.0, opp_def_rtg 118.2, EV +23.5%"
+      },
+      {
+        "game": "Boston Celtics @ Philadelphia 76ers",
+        "player": "LeBron James",
+        "bet": "over",
+        "stat": "PTS",
+        "line": 14.5,
+        "odds": 1.8,
+        "bookmaker": "unibet",
+        "pts_predicted": 16.9,
+        "p_over": 0.634,
+        "confidence": 63,
+        "ev": 0.1412,
+        "p_market": null,
+        "top_features": [
+          "pts_ewm",
+          "min_avg_10",
+          "opp_def_rtg"
+        ],
+        "reasoning": "model 16.9 pkt vs linia 14.5 (unibet), ewm 17.6, min 33.6, opp_def_rtg 106.3, EV +14.2%"
+      }
+    ],
+    "total_picks": 6,
+    "simulated_stake_per_pick": 10.0,
+    "simulated_total_stake": 60.0
+  },
+  "no_games_reason": null,
+  "status_message": "",
   "kpi": {
     "win_rate": 0.32,
     "roi_30d": -0.422,
@@ -917,8 +1050,285 @@
           }
         ]
       },
-      "coupon": null,
+      "coupon": {
+        "date": "2026-11-10",
+        "model_version": "reb-2026-11-10",
+        "stat": "REB",
+        "paper_trading": true,
+        "injury_report": true,
+        "n_out": 32,
+        "n_predictions": 79,
+        "picks": [
+          {
+            "game": "Los Angeles Clippers @ Phoenix Suns",
+            "player": "Khaman Maluach",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 2.273,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.0,
+            "p_over": 0.389,
+            "confidence": 61,
+            "ev": 0.3897,
+            "p_market": 0.59,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 5.0 zb. vs linia 5.5 (kalshi), ewm 5.7, min 18.2, opp_reb_allowed 43.5, EV +39.0%"
+          },
+          {
+            "game": "Oklahoma City Thunder @ Portland Trail Blazers",
+            "player": "Kenrich Williams",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 1.515,
+            "bookmaker": "kalshi",
+            "pts_predicted": 3.1,
+            "p_over": 0.124,
+            "confidence": 88,
+            "ev": 0.3276,
+            "p_market": 0.365,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 3.1 zb. vs linia 5.5 (kalshi), ewm 3.8, min 18.3, opp_reb_allowed 42.0, EV +32.8%"
+          },
+          {
+            "game": "Orlando Magic @ Sacramento Kings",
+            "player": "Franz Wagner",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 2.273,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.4,
+            "p_over": 0.438,
+            "confidence": 56,
+            "ev": 0.2785,
+            "p_market": 0.6,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 5.4 zb. vs linia 5.5 (kalshi), ewm 5.6, min 35.2, opp_reb_allowed 40.8, EV +27.9%"
+          },
+          {
+            "game": "Boston Celtics @ Philadelphia 76ers",
+            "player": "Mitchell Robinson",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 2.128,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.3,
+            "p_over": 0.43,
+            "confidence": 57,
+            "ev": 0.2131,
+            "p_market": 0.555,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 5.3 zb. vs linia 5.5 (kalshi), ewm 6.1, min 18.8, opp_reb_allowed 46.0, EV +21.3%"
+          },
+          {
+            "game": "Miami Heat @ Utah Jazz",
+            "player": "Jaxson Hayes",
+            "bet": "under",
+            "stat": "REB",
+            "line": 5.5,
+            "odds": 2.381,
+            "bookmaker": "kalshi",
+            "pts_predicted": 5.8,
+            "p_over": 0.493,
+            "confidence": 51,
+            "ev": 0.207,
+            "p_market": 0.615,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 5.8 zb. vs linia 5.5 (kalshi), ewm 5.6, min 25.5, opp_reb_allowed 42.2, EV +20.7%"
+          },
+          {
+            "game": "Milwaukee Bucks @ New York Knicks",
+            "player": "Andre Drummond",
+            "bet": "under",
+            "stat": "REB",
+            "line": 7.5,
+            "odds": 1.639,
+            "bookmaker": "kalshi",
+            "pts_predicted": 6.3,
+            "p_over": 0.311,
+            "confidence": 69,
+            "ev": 0.1292,
+            "p_market": 0.415,
+            "top_features": [
+              "reb_ewm",
+              "min_avg_10",
+              "opp_reb_allowed"
+            ],
+            "reasoning": "model 6.3 zb. vs linia 7.5 (kalshi), ewm 7.1, min 12.5, opp_reb_allowed 44.4, EV +12.9%"
+          }
+        ],
+        "total_picks": 6,
+        "simulated_stake_per_pick": 10.0,
+        "simulated_total_stake": 60.0
+      },
       "history": [
+        {
+          "game": "Milwaukee Bucks @ New York Knicks",
+          "player": "Andre Drummond",
+          "bet": "under",
+          "stat": "REB",
+          "line": 7.5,
+          "odds": 1.639,
+          "bookmaker": "kalshi",
+          "pts_predicted": 6.3,
+          "p_over": 0.311,
+          "confidence": 69,
+          "ev": 0.1292,
+          "p_market": 0.415,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 6.3 zb. vs linia 7.5 (kalshi), ewm 7.1, min 12.5, opp_reb_allowed 44.4, EV +12.9%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Miami Heat @ Utah Jazz",
+          "player": "Jaxson Hayes",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 2.381,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.8,
+          "p_over": 0.493,
+          "confidence": 51,
+          "ev": 0.207,
+          "p_market": 0.615,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 5.8 zb. vs linia 5.5 (kalshi), ewm 5.6, min 25.5, opp_reb_allowed 42.2, EV +20.7%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Boston Celtics @ Philadelphia 76ers",
+          "player": "Mitchell Robinson",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 2.128,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.3,
+          "p_over": 0.43,
+          "confidence": 57,
+          "ev": 0.2131,
+          "p_market": 0.555,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 5.3 zb. vs linia 5.5 (kalshi), ewm 6.1, min 18.8, opp_reb_allowed 46.0, EV +21.3%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Orlando Magic @ Sacramento Kings",
+          "player": "Franz Wagner",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 2.273,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.4,
+          "p_over": 0.438,
+          "confidence": 56,
+          "ev": 0.2785,
+          "p_market": 0.6,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 5.4 zb. vs linia 5.5 (kalshi), ewm 5.6, min 35.2, opp_reb_allowed 40.8, EV +27.9%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Oklahoma City Thunder @ Portland Trail Blazers",
+          "player": "Kenrich Williams",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 1.515,
+          "bookmaker": "kalshi",
+          "pts_predicted": 3.1,
+          "p_over": 0.124,
+          "confidence": 88,
+          "ev": 0.3276,
+          "p_market": 0.365,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 3.1 zb. vs linia 5.5 (kalshi), ewm 3.8, min 18.3, opp_reb_allowed 42.0, EV +32.8%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Los Angeles Clippers @ Phoenix Suns",
+          "player": "Khaman Maluach",
+          "bet": "under",
+          "stat": "REB",
+          "line": 5.5,
+          "odds": 2.273,
+          "bookmaker": "kalshi",
+          "pts_predicted": 5.0,
+          "p_over": 0.389,
+          "confidence": 61,
+          "ev": 0.3897,
+          "p_market": 0.59,
+          "top_features": [
+            "reb_ewm",
+            "min_avg_10",
+            "opp_reb_allowed"
+          ],
+          "reasoning": "model 5.0 zb. vs linia 5.5 (kalshi), ewm 5.7, min 18.2, opp_reb_allowed 43.5, EV +39.0%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
         {
           "game": "Denver Nuggets @ Houston Rockets",
           "player": "Christian Braun",
@@ -939,9 +1349,9 @@
           ],
           "reasoning": "model 3.7 zb. vs linia 5.5 (kalshi), ewm 3.7, min 33.3, opp_reb_allowed 41.4, EV +32.2%",
           "date": "2026-11-09",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 5.0,
+          "result": "WIN",
+          "profit": 0.639
         },
         {
           "game": "San Antonio Spurs @ Phoenix Suns",
@@ -963,9 +1373,9 @@
           ],
           "reasoning": "model 3.9 zb. vs linia 7.5 (kalshi), ewm 3.5, min 29.5, opp_reb_allowed 44.3, EV +71.5%",
           "date": "2026-11-09",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 9.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "New Orleans Pelicans @ Golden State Warriors",
@@ -987,9 +1397,9 @@
           ],
           "reasoning": "model 3.9 zb. vs linia 7.5 (kalshi), ewm 4.4, min 18.3, opp_reb_allowed 41.7, EV +85.4%",
           "date": "2026-11-09",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 6.0,
+          "result": "WIN",
+          "profit": 1.0
         },
         {
           "game": "Boston Celtics @ Milwaukee Bucks",
@@ -1011,9 +1421,9 @@
           ],
           "reasoning": "model 6.4 zb. vs linia 7.5 (kalshi), ewm 7.0, min 22.8, opp_reb_allowed 44.3, EV +17.6%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 9.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Los Angeles Lakers @ Detroit Pistons",
@@ -1035,9 +1445,9 @@
           ],
           "reasoning": "model 7.4 zb. vs linia 11.5 (kalshi), ewm 8.4, min 28.6, opp_reb_allowed 40.2, EV +24.3%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 11.0,
+          "result": "WIN",
+          "profit": 0.408
         },
         {
           "game": "New Orleans Pelicans @ Los Angeles Clippers",
@@ -1059,9 +1469,9 @@
           ],
           "reasoning": "model 5.1 zb. vs linia 5.5 (kalshi), ewm 5.7, min 32.8, opp_reb_allowed 44.5, EV +24.7%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 4.0,
+          "result": "WIN",
+          "profit": 1.083
         },
         {
           "game": "Brooklyn Nets @ Dallas Mavericks",
@@ -1083,9 +1493,9 @@
           ],
           "reasoning": "model 2.4 zb. vs linia 1.5 (kalshi), ewm 2.2, min 21.6, opp_reb_allowed 44.3, EV +35.9%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 1.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Utah Jazz @ Minnesota Timberwolves",
@@ -1107,9 +1517,9 @@
           ],
           "reasoning": "model 5.6 zb. vs linia 3.5 (kalshi), ewm 5.8, min 31.2, opp_reb_allowed 44.0, EV +36.1%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 0.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Miami Heat @ Sacramento Kings",
@@ -1131,9 +1541,9 @@
           ],
           "reasoning": "model 1.7 zb. vs linia 1.5 (kalshi), ewm 1.4, min 22.0, opp_reb_allowed 40.6, EV +37.5%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 2.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Houston Rockets @ Phoenix Suns",
@@ -1281,10 +1691,10 @@
         }
       ],
       "kpi": {
-        "picks": 6,
-        "wins": 4,
-        "pnl": 0.77,
-        "roi": 0.1278
+        "picks": 15,
+        "wins": 8,
+        "pnl": -1.1,
+        "roi": -0.0735
       }
     },
     "AST": {
@@ -1402,8 +1812,285 @@
           }
         ]
       },
-      "coupon": null,
+      "coupon": {
+        "date": "2026-11-10",
+        "model_version": "ast-2026-11-10",
+        "stat": "AST",
+        "paper_trading": true,
+        "injury_report": true,
+        "n_out": 32,
+        "n_predictions": 64,
+        "picks": [
+          {
+            "game": "Oklahoma City Thunder @ Portland Trail Blazers",
+            "player": "Isaiah Hartenstein",
+            "bet": "under",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 2.083,
+            "bookmaker": "kalshi",
+            "pts_predicted": 2.6,
+            "p_over": 0.276,
+            "confidence": 72,
+            "ev": 0.5084,
+            "p_market": 0.545,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 2.6 as. vs linia 3.5 (kalshi), ewm 3.6, min 24.2, opp_ast_allowed 23.7, EV +50.8%"
+          },
+          {
+            "game": "Orlando Magic @ Sacramento Kings",
+            "player": "Franz Wagner",
+            "bet": "under",
+            "stat": "AST",
+            "line": 7.5,
+            "odds": 2.041,
+            "bookmaker": "kalshi",
+            "pts_predicted": 6.2,
+            "p_over": 0.303,
+            "confidence": 70,
+            "ev": 0.4216,
+            "p_market": 0.54,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 6.2 as. vs linia 7.5 (kalshi), ewm 7.7, min 35.2, opp_ast_allowed 27.0, EV +42.2%"
+          },
+          {
+            "game": "Miami Heat @ Utah Jazz",
+            "player": "Isaiah Collier",
+            "bet": "under",
+            "stat": "AST",
+            "line": 7.5,
+            "odds": 1.538,
+            "bookmaker": "kalshi",
+            "pts_predicted": 4.6,
+            "p_over": 0.119,
+            "confidence": 88,
+            "ev": 0.3553,
+            "p_market": 0.38,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 4.6 as. vs linia 7.5 (kalshi), ewm 4.3, min 15.6, opp_ast_allowed 27.9, EV +35.5%"
+          },
+          {
+            "game": "Milwaukee Bucks @ New York Knicks",
+            "player": "Brayden Burries",
+            "bet": "under",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 1.639,
+            "bookmaker": "kalshi",
+            "pts_predicted": 2.2,
+            "p_over": 0.198,
+            "confidence": 80,
+            "ev": 0.3138,
+            "p_market": 0.42,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 2.2 as. vs linia 3.5 (kalshi), ewm 2.7, min 21.0, opp_ast_allowed 24.1, EV +31.4%"
+          },
+          {
+            "game": "Los Angeles Clippers @ Phoenix Suns",
+            "player": "Kris Dunn",
+            "bet": "under",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 2.174,
+            "bookmaker": "kalshi",
+            "pts_predicted": 3.6,
+            "p_over": 0.479,
+            "confidence": 52,
+            "ev": 0.1337,
+            "p_market": 0.565,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 3.6 as. vs linia 3.5 (kalshi), ewm 3.9, min 28.9, opp_ast_allowed 26.6, EV +13.4%"
+          },
+          {
+            "game": "Boston Celtics @ Philadelphia 76ers",
+            "player": "Joel Embiid",
+            "bet": "over",
+            "stat": "AST",
+            "line": 3.5,
+            "odds": 2.083,
+            "bookmaker": "kalshi",
+            "pts_predicted": 4.0,
+            "p_over": 0.537,
+            "confidence": 54,
+            "ev": 0.1178,
+            "p_market": 0.455,
+            "top_features": [
+              "ast_ewm",
+              "min_avg_10",
+              "opp_ast_allowed"
+            ],
+            "reasoning": "model 4.0 as. vs linia 3.5 (kalshi), ewm 4.1, min 31.5, opp_ast_allowed 24.8, EV +11.8%"
+          }
+        ],
+        "total_picks": 6,
+        "simulated_stake_per_pick": 10.0,
+        "simulated_total_stake": 60.0
+      },
       "history": [
+        {
+          "game": "Boston Celtics @ Philadelphia 76ers",
+          "player": "Joel Embiid",
+          "bet": "over",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 2.083,
+          "bookmaker": "kalshi",
+          "pts_predicted": 4.0,
+          "p_over": 0.537,
+          "confidence": 54,
+          "ev": 0.1178,
+          "p_market": 0.455,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 4.0 as. vs linia 3.5 (kalshi), ewm 4.1, min 31.5, opp_ast_allowed 24.8, EV +11.8%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Los Angeles Clippers @ Phoenix Suns",
+          "player": "Kris Dunn",
+          "bet": "under",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 2.174,
+          "bookmaker": "kalshi",
+          "pts_predicted": 3.6,
+          "p_over": 0.479,
+          "confidence": 52,
+          "ev": 0.1337,
+          "p_market": 0.565,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 3.6 as. vs linia 3.5 (kalshi), ewm 3.9, min 28.9, opp_ast_allowed 26.6, EV +13.4%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Milwaukee Bucks @ New York Knicks",
+          "player": "Brayden Burries",
+          "bet": "under",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 1.639,
+          "bookmaker": "kalshi",
+          "pts_predicted": 2.2,
+          "p_over": 0.198,
+          "confidence": 80,
+          "ev": 0.3138,
+          "p_market": 0.42,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 2.2 as. vs linia 3.5 (kalshi), ewm 2.7, min 21.0, opp_ast_allowed 24.1, EV +31.4%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Miami Heat @ Utah Jazz",
+          "player": "Isaiah Collier",
+          "bet": "under",
+          "stat": "AST",
+          "line": 7.5,
+          "odds": 1.538,
+          "bookmaker": "kalshi",
+          "pts_predicted": 4.6,
+          "p_over": 0.119,
+          "confidence": 88,
+          "ev": 0.3553,
+          "p_market": 0.38,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 4.6 as. vs linia 7.5 (kalshi), ewm 4.3, min 15.6, opp_ast_allowed 27.9, EV +35.5%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Orlando Magic @ Sacramento Kings",
+          "player": "Franz Wagner",
+          "bet": "under",
+          "stat": "AST",
+          "line": 7.5,
+          "odds": 2.041,
+          "bookmaker": "kalshi",
+          "pts_predicted": 6.2,
+          "p_over": 0.303,
+          "confidence": 70,
+          "ev": 0.4216,
+          "p_market": 0.54,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 6.2 as. vs linia 7.5 (kalshi), ewm 7.7, min 35.2, opp_ast_allowed 27.0, EV +42.2%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
+        {
+          "game": "Oklahoma City Thunder @ Portland Trail Blazers",
+          "player": "Isaiah Hartenstein",
+          "bet": "under",
+          "stat": "AST",
+          "line": 3.5,
+          "odds": 2.083,
+          "bookmaker": "kalshi",
+          "pts_predicted": 2.6,
+          "p_over": 0.276,
+          "confidence": 72,
+          "ev": 0.5084,
+          "p_market": 0.545,
+          "top_features": [
+            "ast_ewm",
+            "min_avg_10",
+            "opp_ast_allowed"
+          ],
+          "reasoning": "model 2.6 as. vs linia 3.5 (kalshi), ewm 3.6, min 24.2, opp_ast_allowed 23.7, EV +50.8%",
+          "date": "2026-11-10",
+          "actual": null,
+          "result": null,
+          "profit": null
+        },
         {
           "game": "New Orleans Pelicans @ Golden State Warriors",
           "player": "Saddiq Bey",
@@ -1424,9 +2111,9 @@
           ],
           "reasoning": "model 2.3 as. vs linia 3.5 (kalshi), ewm 2.3, min 28.2, opp_ast_allowed 27.4, EV +45.2%",
           "date": "2026-11-09",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 4.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Boston Celtics @ Milwaukee Bucks",
@@ -1448,9 +2135,9 @@
           ],
           "reasoning": "model 2.0 as. vs linia 1.5 (kalshi), ewm 2.0, min 27.4, opp_ast_allowed 24.4, EV +16.7%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 7.0,
+          "result": "WIN",
+          "profit": 1.041
         },
         {
           "game": "Miami Heat @ Sacramento Kings",
@@ -1472,9 +2159,9 @@
           ],
           "reasoning": "model 5.7 as. vs linia 5.5 (kalshi), ewm 5.6, min 31.8, opp_ast_allowed 27.3, EV +20.3%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 3.0,
+          "result": "WIN",
+          "profit": 1.326
         },
         {
           "game": "New Orleans Pelicans @ Los Angeles Clippers",
@@ -1496,9 +2183,9 @@
           ],
           "reasoning": "model 2.0 as. vs linia 1.5 (kalshi), ewm 1.8, min 34.5, opp_ast_allowed 26.7, EV +30.1%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 2.0,
+          "result": "WIN",
+          "profit": 1.273
         },
         {
           "game": "Brooklyn Nets @ Dallas Mavericks",
@@ -1520,9 +2207,9 @@
           ],
           "reasoning": "model 2.8 as. vs linia 3.5 (kalshi), ewm 3.2, min 21.6, opp_ast_allowed 26.1, EV +33.2%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 2.0,
+          "result": "WIN",
+          "profit": 0.961
         },
         {
           "game": "Los Angeles Lakers @ Detroit Pistons",
@@ -1544,9 +2231,9 @@
           ],
           "reasoning": "model 1.7 as. vs linia 3.5 (kalshi), ewm 1.5, min 31.2, opp_ast_allowed 22.8, EV +40.4%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 4.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Utah Jazz @ Minnesota Timberwolves",
@@ -1568,9 +2255,9 @@
           ],
           "reasoning": "model 5.5 as. vs linia 7.5 (kalshi), ewm 5.6, min 31.1, opp_ast_allowed 24.0, EV +50.0%",
           "date": "2026-11-08",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 8.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Houston Rockets @ Phoenix Suns",
@@ -1694,10 +2381,10 @@
         }
       ],
       "kpi": {
-        "picks": 5,
-        "wins": 3,
-        "pnl": 0.76,
-        "roi": 0.1526
+        "picks": 12,
+        "wins": 7,
+        "pnl": 2.36,
+        "roi": 0.197
       }
     }
   },
@@ -1817,7 +2504,7 @@
     }
   ],
   "upcoming": {
-    "generated": "2026-11-10T03:43:48.410533+00:00",
+    "generated": "2026-11-10T18:21:20.310424+00:00",
     "injury_report": true,
     "games": [
       {
@@ -1831,25 +2518,35 @@
           "MIL": [
             {
               "player": "Tyler Herro",
+              "id": 1629639,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 30.6,
-                "PTS": 21.4,
-                "REB": 4.4,
-                "AST": 3.6
+                "PTS": 19.4,
+                "REB": 4.0,
+                "AST": 4.0
               },
               "season": {
-                "MIN": 31.1,
-                "PTS": 22.3,
-                "REB": 5.0,
-                "AST": 4.6
+                "MIN": 30.7,
+                "PTS": 21.4,
+                "REB": 4.6,
+                "AST": 4.3
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 27,
+                  "pts": 13,
+                  "reb": 1,
+                  "ast": 2
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "TOR",
@@ -1885,39 +2582,40 @@
                   "pts": 15,
                   "reb": 3,
                   "ast": 2
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "HOU",
-                  "home": true,
-                  "min": 27,
-                  "pts": 23,
-                  "reb": 3,
-                  "ast": 0
                 }
               ]
             },
             {
               "player": "Jaime Jaquez Jr.",
+              "id": 1631170,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 27.4,
-                "PTS": 15.6,
-                "REB": 4.8,
+                "MIN": 26.4,
+                "PTS": 12.6,
+                "REB": 4.4,
                 "AST": 2.8
               },
               "season": {
-                "MIN": 28.3,
-                "PTS": 16.4,
-                "REB": 6.2,
-                "AST": 2.8
+                "MIN": 27.7,
+                "PTS": 15.2,
+                "REB": 5.8,
+                "AST": 2.7
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 22,
+                  "pts": 4,
+                  "reb": 2,
+                  "ast": 2
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "TOR",
@@ -1953,107 +2651,40 @@
                   "pts": 8,
                   "reb": 7,
                   "ast": 5
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "HOU",
-                  "home": true,
-                  "min": 27,
-                  "pts": 19,
-                  "reb": 4,
-                  "ast": 2
-                }
-              ]
-            },
-            {
-              "player": "Myles Turner",
-              "status": null,
-              "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
-              },
-              "avg5": {
-                "MIN": 27.4,
-                "PTS": 7.8,
-                "REB": 6.0,
-                "AST": 2.4
-              },
-              "season": {
-                "MIN": 27.4,
-                "PTS": 7.6,
-                "REB": 5.8,
-                "AST": 2.3
-              },
-              "games": [
-                {
-                  "date": "2026-11-06",
-                  "opp": "TOR",
-                  "home": true,
-                  "min": 24,
-                  "pts": 0,
-                  "reb": 7,
-                  "ast": 0
-                },
-                {
-                  "date": "2026-11-04",
-                  "opp": "BOS",
-                  "home": false,
-                  "min": 36,
-                  "pts": 12,
-                  "reb": 9,
-                  "ast": 6
-                },
-                {
-                  "date": "2026-11-02",
-                  "opp": "MIN",
-                  "home": false,
-                  "min": 31,
-                  "pts": 13,
-                  "reb": 5,
-                  "ast": 2
-                },
-                {
-                  "date": "2026-10-31",
-                  "opp": "CLE",
-                  "home": true,
-                  "min": 24,
-                  "pts": 10,
-                  "reb": 7,
-                  "ast": 2
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "HOU",
-                  "home": true,
-                  "min": 22,
-                  "pts": 4,
-                  "reb": 2,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Kyle Kuzma",
+              "id": 1628398,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 5.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 24.4,
-                "PTS": 7.8,
-                "REB": 4.0,
-                "AST": 2.8
+                "MIN": 27.0,
+                "PTS": 12.4,
+                "REB": 3.6,
+                "AST": 2.6
               },
               "season": {
-                "MIN": 27.0,
-                "PTS": 9.9,
-                "REB": 6.0,
-                "AST": 3.0
+                "MIN": 27.4,
+                "PTS": 11.6,
+                "REB": 5.8,
+                "AST": 2.7
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 31,
+                  "pts": 27,
+                  "reb": 4,
+                  "ast": 0
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "TOR",
@@ -2089,20 +2720,81 @@
                   "pts": 14,
                   "reb": 3,
                   "ast": 3
+                }
+              ]
+            },
+            {
+              "player": "Myles Turner",
+              "id": 1626167,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 5.5,
+                "AST": 1.5
+              },
+              "avg5": {
+                "MIN": 27.8,
+                "PTS": 7.6,
+                "REB": 6.6,
+                "AST": 3.4
+              },
+              "season": {
+                "MIN": 27.1,
+                "PTS": 7.1,
+                "REB": 5.7,
+                "AST": 2.8
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 24,
+                  "pts": 3,
+                  "reb": 5,
+                  "ast": 7
                 },
                 {
-                  "date": "2026-10-28",
-                  "opp": "HOU",
+                  "date": "2026-11-06",
+                  "opp": "TOR",
                   "home": true,
-                  "min": 18,
-                  "pts": 4,
-                  "reb": 6,
-                  "ast": 1
+                  "min": 24,
+                  "pts": 0,
+                  "reb": 7,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "BOS",
+                  "home": false,
+                  "min": 36,
+                  "pts": 12,
+                  "reb": 9,
+                  "ast": 6
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 31,
+                  "pts": 13,
+                  "reb": 5,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-10-31",
+                  "opp": "CLE",
+                  "home": true,
+                  "min": 24,
+                  "pts": 10,
+                  "reb": 7,
+                  "ast": 2
                 }
               ]
             },
             {
               "player": "Ryan Rollins",
+              "id": 1631157,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -2110,18 +2802,27 @@
                 "AST": null
               },
               "avg5": {
-                "MIN": 19.6,
-                "PTS": 9.2,
-                "REB": 4.0,
-                "AST": 4.0
+                "MIN": 20.2,
+                "PTS": 9.8,
+                "REB": 4.2,
+                "AST": 4.2
               },
               "season": {
-                "MIN": 23.7,
-                "PTS": 11.1,
-                "REB": 4.3,
-                "AST": 4.1
+                "MIN": 23.3,
+                "PTS": 10.7,
+                "REB": 4.4,
+                "AST": 4.3
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 20,
+                  "pts": 7,
+                  "reb": 5,
+                  "ast": 6
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "TOR",
@@ -2157,107 +2858,40 @@
                   "pts": 9,
                   "reb": 3,
                   "ast": 7
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "HOU",
-                  "home": true,
-                  "min": 17,
-                  "pts": 4,
-                  "reb": 4,
-                  "ast": 5
-                }
-              ]
-            },
-            {
-              "player": "AJ Green",
-              "status": null,
-              "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
-              },
-              "avg5": {
-                "MIN": 22.4,
-                "PTS": 7.8,
-                "REB": 2.0,
-                "AST": 2.0
-              },
-              "season": {
-                "MIN": 20.3,
-                "PTS": 7.8,
-                "REB": 2.0,
-                "AST": 1.6
-              },
-              "games": [
-                {
-                  "date": "2026-11-06",
-                  "opp": "TOR",
-                  "home": true,
-                  "min": 24,
-                  "pts": 12,
-                  "reb": 1,
-                  "ast": 0
-                },
-                {
-                  "date": "2026-11-04",
-                  "opp": "BOS",
-                  "home": false,
-                  "min": 20,
-                  "pts": 5,
-                  "reb": 2,
-                  "ast": 3
-                },
-                {
-                  "date": "2026-11-02",
-                  "opp": "MIN",
-                  "home": false,
-                  "min": 24,
-                  "pts": 13,
-                  "reb": 3,
-                  "ast": 3
-                },
-                {
-                  "date": "2026-10-31",
-                  "opp": "CLE",
-                  "home": true,
-                  "min": 20,
-                  "pts": 0,
-                  "reb": 3,
-                  "ast": 2
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "HOU",
-                  "home": true,
-                  "min": 24,
-                  "pts": 9,
-                  "reb": 1,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Brayden Burries",
+              "id": 1643415,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 24.8,
-                "PTS": 12.6,
-                "REB": 6.8,
-                "AST": 2.4
+                "MIN": 27.2,
+                "PTS": 13.2,
+                "REB": 7.2,
+                "AST": 3.0
               },
               "season": {
-                "MIN": 20.1,
-                "PTS": 10.2,
-                "REB": 5.2,
-                "AST": 2.0
+                "MIN": 21.0,
+                "PTS": 10.5,
+                "REB": 5.5,
+                "AST": 2.2
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 29,
+                  "pts": 13,
+                  "reb": 8,
+                  "ast": 4
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "TOR",
@@ -2293,15 +2927,75 @@
                   "pts": 14,
                   "reb": 3,
                   "ast": 1
+                }
+              ]
+            },
+            {
+              "player": "AJ Green",
+              "id": 1631260,
+              "status": null,
+              "lines": {
+                "PTS": null,
+                "REB": null,
+                "AST": null
+              },
+              "avg5": {
+                "MIN": 21.2,
+                "PTS": 7.0,
+                "REB": 2.0,
+                "AST": 1.8
+              },
+              "season": {
+                "MIN": 20.1,
+                "PTS": 7.5,
+                "REB": 1.9,
+                "AST": 1.5
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 18,
+                  "pts": 5,
+                  "reb": 1,
+                  "ast": 1
                 },
                 {
-                  "date": "2026-10-28",
-                  "opp": "HOU",
+                  "date": "2026-11-06",
+                  "opp": "TOR",
                   "home": true,
-                  "min": 17,
-                  "pts": 10,
-                  "reb": 6,
-                  "ast": 1
+                  "min": 24,
+                  "pts": 12,
+                  "reb": 1,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "BOS",
+                  "home": false,
+                  "min": 20,
+                  "pts": 5,
+                  "reb": 2,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 24,
+                  "pts": 13,
+                  "reb": 3,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-10-31",
+                  "opp": "CLE",
+                  "home": true,
+                  "min": 20,
+                  "pts": 0,
+                  "reb": 3,
+                  "ast": 2
                 }
               ]
             }
@@ -2309,11 +3003,12 @@
           "NYK": [
             {
               "player": "Jalen Brunson",
+              "id": 1628973,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 3.5,
+                "AST": 5.5
               },
               "avg5": {
                 "MIN": 33.0,
@@ -2377,11 +3072,12 @@
             },
             {
               "player": "OG Anunoby",
+              "id": 1628384,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 32.2,
@@ -2445,11 +3141,12 @@
             },
             {
               "player": "Josh Hart",
+              "id": 1628404,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 7.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 31.2,
@@ -2513,11 +3210,12 @@
             },
             {
               "player": "Karl-Anthony Towns",
+              "id": 1626157,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 13.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 31.4,
@@ -2581,11 +3279,12 @@
             },
             {
               "player": "Mikal Bridges",
+              "id": 1628969,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 22.4,
@@ -2649,9 +3348,10 @@
             },
             {
               "player": "Landry Shamet",
+              "id": 1629013,
               "status": null,
               "lines": {
-                "PTS": null,
+                "PTS": 9.5,
                 "REB": null,
                 "AST": null
               },
@@ -2717,6 +3417,7 @@
             },
             {
               "player": "Miles McBride",
+              "id": 1630540,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -2797,25 +3498,35 @@
           "BOS": [
             {
               "player": "Jayson Tatum",
+              "id": 1628369,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 7.5,
+                "AST": 7.5
               },
               "avg5": {
-                "MIN": 34.4,
-                "PTS": 30.2,
-                "REB": 6.0,
-                "AST": 8.0
+                "MIN": 31.8,
+                "PTS": 26.4,
+                "REB": 5.8,
+                "AST": 7.6
               },
               "season": {
-                "MIN": 34.4,
-                "PTS": 27.9,
-                "REB": 6.2,
-                "AST": 8.0
+                "MIN": 33.8,
+                "PTS": 27.1,
+                "REB": 6.0,
+                "AST": 7.8
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIL",
+                  "home": false,
+                  "min": 29,
+                  "pts": 21,
+                  "reb": 4,
+                  "ast": 6
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CHA",
@@ -2851,107 +3562,40 @@
                   "pts": 26,
                   "reb": 7,
                   "ast": 7
-                },
-                {
-                  "date": "2026-10-27",
-                  "opp": "BKN",
-                  "home": true,
-                  "min": 42,
-                  "pts": 40,
-                  "reb": 5,
-                  "ast": 8
-                }
-              ]
-            },
-            {
-              "player": "Derrick White",
-              "status": null,
-              "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
-              },
-              "avg5": {
-                "MIN": 30.2,
-                "PTS": 14.0,
-                "REB": 2.8,
-                "AST": 4.2
-              },
-              "season": {
-                "MIN": 30.1,
-                "PTS": 13.3,
-                "REB": 3.3,
-                "AST": 5.1
-              },
-              "games": [
-                {
-                  "date": "2026-11-06",
-                  "opp": "CHA",
-                  "home": false,
-                  "min": 25,
-                  "pts": 18,
-                  "reb": 4,
-                  "ast": 5
-                },
-                {
-                  "date": "2026-11-04",
-                  "opp": "MIL",
-                  "home": true,
-                  "min": 36,
-                  "pts": 24,
-                  "reb": 4,
-                  "ast": 7
-                },
-                {
-                  "date": "2026-11-02",
-                  "opp": "HOU",
-                  "home": false,
-                  "min": 30,
-                  "pts": 7,
-                  "reb": 2,
-                  "ast": 3
-                },
-                {
-                  "date": "2026-11-01",
-                  "opp": "ORL",
-                  "home": false,
-                  "min": 34,
-                  "pts": 12,
-                  "reb": 2,
-                  "ast": 2
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "CHI",
-                  "home": true,
-                  "min": 26,
-                  "pts": 9,
-                  "reb": 2,
-                  "ast": 4
                 }
               ]
             },
             {
               "player": "Paul George",
+              "id": 202331,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 5.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 30.6,
-                "PTS": 17.6,
-                "REB": 5.4,
-                "AST": 5.8
+                "MIN": 29.0,
+                "PTS": 19.0,
+                "REB": 4.6,
+                "AST": 4.6
               },
               "season": {
-                "MIN": 30.4,
-                "PTS": 19.6,
-                "REB": 5.5,
-                "AST": 4.5
+                "MIN": 30.1,
+                "PTS": 20.4,
+                "REB": 5.2,
+                "AST": 4.1
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIL",
+                  "home": false,
+                  "min": 28,
+                  "pts": 27,
+                  "reb": 3,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CHA",
@@ -2987,39 +3631,109 @@
                   "pts": 18,
                   "reb": 6,
                   "ast": 8
+                }
+              ]
+            },
+            {
+              "player": "Derrick White",
+              "id": 1628401,
+              "status": null,
+              "lines": {
+                "PTS": 14.5,
+                "REB": 3.5,
+                "AST": 5.5
+              },
+              "avg5": {
+                "MIN": 30.4,
+                "PTS": 14.0,
+                "REB": 3.0,
+                "AST": 4.8
+              },
+              "season": {
+                "MIN": 29.8,
+                "PTS": 12.9,
+                "REB": 3.3,
+                "AST": 5.3
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIL",
+                  "home": false,
+                  "min": 27,
+                  "pts": 9,
+                  "reb": 3,
+                  "ast": 7
                 },
                 {
-                  "date": "2026-10-27",
-                  "opp": "BKN",
+                  "date": "2026-11-06",
+                  "opp": "CHA",
+                  "home": false,
+                  "min": 25,
+                  "pts": 18,
+                  "reb": 4,
+                  "ast": 5
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIL",
                   "home": true,
                   "min": 36,
-                  "pts": 20,
-                  "reb": 7,
+                  "pts": 24,
+                  "reb": 4,
                   "ast": 7
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "HOU",
+                  "home": false,
+                  "min": 30,
+                  "pts": 7,
+                  "reb": 2,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "ORL",
+                  "home": false,
+                  "min": 34,
+                  "pts": 12,
+                  "reb": 2,
+                  "ast": 2
                 }
               ]
             },
             {
               "player": "Payton Pritchard",
+              "id": 1630202,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 26.6,
-                "PTS": 12.6,
-                "REB": 4.0,
-                "AST": 3.8
+                "MIN": 25.4,
+                "PTS": 9.0,
+                "REB": 4.4,
+                "AST": 4.0
               },
               "season": {
-                "MIN": 26.3,
-                "PTS": 12.9,
-                "REB": 3.1,
+                "MIN": 26.6,
+                "PTS": 12.8,
+                "REB": 3.3,
                 "AST": 3.8
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIL",
+                  "home": false,
+                  "min": 29,
+                  "pts": 12,
+                  "reb": 5,
+                  "ast": 4
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CHA",
@@ -3055,39 +3769,40 @@
                   "pts": 7,
                   "reb": 7,
                   "ast": 3
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "CHI",
-                  "home": true,
-                  "min": 35,
-                  "pts": 30,
-                  "reb": 3,
-                  "ast": 3
                 }
               ]
             },
             {
               "player": "Neemias Queta",
+              "id": 1629674,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 7.5,
+                "AST": 1.5
               },
               "avg5": {
-                "MIN": 23.4,
+                "MIN": 23.8,
                 "PTS": 10.0,
-                "REB": 7.0,
-                "AST": 1.2
+                "REB": 7.6,
+                "AST": 2.0
               },
               "season": {
                 "MIN": 21.7,
-                "PTS": 9.1,
-                "REB": 5.9,
-                "AST": 1.3
+                "PTS": 9.5,
+                "REB": 6.2,
+                "AST": 1.6
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIL",
+                  "home": false,
+                  "min": 22,
+                  "pts": 13,
+                  "reb": 9,
+                  "ast": 4
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CHA",
@@ -3123,39 +3838,40 @@
                   "pts": 8,
                   "reb": 8,
                   "ast": 1
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "CHI",
-                  "home": true,
-                  "min": 20,
-                  "pts": 13,
-                  "reb": 6,
-                  "ast": 0
                 }
               ]
             },
             {
               "player": "Sam Hauser",
+              "id": 1630573,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 1.5
               },
               "avg5": {
-                "MIN": 20.2,
-                "PTS": 6.2,
+                "MIN": 21.2,
+                "PTS": 6.4,
                 "REB": 2.4,
-                "AST": 1.2
+                "AST": 1.0
               },
               "season": {
-                "MIN": 20.8,
-                "PTS": 7.8,
+                "MIN": 21.0,
+                "PTS": 7.7,
                 "REB": 2.9,
                 "AST": 1.1
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIL",
+                  "home": false,
+                  "min": 23,
+                  "pts": 7,
+                  "reb": 3,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CHA",
@@ -3191,20 +3907,12 @@
                   "pts": 3,
                   "reb": 2,
                   "ast": 0
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "CHI",
-                  "home": true,
-                  "min": 18,
-                  "pts": 6,
-                  "reb": 3,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Baylor Scheierman",
+              "id": 1631248,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -3212,18 +3920,27 @@
                 "AST": null
               },
               "avg5": {
-                "MIN": 22.8,
-                "PTS": 7.4,
-                "REB": 4.8,
-                "AST": 1.8
+                "MIN": 22.0,
+                "PTS": 8.4,
+                "REB": 4.4,
+                "AST": 1.2
               },
               "season": {
-                "MIN": 20.2,
-                "PTS": 5.8,
-                "REB": 4.1,
-                "AST": 1.3
+                "MIN": 20.1,
+                "PTS": 5.9,
+                "REB": 3.8,
+                "AST": 1.2
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIL",
+                  "home": false,
+                  "min": 19,
+                  "pts": 7,
+                  "reb": 1,
+                  "ast": 0
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CHA",
@@ -3259,15 +3976,6 @@
                   "pts": 10,
                   "reb": 2,
                   "ast": 1
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "CHI",
-                  "home": true,
-                  "min": 23,
-                  "pts": 2,
-                  "reb": 3,
-                  "ast": 3
                 }
               ]
             }
@@ -3275,25 +3983,35 @@
           "PHI": [
             {
               "player": "Tyrese Maxey",
+              "id": 1630178,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 3.5,
+                "AST": 5.5
               },
               "avg5": {
-                "MIN": 35.6,
+                "MIN": 35.2,
                 "PTS": 25.4,
                 "REB": 3.2,
-                "AST": 6.0
+                "AST": 6.6
               },
               "season": {
-                "MIN": 36.6,
+                "MIN": 36.5,
                 "PTS": 26.9,
                 "REB": 3.7,
-                "AST": 5.3
+                "AST": 5.5
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "CHI",
+                  "home": false,
+                  "min": 36,
+                  "pts": 27,
+                  "reb": 4,
+                  "ast": 7
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CLE",
@@ -3329,39 +4047,40 @@
                   "pts": 38,
                   "reb": 4,
                   "ast": 4
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "NYK",
-                  "home": true,
-                  "min": 38,
-                  "pts": 27,
-                  "reb": 4,
-                  "ast": 4
                 }
               ]
             },
             {
               "player": "Jaylen Brown",
+              "id": 1627759,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 5.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 35.2,
-                "PTS": 22.2,
-                "REB": 7.4,
-                "AST": 3.4
+                "MIN": 35.4,
+                "PTS": 24.0,
+                "REB": 6.8,
+                "AST": 3.8
               },
               "season": {
-                "MIN": 36.0,
-                "PTS": 21.6,
+                "MIN": 35.9,
+                "PTS": 22.3,
                 "REB": 6.7,
                 "AST": 4.0
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "CHI",
+                  "home": false,
+                  "min": 35,
+                  "pts": 29,
+                  "reb": 7,
+                  "ast": 4
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CLE",
@@ -3397,39 +4116,40 @@
                   "pts": 16,
                   "reb": 4,
                   "ast": 4
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "IND",
-                  "home": false,
-                  "min": 34,
-                  "pts": 20,
-                  "reb": 10,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "LeBron James",
+              "id": 2544,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 7.5,
+                "AST": 5.5
               },
               "avg5": {
                 "MIN": 32.6,
-                "PTS": 13.8,
+                "PTS": 15.6,
                 "REB": 7.6,
-                "AST": 7.6
+                "AST": 6.6
               },
               "season": {
                 "MIN": 32.9,
-                "PTS": 14.8,
-                "REB": 7.4,
-                "AST": 6.9
+                "PTS": 15.6,
+                "REB": 7.1,
+                "AST": 6.7
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "CHI",
+                  "home": false,
+                  "min": 33,
+                  "pts": 22,
+                  "reb": 5,
+                  "ast": 5
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CLE",
@@ -3465,39 +4185,40 @@
                   "pts": 20,
                   "reb": 9,
                   "ast": 8
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "IND",
-                  "home": false,
-                  "min": 33,
-                  "pts": 13,
-                  "reb": 5,
-                  "ast": 10
                 }
               ]
             },
             {
               "player": "VJ Edgecombe",
+              "id": 1642845,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 34.6,
+                "MIN": 34.4,
                 "PTS": 14.8,
-                "REB": 5.6,
-                "AST": 3.0
+                "REB": 5.2,
+                "AST": 3.2
               },
               "season": {
-                "MIN": 33.3,
+                "MIN": 33.5,
                 "PTS": 13.2,
-                "REB": 6.6,
+                "REB": 6.5,
                 "AST": 2.9
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "CHI",
+                  "home": false,
+                  "min": 35,
+                  "pts": 13,
+                  "reb": 6,
+                  "ast": 3
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CLE",
@@ -3533,39 +4254,40 @@
                   "pts": 10,
                   "reb": 8,
                   "ast": 3
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "NYK",
-                  "home": true,
-                  "min": 36,
-                  "pts": 13,
-                  "reb": 8,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Joel Embiid",
+              "id": 203954,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 7.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 31.0,
-                "PTS": 15.6,
-                "REB": 9.6,
-                "AST": 3.0
+                "MIN": 29.0,
+                "PTS": 15.0,
+                "REB": 9.4,
+                "AST": 3.6
               },
               "season": {
-                "MIN": 32.2,
+                "MIN": 31.9,
                 "PTS": 17.9,
-                "REB": 9.6,
-                "AST": 4.0
+                "REB": 9.7,
+                "AST": 4.1
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "CHI",
+                  "home": false,
+                  "min": 29,
+                  "pts": 18,
+                  "reb": 10,
+                  "ast": 5
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CLE",
@@ -3601,20 +4323,12 @@
                   "pts": 10,
                   "reb": 7,
                   "ast": 7
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "IND",
-                  "home": false,
-                  "min": 39,
-                  "pts": 21,
-                  "reb": 11,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Rayan Rupert",
+              "id": 1641712,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -3683,6 +4397,7 @@
             },
             {
               "player": "Dean Wade",
+              "id": 1629731,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -3690,18 +4405,27 @@
                 "AST": null
               },
               "avg5": {
-                "MIN": 24.6,
+                "MIN": 22.8,
                 "PTS": 3.0,
-                "REB": 3.8,
+                "REB": 3.6,
                 "AST": 2.8
               },
               "season": {
-                "MIN": 25.6,
-                "PTS": 3.6,
-                "REB": 3.4,
-                "AST": 2.0
+                "MIN": 24.8,
+                "PTS": 3.2,
+                "REB": 3.1,
+                "AST": 1.9
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "CHI",
+                  "home": false,
+                  "min": 18,
+                  "pts": 0,
+                  "reb": 1,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "CLE",
@@ -3737,15 +4461,986 @@
                   "pts": 4,
                   "reb": 5,
                   "ast": 10
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "game_date": "2026-11-10",
+        "tip": "2026-11-11T02:10:00+00:00",
+        "home": "PHX",
+        "away": "LAC",
+        "home_name": "Phoenix Suns",
+        "away_name": "Los Angeles Clippers",
+        "teams": {
+          "LAC": [
+            {
+              "player": "Rui Hachimura",
+              "id": 1629060,
+              "status": null,
+              "lines": {
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": null
+              },
+              "avg5": {
+                "MIN": 29.6,
+                "PTS": 15.2,
+                "REB": 5.6,
+                "AST": 1.8
+              },
+              "season": {
+                "MIN": 30.4,
+                "PTS": 14.6,
+                "REB": 6.0,
+                "AST": 1.7
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "NOP",
+                  "home": true,
+                  "min": 26,
+                  "pts": 14,
+                  "reb": 3,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 37,
+                  "pts": 21,
+                  "reb": 9,
+                  "ast": 7
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 30,
+                  "pts": 24,
+                  "reb": 7,
+                  "ast": 0
                 },
                 {
                   "date": "2026-10-30",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 26,
+                  "pts": 12,
+                  "reb": 5,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-10-25",
+                  "opp": "OKC",
+                  "home": false,
+                  "min": 29,
+                  "pts": 5,
+                  "reb": 4,
+                  "ast": 0
+                }
+              ]
+            },
+            {
+              "player": "Darius Garland",
+              "id": 1629636,
+              "status": null,
+              "lines": {
+                "PTS": 24.5,
+                "REB": 1.5,
+                "AST": 7.5
+              },
+              "avg5": {
+                "MIN": 34.2,
+                "PTS": 21.0,
+                "REB": 1.4,
+                "AST": 7.4
+              },
+              "season": {
+                "MIN": 33.6,
+                "PTS": 21.2,
+                "REB": 1.4,
+                "AST": 7.0
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "NOP",
+                  "home": true,
+                  "min": 32,
+                  "pts": 24,
+                  "reb": 0,
+                  "ast": 10
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 39,
+                  "pts": 26,
+                  "reb": 1,
+                  "ast": 7
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "TOR",
+                  "home": true,
+                  "min": 36,
+                  "pts": 16,
+                  "reb": 4,
+                  "ast": 8
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 33,
+                  "pts": 15,
+                  "reb": 0,
+                  "ast": 7
+                },
+                {
+                  "date": "2026-10-30",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 31,
+                  "pts": 24,
+                  "reb": 2,
+                  "ast": 5
+                }
+              ]
+            },
+            {
+              "player": "Kris Dunn",
+              "id": 1627739,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 3.5
+              },
+              "avg5": {
+                "MIN": 29.2,
+                "PTS": 9.6,
+                "REB": 4.2,
+                "AST": 3.8
+              },
+              "season": {
+                "MIN": 29.7,
+                "PTS": 9.1,
+                "REB": 4.2,
+                "AST": 4.4
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "NOP",
+                  "home": true,
+                  "min": 24,
+                  "pts": 14,
+                  "reb": 5,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 35,
+                  "pts": 5,
+                  "reb": 5,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "TOR",
+                  "home": true,
+                  "min": 29,
+                  "pts": 12,
+                  "reb": 4,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 27,
+                  "pts": 12,
+                  "reb": 2,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-10-30",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 31,
+                  "pts": 5,
+                  "reb": 5,
+                  "ast": 7
+                }
+              ]
+            },
+            {
+              "player": "Derrick Jones Jr.",
+              "id": 1627884,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 5.5,
+                "AST": null
+              },
+              "avg5": {
+                "MIN": 29.6,
+                "PTS": 10.8,
+                "REB": 5.0,
+                "AST": 1.2
+              },
+              "season": {
+                "MIN": 29.9,
+                "PTS": 11.1,
+                "REB": 5.1,
+                "AST": 1.6
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "NOP",
+                  "home": true,
+                  "min": 29,
+                  "pts": 8,
+                  "reb": 4,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 37,
+                  "pts": 12,
+                  "reb": 8,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 28,
+                  "pts": 9,
+                  "reb": 7,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-10-30",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 26,
+                  "pts": 10,
+                  "reb": 1,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-10-28",
+                  "opp": "LAL",
+                  "home": true,
+                  "min": 28,
+                  "pts": 15,
+                  "reb": 5,
+                  "ast": 0
+                }
+              ]
+            },
+            {
+              "player": "Max Strus",
+              "id": 1629622,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 1.5
+              },
+              "avg5": {
+                "MIN": 23.6,
+                "PTS": 9.0,
+                "REB": 4.4,
+                "AST": 4.2
+              },
+              "season": {
+                "MIN": 21.7,
+                "PTS": 9.0,
+                "REB": 4.3,
+                "AST": 4.3
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "NOP",
+                  "home": true,
+                  "min": 19,
+                  "pts": 7,
+                  "reb": 4,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 23,
+                  "pts": 9,
+                  "reb": 5,
+                  "ast": 5
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "TOR",
+                  "home": true,
+                  "min": 23,
+                  "pts": 11,
+                  "reb": 4,
+                  "ast": 6
+                },
+                {
+                  "date": "2026-05-25",
                   "opp": "NYK",
                   "home": true,
-                  "min": 27,
-                  "pts": 0,
+                  "min": 22,
+                  "pts": 5,
+                  "reb": 2,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-05-23",
+                  "opp": "NYK",
+                  "home": true,
+                  "min": 31,
+                  "pts": 13,
+                  "reb": 7,
+                  "ast": 6
+                }
+              ]
+            },
+            {
+              "player": "Kobe Sanders",
+              "id": 1642920,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": null,
+                "AST": null
+              },
+              "avg5": {
+                "MIN": 26.4,
+                "PTS": 12.2,
+                "REB": 3.0,
+                "AST": 2.0
+              },
+              "season": {
+                "MIN": 24.1,
+                "PTS": 9.9,
+                "REB": 2.9,
+                "AST": 2.2
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "NOP",
+                  "home": true,
+                  "min": 22,
+                  "pts": 8,
+                  "reb": 2,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 18,
+                  "pts": 4,
                   "reb": 2,
                   "ast": 1
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "TOR",
+                  "home": true,
+                  "min": 38,
+                  "pts": 26,
+                  "reb": 4,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 30,
+                  "pts": 16,
+                  "reb": 3,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-10-30",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 24,
+                  "pts": 7,
+                  "reb": 4,
+                  "ast": 2
+                }
+              ]
+            },
+            {
+              "player": "Brook Lopez",
+              "id": 201572,
+              "status": null,
+              "lines": {
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": 1.5
+              },
+              "avg5": {
+                "MIN": 24.6,
+                "PTS": 14.4,
+                "REB": 5.8,
+                "AST": 0.6
+              },
+              "season": {
+                "MIN": 23.9,
+                "PTS": 14.2,
+                "REB": 5.3,
+                "AST": 1.0
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "NOP",
+                  "home": true,
+                  "min": 26,
+                  "pts": 20,
+                  "reb": 7,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 35,
+                  "pts": 20,
+                  "reb": 8,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "TOR",
+                  "home": true,
+                  "min": 22,
+                  "pts": 12,
+                  "reb": 6,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 19,
+                  "pts": 7,
+                  "reb": 2,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-10-30",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 21,
+                  "pts": 13,
+                  "reb": 6,
+                  "ast": 0
+                }
+              ]
+            }
+          ],
+          "PHX": [
+            {
+              "player": "Devin Booker",
+              "id": 1626164,
+              "status": null,
+              "lines": {
+                "PTS": 24.5,
+                "REB": 3.5,
+                "AST": 5.5
+              },
+              "avg5": {
+                "MIN": 34.2,
+                "PTS": 29.0,
+                "REB": 1.8,
+                "AST": 4.4
+              },
+              "season": {
+                "MIN": 34.3,
+                "PTS": 26.0,
+                "REB": 2.7,
+                "AST": 4.8
+              },
+              "games": [
+                {
+                  "date": "2026-11-09",
+                  "opp": "SAS",
+                  "home": true,
+                  "min": 29,
+                  "pts": 32,
+                  "reb": 2,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-11-07",
+                  "opp": "HOU",
+                  "home": true,
+                  "min": 39,
+                  "pts": 24,
+                  "reb": 2,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-05",
+                  "opp": "ORL",
+                  "home": true,
+                  "min": 34,
+                  "pts": 30,
+                  "reb": 1,
+                  "ast": 8
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 34,
+                  "pts": 33,
+                  "reb": 1,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 35,
+                  "pts": 26,
+                  "reb": 3,
+                  "ast": 5
+                }
+              ]
+            },
+            {
+              "player": "Dillon Brooks",
+              "id": 1628415,
+              "status": null,
+              "lines": {
+                "PTS": 14.5,
+                "REB": 3.5,
+                "AST": 1.5
+              },
+              "avg5": {
+                "MIN": 32.2,
+                "PTS": 15.0,
+                "REB": 4.6,
+                "AST": 1.6
+              },
+              "season": {
+                "MIN": 30.7,
+                "PTS": 15.7,
+                "REB": 3.9,
+                "AST": 2.2
+              },
+              "games": [
+                {
+                  "date": "2026-11-09",
+                  "opp": "SAS",
+                  "home": true,
+                  "min": 26,
+                  "pts": 7,
+                  "reb": 4,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-07",
+                  "opp": "HOU",
+                  "home": true,
+                  "min": 37,
+                  "pts": 11,
+                  "reb": 4,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-05",
+                  "opp": "ORL",
+                  "home": true,
+                  "min": 29,
+                  "pts": 24,
+                  "reb": 1,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 35,
+                  "pts": 15,
+                  "reb": 6,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 34,
+                  "pts": 18,
+                  "reb": 8,
+                  "ast": 4
+                }
+              ]
+            },
+            {
+              "player": "Miles Bridges",
+              "id": 1628970,
+              "status": null,
+              "lines": {
+                "PTS": 14.5,
+                "REB": 7.5,
+                "AST": 3.5
+              },
+              "avg5": {
+                "MIN": 30.8,
+                "PTS": 15.4,
+                "REB": 8.2,
+                "AST": 4.0
+              },
+              "season": {
+                "MIN": 31.7,
+                "PTS": 15.8,
+                "REB": 7.8,
+                "AST": 3.2
+              },
+              "games": [
+                {
+                  "date": "2026-11-09",
+                  "opp": "SAS",
+                  "home": true,
+                  "min": 26,
+                  "pts": 7,
+                  "reb": 5,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-07",
+                  "opp": "HOU",
+                  "home": true,
+                  "min": 31,
+                  "pts": 13,
+                  "reb": 10,
+                  "ast": 7
+                },
+                {
+                  "date": "2026-11-05",
+                  "opp": "ORL",
+                  "home": true,
+                  "min": 31,
+                  "pts": 18,
+                  "reb": 13,
+                  "ast": 5
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 31,
+                  "pts": 18,
+                  "reb": 7,
+                  "ast": 5
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 35,
+                  "pts": 21,
+                  "reb": 6,
+                  "ast": 3
+                }
+              ]
+            },
+            {
+              "player": "Jalen Green",
+              "id": 1630224,
+              "status": null,
+              "lines": {
+                "PTS": 14.5,
+                "REB": 3.5,
+                "AST": 3.5
+              },
+              "avg5": {
+                "MIN": 30.0,
+                "PTS": 12.2,
+                "REB": 3.6,
+                "AST": 4.6
+              },
+              "season": {
+                "MIN": 28.6,
+                "PTS": 11.7,
+                "REB": 3.1,
+                "AST": 3.7
+              },
+              "games": [
+                {
+                  "date": "2026-11-09",
+                  "opp": "SAS",
+                  "home": true,
+                  "min": 24,
+                  "pts": 6,
+                  "reb": 5,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-11-07",
+                  "opp": "HOU",
+                  "home": true,
+                  "min": 34,
+                  "pts": 16,
+                  "reb": 3,
+                  "ast": 6
+                },
+                {
+                  "date": "2026-11-05",
+                  "opp": "ORL",
+                  "home": true,
+                  "min": 24,
+                  "pts": 6,
+                  "reb": 0,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 32,
+                  "pts": 22,
+                  "reb": 2,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 36,
+                  "pts": 11,
+                  "reb": 8,
+                  "ast": 8
+                }
+              ]
+            },
+            {
+              "player": "Oso Ighodaro",
+              "id": 1642345,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 5.5,
+                "AST": 3.5
+              },
+              "avg5": {
+                "MIN": 22.4,
+                "PTS": 7.2,
+                "REB": 4.8,
+                "AST": 3.0
+              },
+              "season": {
+                "MIN": 21.1,
+                "PTS": 6.6,
+                "REB": 5.1,
+                "AST": 3.3
+              },
+              "games": [
+                {
+                  "date": "2026-11-09",
+                  "opp": "SAS",
+                  "home": true,
+                  "min": 18,
+                  "pts": 7,
+                  "reb": 4,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-07",
+                  "opp": "HOU",
+                  "home": true,
+                  "min": 23,
+                  "pts": 4,
+                  "reb": 6,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-05",
+                  "opp": "ORL",
+                  "home": true,
+                  "min": 24,
+                  "pts": 2,
+                  "reb": 5,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 23,
+                  "pts": 9,
+                  "reb": 7,
+                  "ast": 7
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 24,
+                  "pts": 14,
+                  "reb": 2,
+                  "ast": 2
+                }
+              ]
+            },
+            {
+              "player": "Collin Gillespie",
+              "id": 1631221,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 3.5
+              },
+              "avg5": {
+                "MIN": 23.0,
+                "PTS": 4.8,
+                "REB": 2.2,
+                "AST": 2.6
+              },
+              "season": {
+                "MIN": 24.4,
+                "PTS": 6.7,
+                "REB": 2.2,
+                "AST": 4.0
+              },
+              "games": [
+                {
+                  "date": "2026-11-09",
+                  "opp": "SAS",
+                  "home": true,
+                  "min": 24,
+                  "pts": 6,
+                  "reb": 2,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-07",
+                  "opp": "HOU",
+                  "home": true,
+                  "min": 20,
+                  "pts": 7,
+                  "reb": 3,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-11-05",
+                  "opp": "ORL",
+                  "home": true,
+                  "min": 24,
+                  "pts": 6,
+                  "reb": 2,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 23,
+                  "pts": 2,
+                  "reb": 3,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 24,
+                  "pts": 3,
+                  "reb": 1,
+                  "ast": 2
+                }
+              ]
+            },
+            {
+              "player": "Khaman Maluach",
+              "id": 1642863,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 5.5,
+                "AST": null
+              },
+              "avg5": {
+                "MIN": 17.8,
+                "PTS": 7.6,
+                "REB": 5.8,
+                "AST": 1.2
+              },
+              "season": {
+                "MIN": 19.7,
+                "PTS": 7.8,
+                "REB": 6.3,
+                "AST": 1.2
+              },
+              "games": [
+                {
+                  "date": "2026-11-09",
+                  "opp": "SAS",
+                  "home": true,
+                  "min": 20,
+                  "pts": 11,
+                  "reb": 5,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-07",
+                  "opp": "HOU",
+                  "home": true,
+                  "min": 18,
+                  "pts": 8,
+                  "reb": 10,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-05",
+                  "opp": "ORL",
+                  "home": true,
+                  "min": 22,
+                  "pts": 8,
+                  "reb": 6,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 16,
+                  "pts": 6,
+                  "reb": 6,
+                  "ast": 2
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 13,
+                  "pts": 5,
+                  "reb": 2,
+                  "ast": 0
                 }
               ]
             }
@@ -3763,25 +5458,35 @@
           "MIA": [
             {
               "player": "Davion Mitchell",
+              "id": 1630558,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 1.5,
+                "AST": 7.5
               },
               "avg5": {
-                "MIN": 35.8,
-                "PTS": 14.6,
-                "REB": 2.2,
-                "AST": 9.2
+                "MIN": 37.0,
+                "PTS": 16.0,
+                "REB": 2.6,
+                "AST": 9.4
               },
               "season": {
-                "MIN": 35.0,
-                "PTS": 16.1,
-                "REB": 1.6,
-                "AST": 8.2
+                "MIN": 35.5,
+                "PTS": 16.2,
+                "REB": 1.7,
+                "AST": 8.5
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "SAC",
+                  "home": false,
+                  "min": 40,
+                  "pts": 17,
+                  "reb": 3,
+                  "ast": 11
+                },
                 {
                   "date": "2026-11-05",
                   "opp": "GSW",
@@ -3817,107 +5522,40 @@
                   "pts": 15,
                   "reb": 6,
                   "ast": 11
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "ATL",
-                  "home": false,
-                  "min": 34,
-                  "pts": 10,
-                  "reb": 1,
-                  "ast": 10
-                }
-              ]
-            },
-            {
-              "player": "Bam Adebayo",
-              "status": null,
-              "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
-              },
-              "avg5": {
-                "MIN": 34.2,
-                "PTS": 24.0,
-                "REB": 9.4,
-                "AST": 2.8
-              },
-              "season": {
-                "MIN": 32.7,
-                "PTS": 18.6,
-                "REB": 8.4,
-                "AST": 3.1
-              },
-              "games": [
-                {
-                  "date": "2026-11-05",
-                  "opp": "GSW",
-                  "home": false,
-                  "min": 33,
-                  "pts": 18,
-                  "reb": 10,
-                  "ast": 0
-                },
-                {
-                  "date": "2026-11-04",
-                  "opp": "LAC",
-                  "home": false,
-                  "min": 41,
-                  "pts": 35,
-                  "reb": 10,
-                  "ast": 4
-                },
-                {
-                  "date": "2026-11-02",
-                  "opp": "LAL",
-                  "home": false,
-                  "min": 31,
-                  "pts": 16,
-                  "reb": 9,
-                  "ast": 4
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "IND",
-                  "home": true,
-                  "min": 33,
-                  "pts": 27,
-                  "reb": 9,
-                  "ast": 3
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "ATL",
-                  "home": false,
-                  "min": 33,
-                  "pts": 24,
-                  "reb": 9,
-                  "ast": 3
                 }
               ]
             },
             {
               "player": "Giannis Antetokounmpo",
+              "id": 203507,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 29.5,
+                "REB": 11.5,
+                "AST": 5.5
               },
               "avg5": {
-                "MIN": 33.6,
-                "PTS": 26.4,
-                "REB": 15.2,
+                "MIN": 34.2,
+                "PTS": 27.4,
+                "REB": 14.4,
                 "AST": 6.0
               },
               "season": {
-                "MIN": 32.8,
-                "PTS": 27.3,
-                "REB": 12.7,
-                "AST": 5.6
+                "MIN": 32.9,
+                "PTS": 27.5,
+                "REB": 12.8,
+                "AST": 5.3
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "SAC",
+                  "home": false,
+                  "min": 34,
+                  "pts": 29,
+                  "reb": 14,
+                  "ast": 3
+                },
                 {
                   "date": "2026-11-05",
                   "opp": "GSW",
@@ -3953,39 +5591,109 @@
                   "pts": 31,
                   "reb": 18,
                   "ast": 10
+                }
+              ]
+            },
+            {
+              "player": "Bam Adebayo",
+              "id": 1628389,
+              "status": null,
+              "lines": {
+                "PTS": 19.5,
+                "REB": 9.5,
+                "AST": 3.5
+              },
+              "avg5": {
+                "MIN": 34.4,
+                "PTS": 22.8,
+                "REB": 9.2,
+                "AST": 3.0
+              },
+              "season": {
+                "MIN": 32.8,
+                "PTS": 18.5,
+                "REB": 8.4,
+                "AST": 3.2
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "SAC",
+                  "home": false,
+                  "min": 34,
+                  "pts": 18,
+                  "reb": 8,
+                  "ast": 4
                 },
                 {
-                  "date": "2026-10-28",
-                  "opp": "ATL",
+                  "date": "2026-11-05",
+                  "opp": "GSW",
+                  "home": false,
+                  "min": 33,
+                  "pts": 18,
+                  "reb": 10,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "LAC",
+                  "home": false,
+                  "min": 41,
+                  "pts": 35,
+                  "reb": 10,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "LAL",
                   "home": false,
                   "min": 31,
-                  "pts": 24,
-                  "reb": 18,
+                  "pts": 16,
+                  "reb": 9,
+                  "ast": 4
+                },
+                {
+                  "date": "2026-10-30",
+                  "opp": "IND",
+                  "home": true,
+                  "min": 33,
+                  "pts": 27,
+                  "reb": 9,
                   "ast": 3
                 }
               ]
             },
             {
               "player": "Pelle Larsson",
+              "id": 1641796,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 29.8,
-                "PTS": 12.8,
-                "REB": 3.2,
-                "AST": 4.2
+                "MIN": 28.0,
+                "PTS": 11.6,
+                "REB": 2.6,
+                "AST": 3.2
               },
               "season": {
-                "MIN": 30.2,
+                "MIN": 29.4,
                 "PTS": 11.1,
                 "REB": 3.1,
-                "AST": 3.8
+                "AST": 3.7
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "SAC",
+                  "home": false,
+                  "min": 22,
+                  "pts": 11,
+                  "reb": 3,
+                  "ast": 3
+                },
                 {
                   "date": "2026-11-05",
                   "opp": "GSW",
@@ -4021,39 +5729,40 @@
                   "pts": 18,
                   "reb": 3,
                   "ast": 3
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "ATL",
-                  "home": false,
-                  "min": 31,
-                  "pts": 17,
-                  "reb": 6,
-                  "ast": 8
                 }
               ]
             },
             {
               "player": "Andrew Wiggins",
+              "id": 203952,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 1.5
               },
               "avg5": {
-                "MIN": 25.4,
-                "PTS": 8.4,
-                "REB": 2.8,
-                "AST": 2.0
+                "MIN": 26.0,
+                "PTS": 6.0,
+                "REB": 3.0,
+                "AST": 1.8
               },
               "season": {
-                "MIN": 25.8,
-                "PTS": 8.6,
+                "MIN": 26.4,
+                "PTS": 8.3,
                 "REB": 3.1,
-                "AST": 1.7
+                "AST": 1.6
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "SAC",
+                  "home": false,
+                  "min": 32,
+                  "pts": 6,
+                  "reb": 3,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-05",
                   "opp": "GSW",
@@ -4089,39 +5798,40 @@
                   "pts": 12,
                   "reb": 2,
                   "ast": 1
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "ATL",
-                  "home": false,
-                  "min": 29,
-                  "pts": 18,
-                  "reb": 2,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Klay Thompson",
+              "id": 202691,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 1.5,
+                "AST": 1.5
               },
               "avg5": {
-                "MIN": 25.6,
-                "PTS": 17.6,
-                "REB": 1.4,
-                "AST": 2.4
+                "MIN": 28.6,
+                "PTS": 21.6,
+                "REB": 1.6,
+                "AST": 2.8
               },
               "season": {
-                "MIN": 23.3,
-                "PTS": 13.8,
+                "MIN": 24.2,
+                "PTS": 14.7,
                 "REB": 1.6,
-                "AST": 1.7
+                "AST": 1.9
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "SAC",
+                  "home": false,
+                  "min": 32,
+                  "pts": 23,
+                  "reb": 2,
+                  "ast": 4
+                },
                 {
                   "date": "2026-11-05",
                   "opp": "GSW",
@@ -4157,39 +5867,40 @@
                   "pts": 25,
                   "reb": 0,
                   "ast": 3
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "ATL",
-                  "home": false,
-                  "min": 17,
-                  "pts": 3,
-                  "reb": 1,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Bobby Portis Jr.",
+              "id": 1626171,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 9.5,
+                "REB": 5.5,
                 "AST": null
               },
               "avg5": {
-                "MIN": 18.0,
-                "PTS": 5.0,
-                "REB": 6.0,
-                "AST": 2.4
+                "MIN": 17.4,
+                "PTS": 3.6,
+                "REB": 4.4,
+                "AST": 1.8
               },
               "season": {
-                "MIN": 20.8,
-                "PTS": 7.3,
-                "REB": 6.9,
-                "AST": 1.9
+                "MIN": 20.7,
+                "PTS": 7.0,
+                "REB": 6.3,
+                "AST": 1.8
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "SAC",
+                  "home": false,
+                  "min": 20,
+                  "pts": 4,
+                  "reb": 1,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-05",
                   "opp": "GSW",
@@ -4225,15 +5936,6 @@
                   "pts": 8,
                   "reb": 3,
                   "ast": 1
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "ATL",
-                  "home": false,
-                  "min": 23,
-                  "pts": 11,
-                  "reb": 9,
-                  "ast": 4
                 }
               ]
             }
@@ -4241,25 +5943,35 @@
           "UTA": [
             {
               "player": "Keyonte George",
-              "status": null,
+              "id": 1641718,
+              "status": "out",
               "lines": {
                 "PTS": null,
                 "REB": null,
                 "AST": null
               },
               "avg5": {
-                "MIN": 32.8,
-                "PTS": 20.2,
-                "REB": 4.4,
-                "AST": 5.0
+                "MIN": 31.4,
+                "PTS": 17.8,
+                "REB": 4.6,
+                "AST": 6.0
               },
               "season": {
-                "MIN": 32.3,
-                "PTS": 21.3,
-                "REB": 4.2,
-                "AST": 6.2
+                "MIN": 32.1,
+                "PTS": 21.1,
+                "REB": 4.3,
+                "AST": 6.4
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 30,
+                  "pts": 19,
+                  "reb": 5,
+                  "ast": 8
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "DAL",
@@ -4295,39 +6007,109 @@
                   "pts": 8,
                   "reb": 3,
                   "ast": 4
+                }
+              ]
+            },
+            {
+              "player": "Darryn Peterson",
+              "id": 1643408,
+              "status": null,
+              "lines": {
+                "PTS": 19.5,
+                "REB": 5.5,
+                "AST": 5.5
+              },
+              "avg5": {
+                "MIN": 32.8,
+                "PTS": 16.8,
+                "REB": 3.6,
+                "AST": 5.0
+              },
+              "season": {
+                "MIN": 30.7,
+                "PTS": 14.8,
+                "REB": 4.0,
+                "AST": 3.8
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 35,
+                  "pts": 26,
+                  "reb": 6,
+                  "ast": 4
                 },
                 {
-                  "date": "2026-10-28",
+                  "date": "2026-11-06",
+                  "opp": "DAL",
+                  "home": false,
+                  "min": 30,
+                  "pts": 21,
+                  "reb": 2,
+                  "ast": 5
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "NOP",
+                  "home": false,
+                  "min": 30,
+                  "pts": 7,
+                  "reb": 2,
+                  "ast": 7
+                },
+                {
+                  "date": "2026-11-02",
                   "opp": "SAS",
-                  "home": true,
-                  "min": 37,
-                  "pts": 31,
+                  "home": false,
+                  "min": 33,
+                  "pts": 14,
                   "reb": 4,
-                  "ast": 3
+                  "ast": 5
+                },
+                {
+                  "date": "2026-10-31",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 36,
+                  "pts": 16,
+                  "reb": 4,
+                  "ast": 4
                 }
               ]
             },
             {
               "player": "Ace Bailey",
+              "id": 1642846,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": 1.5
               },
               "avg5": {
-                "MIN": 33.0,
-                "PTS": 12.0,
-                "REB": 6.0,
-                "AST": 0.8
+                "MIN": 31.4,
+                "PTS": 9.6,
+                "REB": 5.2,
+                "AST": 1.4
               },
               "season": {
-                "MIN": 30.4,
-                "PTS": 12.4,
-                "REB": 7.1,
-                "AST": 1.8
+                "MIN": 30.6,
+                "PTS": 11.9,
+                "REB": 6.6,
+                "AST": 1.9
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 32,
+                  "pts": 7,
+                  "reb": 2,
+                  "ast": 3
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "DAL",
@@ -4363,93 +6145,17 @@
                   "pts": 9,
                   "reb": 7,
                   "ast": 1
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "SAS",
-                  "home": true,
-                  "min": 40,
-                  "pts": 19,
-                  "reb": 6,
-                  "ast": 0
-                }
-              ]
-            },
-            {
-              "player": "Darryn Peterson",
-              "status": null,
-              "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
-              },
-              "avg5": {
-                "MIN": 31.0,
-                "PTS": 15.2,
-                "REB": 3.4,
-                "AST": 5.0
-              },
-              "season": {
-                "MIN": 30.2,
-                "PTS": 13.6,
-                "REB": 3.8,
-                "AST": 3.9
-              },
-              "games": [
-                {
-                  "date": "2026-11-06",
-                  "opp": "DAL",
-                  "home": false,
-                  "min": 30,
-                  "pts": 21,
-                  "reb": 2,
-                  "ast": 5
-                },
-                {
-                  "date": "2026-11-04",
-                  "opp": "NOP",
-                  "home": false,
-                  "min": 30,
-                  "pts": 7,
-                  "reb": 2,
-                  "ast": 7
-                },
-                {
-                  "date": "2026-11-02",
-                  "opp": "SAS",
-                  "home": false,
-                  "min": 33,
-                  "pts": 14,
-                  "reb": 4,
-                  "ast": 6
-                },
-                {
-                  "date": "2026-10-31",
-                  "opp": "POR",
-                  "home": true,
-                  "min": 36,
-                  "pts": 16,
-                  "reb": 4,
-                  "ast": 4
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "SAS",
-                  "home": true,
-                  "min": 26,
-                  "pts": 18,
-                  "reb": 5,
-                  "ast": 3
                 }
               ]
             },
             {
               "player": "Lauri Markkanen",
+              "id": 1628374,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 7.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 27.8,
@@ -4513,25 +6219,35 @@
             },
             {
               "player": "Jaxson Hayes",
+              "id": 1629637,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 9.5,
+                "REB": 5.5,
                 "AST": null
               },
               "avg5": {
-                "MIN": 25.6,
-                "PTS": 5.6,
-                "REB": 7.2,
-                "AST": 2.0
+                "MIN": 24.0,
+                "PTS": 8.8,
+                "REB": 6.2,
+                "AST": 1.4
               },
               "season": {
-                "MIN": 24.9,
-                "PTS": 7.4,
-                "REB": 6.4,
-                "AST": 2.0
+                "MIN": 25.3,
+                "PTS": 8.6,
+                "REB": 6.3,
+                "AST": 1.9
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 29,
+                  "pts": 18,
+                  "reb": 6,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "DAL",
@@ -4567,20 +6283,12 @@
                   "pts": 7,
                   "reb": 7,
                   "ast": 2
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "SAS",
-                  "home": true,
-                  "min": 37,
-                  "pts": 2,
-                  "reb": 11,
-                  "ast": 4
                 }
               ]
             },
             {
               "player": "Josh Okogie",
+              "id": 1629006,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -4588,18 +6296,27 @@
                 "AST": null
               },
               "avg5": {
-                "MIN": 22.2,
-                "PTS": 5.8,
-                "REB": 4.6,
-                "AST": 1.2
+                "MIN": 20.0,
+                "PTS": 4.8,
+                "REB": 3.0,
+                "AST": 0.6
               },
               "season": {
-                "MIN": 18.8,
-                "PTS": 3.9,
-                "REB": 3.5,
-                "AST": 1.0
+                "MIN": 18.6,
+                "PTS": 3.4,
+                "REB": 3.2,
+                "AST": 0.9
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 17,
+                  "pts": 0,
+                  "reb": 1,
+                  "ast": 0
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "DAL",
@@ -4635,54 +6352,55 @@
                   "pts": 0,
                   "reb": 1,
                   "ast": 0
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "SAS",
-                  "home": true,
-                  "min": 28,
-                  "pts": 5,
-                  "reb": 9,
-                  "ast": 3
                 }
               ]
             },
             {
-              "player": "Isaiah Collier",
+              "player": "Josh Green",
+              "id": 1630182,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 9.5,
+                "REB": 1.5,
                 "AST": null
               },
               "avg5": {
-                "MIN": 14.4,
-                "PTS": 5.2,
-                "REB": 2.8,
-                "AST": 3.0
+                "MIN": 18.4,
+                "PTS": 4.6,
+                "REB": 1.0,
+                "AST": 0.4
               },
               "season": {
-                "MIN": 15.6,
-                "PTS": 6.2,
-                "REB": 3.3,
-                "AST": 4.3
+                "MIN": 18.0,
+                "PTS": 3.9,
+                "REB": 1.4,
+                "AST": 0.8
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIN",
+                  "home": false,
+                  "min": 28,
+                  "pts": 10,
+                  "reb": 0,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "DAL",
                   "home": false,
-                  "min": 13,
-                  "pts": 4,
+                  "min": 24,
+                  "pts": 3,
                   "reb": 3,
-                  "ast": 3
+                  "ast": 1
                 },
                 {
                   "date": "2026-11-04",
                   "opp": "NOP",
                   "home": false,
-                  "min": 3,
-                  "pts": 0,
+                  "min": 23,
+                  "pts": 7,
                   "reb": 1,
                   "ast": 0
                 },
@@ -4690,28 +6408,19 @@
                   "date": "2026-11-02",
                   "opp": "SAS",
                   "home": false,
-                  "min": 12,
-                  "pts": 7,
-                  "reb": 2,
-                  "ast": 2
+                  "min": 15,
+                  "pts": 3,
+                  "reb": 1,
+                  "ast": 0
                 },
                 {
                   "date": "2026-10-31",
                   "opp": "POR",
                   "home": true,
-                  "min": 20,
-                  "pts": 8,
-                  "reb": 1,
-                  "ast": 4
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "SAS",
-                  "home": true,
-                  "min": 24,
-                  "pts": 7,
-                  "reb": 7,
-                  "ast": 6
+                  "min": 2,
+                  "pts": 0,
+                  "reb": 0,
+                  "ast": 0
                 }
               ]
             }
@@ -4728,80 +6437,13 @@
         "teams": {
           "ORL": [
             {
-              "player": "Desmond Bane",
-              "status": null,
-              "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
-              },
-              "avg5": {
-                "MIN": 36.2,
-                "PTS": 19.0,
-                "REB": 3.6,
-                "AST": 2.8
-              },
-              "season": {
-                "MIN": 34.5,
-                "PTS": 17.5,
-                "REB": 3.9,
-                "AST": 2.2
-              },
-              "games": [
-                {
-                  "date": "2026-11-05",
-                  "opp": "PHX",
-                  "home": false,
-                  "min": 32,
-                  "pts": 15,
-                  "reb": 6,
-                  "ast": 0
-                },
-                {
-                  "date": "2026-11-02",
-                  "opp": "WAS",
-                  "home": true,
-                  "min": 36,
-                  "pts": 20,
-                  "reb": 3,
-                  "ast": 3
-                },
-                {
-                  "date": "2026-11-01",
-                  "opp": "BOS",
-                  "home": true,
-                  "min": 40,
-                  "pts": 19,
-                  "reb": 2,
-                  "ast": 1
-                },
-                {
-                  "date": "2026-10-30",
-                  "opp": "TOR",
-                  "home": false,
-                  "min": 39,
-                  "pts": 28,
-                  "reb": 2,
-                  "ast": 6
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "TOR",
-                  "home": false,
-                  "min": 34,
-                  "pts": 13,
-                  "reb": 5,
-                  "ast": 4
-                }
-              ]
-            },
-            {
               "player": "Franz Wagner",
+              "id": 1630532,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 5.5,
+                "AST": 7.5
               },
               "avg5": {
                 "MIN": 39.0,
@@ -4864,12 +6506,82 @@
               ]
             },
             {
-              "player": "Wendell Carter Jr.",
+              "player": "Desmond Bane",
+              "id": 1630217,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 3.5,
+                "AST": 3.5
+              },
+              "avg5": {
+                "MIN": 36.2,
+                "PTS": 19.0,
+                "REB": 3.6,
+                "AST": 2.8
+              },
+              "season": {
+                "MIN": 34.5,
+                "PTS": 17.5,
+                "REB": 3.9,
+                "AST": 2.2
+              },
+              "games": [
+                {
+                  "date": "2026-11-05",
+                  "opp": "PHX",
+                  "home": false,
+                  "min": 32,
+                  "pts": 15,
+                  "reb": 6,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-02",
+                  "opp": "WAS",
+                  "home": true,
+                  "min": 36,
+                  "pts": 20,
+                  "reb": 3,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-01",
+                  "opp": "BOS",
+                  "home": true,
+                  "min": 40,
+                  "pts": 19,
+                  "reb": 2,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-10-30",
+                  "opp": "TOR",
+                  "home": false,
+                  "min": 39,
+                  "pts": 28,
+                  "reb": 2,
+                  "ast": 6
+                },
+                {
+                  "date": "2026-10-28",
+                  "opp": "TOR",
+                  "home": false,
+                  "min": 34,
+                  "pts": 13,
+                  "reb": 5,
+                  "ast": 4
+                }
+              ]
+            },
+            {
+              "player": "Wendell Carter Jr.",
+              "id": 1628976,
+              "status": null,
+              "lines": {
+                "PTS": 14.5,
+                "REB": 9.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 36.4,
@@ -4933,11 +6645,12 @@
             },
             {
               "player": "Anthony Black",
+              "id": 1641710,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 5.5,
+                "AST": 5.5
               },
               "avg5": {
                 "MIN": 31.0,
@@ -5001,10 +6714,11 @@
             },
             {
               "player": "Tristan da Silva",
+              "id": 1641783,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 14.5,
+                "REB": 3.5,
                 "AST": null
               },
               "avg5": {
@@ -5069,11 +6783,12 @@
             },
             {
               "player": "Jase Richardson",
+              "id": 1642859,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 28.8,
@@ -5137,10 +6852,11 @@
             },
             {
               "player": "Jamal Cain",
+              "id": 1631288,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 9.5,
+                "REB": 3.5,
                 "AST": null
               },
               "avg5": {
@@ -5207,25 +6923,35 @@
           "SAC": [
             {
               "player": "Darius Acuff Jr.",
+              "id": 1643411,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 3.5,
+                "AST": 7.5
               },
               "avg5": {
-                "MIN": 38.0,
-                "PTS": 28.2,
-                "REB": 4.4,
-                "AST": 9.0
+                "MIN": 37.6,
+                "PTS": 27.8,
+                "REB": 4.2,
+                "AST": 8.2
               },
               "season": {
-                "MIN": 36.8,
-                "PTS": 25.2,
-                "REB": 3.7,
-                "AST": 7.1
+                "MIN": 37.0,
+                "PTS": 25.9,
+                "REB": 3.8,
+                "AST": 7.4
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 39,
+                  "pts": 32,
+                  "reb": 5,
+                  "ast": 10
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "SAS",
@@ -5261,25 +6987,17 @@
                   "pts": 38,
                   "reb": 5,
                   "ast": 5
-                },
-                {
-                  "date": "2026-10-29",
-                  "opp": "NOP",
-                  "home": false,
-                  "min": 41,
-                  "pts": 34,
-                  "reb": 6,
-                  "ast": 14
                 }
               ]
             },
             {
               "player": "Domantas Sabonis",
+              "id": 1627734,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 13.5,
+                "AST": 5.5
               },
               "avg5": {
                 "MIN": 35.0,
@@ -5343,25 +7061,35 @@
             },
             {
               "player": "Zach LaVine",
+              "id": 203897,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
-                "MIN": 31.6,
-                "PTS": 18.0,
-                "REB": 3.0,
-                "AST": 2.2
+                "MIN": 28.8,
+                "PTS": 16.8,
+                "REB": 3.2,
+                "AST": 1.6
               },
               "season": {
-                "MIN": 33.6,
-                "PTS": 22.1,
-                "REB": 3.2,
-                "AST": 2.7
+                "MIN": 32.7,
+                "PTS": 21.4,
+                "REB": 3.3,
+                "AST": 2.6
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 25,
+                  "pts": 15,
+                  "reb": 4,
+                  "ast": 2
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "SAS",
@@ -5397,39 +7125,40 @@
                   "pts": 11,
                   "reb": 0,
                   "ast": 1
-                },
-                {
-                  "date": "2026-10-29",
-                  "opp": "NOP",
-                  "home": false,
-                  "min": 39,
-                  "pts": 21,
-                  "reb": 3,
-                  "ast": 5
                 }
               ]
             },
             {
               "player": "De'Andre Hunter",
+              "id": 1629631,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 14.5,
+                "REB": 5.5,
                 "AST": null
               },
               "avg5": {
-                "MIN": 35.2,
-                "PTS": 17.4,
-                "REB": 4.6,
-                "AST": 1.4
+                "MIN": 34.8,
+                "PTS": 15.4,
+                "REB": 4.0,
+                "AST": 1.2
               },
               "season": {
                 "MIN": 31.2,
-                "PTS": 13.0,
-                "REB": 4.8,
+                "PTS": 13.1,
+                "REB": 4.6,
                 "AST": 1.2
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 31,
+                  "pts": 14,
+                  "reb": 3,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-04",
                   "opp": "LAL",
@@ -5465,39 +7194,109 @@
                   "pts": 24,
                   "reb": 5,
                   "ast": 1
+                }
+              ]
+            },
+            {
+              "player": "Keegan Murray",
+              "id": 1631099,
+              "status": null,
+              "lines": {
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": null
+              },
+              "avg5": {
+                "MIN": 24.0,
+                "PTS": 6.6,
+                "REB": 2.6,
+                "AST": 1.6
+              },
+              "season": {
+                "MIN": 25.7,
+                "PTS": 8.0,
+                "REB": 2.3,
+                "AST": 1.0
+              },
+              "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 23,
+                  "pts": 10,
+                  "reb": 1,
+                  "ast": 2
                 },
                 {
-                  "date": "2026-10-27",
-                  "opp": "SAS",
+                  "date": "2026-10-23",
+                  "opp": "POR",
+                  "home": true,
+                  "min": 26,
+                  "pts": 12,
+                  "reb": 2,
+                  "ast": 1
+                },
+                {
+                  "date": "2026-10-21",
+                  "opp": "LAC",
                   "home": false,
-                  "min": 33,
-                  "pts": 24,
-                  "reb": 6,
-                  "ast": 2
+                  "min": 28,
+                  "pts": 2,
+                  "reb": 4,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-02-25",
+                  "opp": "HOU",
+                  "home": false,
+                  "min": 9,
+                  "pts": 3,
+                  "reb": 1,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-02-23",
+                  "opp": "MEM",
+                  "home": false,
+                  "min": 34,
+                  "pts": 6,
+                  "reb": 5,
+                  "ast": 5
                 }
               ]
             },
             {
               "player": "Precious Achiuwa",
+              "id": 1630173,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 9.5,
+                "REB": 7.5,
                 "AST": null
               },
               "avg5": {
-                "MIN": 26.4,
-                "PTS": 10.4,
-                "REB": 6.2,
+                "MIN": 25.4,
+                "PTS": 7.0,
+                "REB": 7.2,
                 "AST": 1.4
               },
               "season": {
-                "MIN": 26.7,
-                "PTS": 10.8,
-                "REB": 5.9,
-                "AST": 1.1
+                "MIN": 27.6,
+                "PTS": 10.4,
+                "REB": 6.7,
+                "AST": 1.2
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 36,
+                  "pts": 7,
+                  "reb": 14,
+                  "ast": 2
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "SAS",
@@ -5533,20 +7332,12 @@
                   "pts": 6,
                   "reb": 5,
                   "ast": 1
-                },
-                {
-                  "date": "2026-10-29",
-                  "opp": "NOP",
-                  "home": false,
-                  "min": 41,
-                  "pts": 24,
-                  "reb": 9,
-                  "ast": 2
                 }
               ]
             },
             {
               "player": "Leaky Black",
+              "id": 1641778,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -5554,18 +7345,27 @@
                 "AST": null
               },
               "avg5": {
-                "MIN": 20.8,
-                "PTS": 5.8,
-                "REB": 2.8,
+                "MIN": 23.0,
+                "PTS": 7.0,
+                "REB": 3.6,
                 "AST": 1.8
               },
               "season": {
-                "MIN": 23.8,
-                "PTS": 7.2,
-                "REB": 3.2,
-                "AST": 2.0
+                "MIN": 23.0,
+                "PTS": 7.0,
+                "REB": 3.6,
+                "AST": 1.8
               },
               "games": [
+                {
+                  "date": "2026-11-08",
+                  "opp": "MIA",
+                  "home": true,
+                  "min": 20,
+                  "pts": 6,
+                  "reb": 5,
+                  "ast": 1
+                },
                 {
                   "date": "2026-11-06",
                   "opp": "SAS",
@@ -5601,83 +7401,6 @@
                   "pts": 2,
                   "reb": 1,
                   "ast": 1
-                },
-                {
-                  "date": "2026-04-12",
-                  "opp": "CLE",
-                  "home": false,
-                  "min": 9,
-                  "pts": 0,
-                  "reb": 1,
-                  "ast": 1
-                }
-              ]
-            },
-            {
-              "player": "Dylan Cardwell",
-              "status": null,
-              "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
-              },
-              "avg5": {
-                "MIN": 19.8,
-                "PTS": 6.8,
-                "REB": 6.4,
-                "AST": 1.2
-              },
-              "season": {
-                "MIN": 14.0,
-                "PTS": 6.5,
-                "REB": 4.0,
-                "AST": 1.5
-              },
-              "games": [
-                {
-                  "date": "2026-11-06",
-                  "opp": "SAS",
-                  "home": true,
-                  "min": 15,
-                  "pts": 9,
-                  "reb": 2,
-                  "ast": 3
-                },
-                {
-                  "date": "2026-11-04",
-                  "opp": "LAL",
-                  "home": true,
-                  "min": 13,
-                  "pts": 4,
-                  "reb": 6,
-                  "ast": 0
-                },
-                {
-                  "date": "2026-04-12",
-                  "opp": "POR",
-                  "home": false,
-                  "min": 21,
-                  "pts": 6,
-                  "reb": 8,
-                  "ast": 0
-                },
-                {
-                  "date": "2026-04-10",
-                  "opp": "GSW",
-                  "home": true,
-                  "min": 24,
-                  "pts": 7,
-                  "reb": 7,
-                  "ast": 1
-                },
-                {
-                  "date": "2026-04-07",
-                  "opp": "GSW",
-                  "home": false,
-                  "min": 26,
-                  "pts": 8,
-                  "reb": 9,
-                  "ast": 2
                 }
               ]
             }
@@ -5695,11 +7418,12 @@
           "OKC": [
             {
               "player": "Shai Gilgeous-Alexander",
+              "id": 1628983,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 34.5,
+                "REB": 3.5,
+                "AST": 5.5
               },
               "avg5": {
                 "MIN": 32.8,
@@ -5763,11 +7487,12 @@
             },
             {
               "player": "Ajay Mitchell",
+              "id": 1642349,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 29.0,
@@ -5831,11 +7556,12 @@
             },
             {
               "player": "Jared McCain",
+              "id": 1642272,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 3.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 26.4,
@@ -5899,6 +7625,7 @@
             },
             {
               "player": "Micah Peavy",
+              "id": 1642877,
               "status": null,
               "lines": {
                 "PTS": null,
@@ -5967,11 +7694,12 @@
             },
             {
               "player": "Isaiah Hartenstein",
+              "id": 1628392,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 9.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 24.6,
@@ -6035,11 +7763,12 @@
             },
             {
               "player": "Alex Caruso",
+              "id": 1627936,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 16.8,
@@ -6102,70 +7831,71 @@
               ]
             },
             {
-              "player": "Jaylin Williams",
+              "player": "Aday Mara",
+              "id": 1643530,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
+                "PTS": 9.5,
+                "REB": 7.5,
                 "AST": null
               },
               "avg5": {
-                "MIN": 19.4,
-                "PTS": 2.4,
-                "REB": 3.6,
-                "AST": 1.4
-              },
-              "season": {
-                "MIN": 18.4,
-                "PTS": 2.9,
-                "REB": 4.0,
+                "MIN": 23.6,
+                "PTS": 10.6,
+                "REB": 7.6,
                 "AST": 1.6
               },
+              "season": {
+                "MIN": 19.8,
+                "PTS": 8.1,
+                "REB": 5.9,
+                "AST": 1.3
+              },
               "games": [
+                {
+                  "date": "2026-11-07",
+                  "opp": "WAS",
+                  "home": true,
+                  "min": 27,
+                  "pts": 18,
+                  "reb": 8,
+                  "ast": 3
+                },
+                {
+                  "date": "2026-11-06",
+                  "opp": "MEM",
+                  "home": false,
+                  "min": 18,
+                  "pts": 9,
+                  "reb": 7,
+                  "ast": 0
+                },
+                {
+                  "date": "2026-11-04",
+                  "opp": "CLE",
+                  "home": true,
+                  "min": 25,
+                  "pts": 9,
+                  "reb": 5,
+                  "ast": 2
+                },
                 {
                   "date": "2026-11-02",
                   "opp": "CLE",
                   "home": false,
                   "min": 20,
-                  "pts": 3,
-                  "reb": 3,
-                  "ast": 2
+                  "pts": 10,
+                  "reb": 9,
+                  "ast": 0
                 },
                 {
                   "date": "2026-10-31",
                   "opp": "HOU",
                   "home": false,
-                  "min": 26,
-                  "pts": 3,
-                  "reb": 4,
-                  "ast": 1
-                },
-                {
-                  "date": "2026-10-28",
-                  "opp": "DAL",
-                  "home": false,
-                  "min": 20,
-                  "pts": 0,
-                  "reb": 5,
-                  "ast": 1
-                },
-                {
-                  "date": "2026-10-26",
-                  "opp": "PHX",
-                  "home": true,
-                  "min": 26,
-                  "pts": 6,
-                  "reb": 6,
+                  "min": 28,
+                  "pts": 7,
+                  "reb": 9,
                   "ast": 3
-                },
-                {
-                  "date": "2026-10-25",
-                  "opp": "LAC",
-                  "home": true,
-                  "min": 5,
-                  "pts": 0,
-                  "reb": 0,
-                  "ast": 0
                 }
               ]
             }
@@ -6173,11 +7903,12 @@
           "POR": [
             {
               "player": "Deni Avdija",
+              "id": 1630166,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 24.5,
+                "REB": 7.5,
+                "AST": 5.5
               },
               "avg5": {
                 "MIN": 32.6,
@@ -6241,7 +7972,8 @@
             },
             {
               "player": "Ja Morant",
-              "status": null,
+              "id": 1629630,
+              "status": "out",
               "lines": {
                 "PTS": null,
                 "REB": null,
@@ -6309,11 +8041,12 @@
             },
             {
               "player": "Toumani Camara",
+              "id": 1641739,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 3.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 29.0,
@@ -6377,11 +8110,12 @@
             },
             {
               "player": "Jrue Holiday",
+              "id": 201950,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 14.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 26.4,
@@ -6445,11 +8179,12 @@
             },
             {
               "player": "Damian Lillard",
+              "id": 203081,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 19.5,
+                "REB": 3.5,
+                "AST": 3.5
               },
               "avg5": {
                 "MIN": 29.4,
@@ -6513,11 +8248,12 @@
             },
             {
               "player": "Donovan Clingan",
+              "id": 1642270,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 11.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 25.2,
@@ -6581,11 +8317,12 @@
             },
             {
               "player": "Scoot Henderson",
+              "id": 1630703,
               "status": null,
               "lines": {
-                "PTS": null,
-                "REB": null,
-                "AST": null
+                "PTS": 9.5,
+                "REB": 3.5,
+                "AST": 1.5
               },
               "avg5": {
                 "MIN": 25.2,
@@ -6651,5 +8388,115 @@
         }
       }
     ]
+  },
+  "player_ids": {
+    "Josh Green": 1630182,
+    "Myles Turner": 1626167,
+    "Isaiah Hartenstein": 1628392,
+    "Anthony Black": 1641710,
+    "Kobe Sanders": 1642920,
+    "LeBron James": 2544,
+    "Mikal Bridges": 1628969,
+    "Marcus Smart": 203935,
+    "Luguentz Dort": 1629652,
+    "Alex Caruso": 1627936,
+    "Scoot Henderson": 1630703,
+    "Jalen Johnson": 1630552,
+    "Jamal Murray": 1627750,
+    "Karl-Anthony Towns": 1626157,
+    "Shai Gilgeous-Alexander": 1628983,
+    "Daniel Gafford": 1629655,
+    "Christian Braun": 1631128,
+    "Aaron Wiggins": 1630598,
+    "Oso Ighodaro": 1642345,
+    "Miles McBride": 1630540,
+    "Precious Achiuwa": 1630173,
+    "Klay Thompson": 202691,
+    "VJ Edgecombe": 1642845,
+    "Grayson Allen": 1628960,
+    "Ivica Zubac": 1627826,
+    "Brice Sensabaugh": 1641729,
+    "Derrick White": 1628401,
+    "Khaman Maluach": 1642863,
+    "Kenrich Williams": 1629026,
+    "Franz Wagner": 1630532,
+    "Mitchell Robinson": 1629011,
+    "Jaxson Hayes": 1629637,
+    "Andre Drummond": 203083,
+    "De'Aaron Fox": 1628368,
+    "Karlo Matković": 1631255,
+    "Neemias Queta": 1629674,
+    "Ausar Thompson": 1641709,
+    "Zion Williamson": 1629627,
+    "Nolan Traore": 1642849,
+    "Jonathan Kuminga": 1630228,
+    "Alperen Sengun": 1630578,
+    "Kyshawn George": 1642273,
+    "Moritz Wagner": 1629021,
+    "Donovan Clingan": 1642270,
+    "Isaiah Collier": 1642268,
+    "Kris Dunn": 1627739,
+    "Joel Embiid": 203954,
+    "Saddiq Bey": 1630180,
+    "Giannis Antetokounmpo": 203507,
+    "Rui Hachimura": 1629060,
+    "Walker Kessler": 1631117,
+    "Keyonte George": 1641718,
+    "Reed Sheppard": 1642263,
+    "Jase Richardson": 1642859,
+    "Stephon Castle": 1642264,
+    "James Harden": 201935,
+    "Tyler Herro": 1629639,
+    "Jaime Jaquez Jr.": 1631170,
+    "Kyle Kuzma": 1628398,
+    "Ryan Rollins": 1631157,
+    "AJ Green": 1631260,
+    "Jalen Brunson": 1628973,
+    "OG Anunoby": 1628384,
+    "Josh Hart": 1628404,
+    "Landry Shamet": 1629013,
+    "Jayson Tatum": 1628369,
+    "Paul George": 202331,
+    "Payton Pritchard": 1630202,
+    "Sam Hauser": 1630573,
+    "Baylor Scheierman": 1631248,
+    "Tyrese Maxey": 1630178,
+    "Jaylen Brown": 1627759,
+    "Rayan Rupert": 1641712,
+    "Dean Wade": 1629731,
+    "Darius Garland": 1629636,
+    "Derrick Jones Jr.": 1627884,
+    "Max Strus": 1629622,
+    "Brook Lopez": 201572,
+    "Devin Booker": 1626164,
+    "Dillon Brooks": 1628415,
+    "Miles Bridges": 1628970,
+    "Jalen Green": 1630224,
+    "Collin Gillespie": 1631221,
+    "Davion Mitchell": 1630558,
+    "Bam Adebayo": 1628389,
+    "Pelle Larsson": 1641796,
+    "Andrew Wiggins": 203952,
+    "Bobby Portis Jr.": 1626171,
+    "Ace Bailey": 1642846,
+    "Lauri Markkanen": 1628374,
+    "Josh Okogie": 1629006,
+    "Desmond Bane": 1630217,
+    "Wendell Carter Jr.": 1628976,
+    "Tristan da Silva": 1641783,
+    "Jamal Cain": 1631288,
+    "Domantas Sabonis": 1627734,
+    "Zach LaVine": 203897,
+    "De'Andre Hunter": 1629631,
+    "Keegan Murray": 1631099,
+    "Leaky Black": 1641778,
+    "Ajay Mitchell": 1642349,
+    "Jared McCain": 1642272,
+    "Micah Peavy": 1642877,
+    "Deni Avdija": 1630166,
+    "Ja Morant": 1629630,
+    "Toumani Camara": 1641739,
+    "Jrue Holiday": 201950,
+    "Damian Lillard": 203081
   }
 }
