@@ -72,6 +72,7 @@ def team_players(games: pd.DataFrame, team: str, day: pd.Timestamp, out_keys: se
         season = own[own["SEASON"] == own["SEASON"].iloc[-1]]
         out.append({
             "player": name,
+            "id": int(pid),
             "status": "out" if (team, norm_name(name)) in out_keys else None,
             "lines": {st: (lines or {}).get((norm_name(name), st)) for st in ("PTS", "REB", "AST")},
             "avg5": {c: round(float(last[c].mean()), 1) for c in ("MIN", "PTS", "REB", "AST")},
