@@ -201,14 +201,29 @@ tr:last-child td { border-bottom: none; }
 tbody tr td:first-child { border-radius: var(--r-inner) 0 0 var(--r-inner); }
 tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
 .player-name { font-weight: 600; }
+.who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.who > div { min-width: 0; white-space: nowrap; }
+.avatar {
+  position: relative; flex-shrink: 0; width: 40px; height: 40px; overflow: hidden;
+  border-radius: 12px; background: var(--surface-3); border: 1px solid var(--border);
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .02em;
+}
+@supports (corner-shape: squircle) { .avatar { corner-shape: squircle; border-radius: 30%; } }
+.avatar img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 12%; transform: scale(1.25) translateY(8%);
+}
+.avatar.sm { width: 34px; height: 34px; border-radius: 10px; font-size: 11px; }
 .game-label  { font-size: 12px; color: var(--muted); }
 
 .badge-bet, .badge-result {
-  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px;
   font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
 }
 .badge-over, .badge-win  { background: var(--green-dim); color: var(--green); }
 .badge-under, .badge-loss { background: var(--red-dim); color: var(--red); }
+.badge-bet .icon { width: 13px; height: 13px; stroke-width: 2.5; margin-left: -3px; }
 .badge-push { background: var(--surface-3); color: var(--muted); }
 
 .ev-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; font-variant-numeric: tabular-nums; }
@@ -516,6 +531,8 @@ footer.court-footer {
   <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.4 2.8 2.8L16.2 9.8"/></symbol>
   <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.3A6.5 6.5 0 0 1 21.5 20"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
   <symbol id="i-loader" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></symbol>
 </svg>
 <div class="shell">
@@ -778,10 +795,26 @@ function confBar(c) {
   return `<div class="conf-bar-wrap"><div class="conf-bar"><div class="conf-fill" style="width:${pct}%"></div></div><span class="conf-num">${c}</span></div>`;
 }
 
+/* Zdjęcia z oficjalnego CDN NBA; bez dopasowania lub przy błędzie zostają inicjały. */
+const HEADSHOT = id => `https://cdn.nba.com/headshots/nba/latest/260x190/${id}.png`;
+function initials(name) {
+  const w = String(name || '').replace(/\b(Jr|Sr|II|III|IV)\.?$/i, '').trim().split(/\s+/);
+  return ((w[0] || '')[0] || '') + (w.length > 1 ? w[w.length - 1][0] : '');
+}
+function avatar(name, id, cls = '') {
+  id = id ?? (_data && _data.player_ids || {})[name];
+  const img = id ? `<img src="${HEADSHOT(id)}" alt="" loading="lazy" onerror="this.remove()">` : '';
+  return `<span class="avatar ${cls}" aria-hidden="true">${esc(initials(name))}${img}</span>`;
+}
+function who(name, game, id) {
+  return `<div class="who">${avatar(name, id)}<div><div class="player-name">${esc(name)}</div>`
+    + `<div class="game-label">${esc(game || '')}</div></div></div>`;
+}
+
 function betBadge(bet) {
   return bet === 'over'
-    ? '<span class="badge-bet badge-over">OVER</span>'
-    : '<span class="badge-bet badge-under">UNDER</span>';
+    ? `<span class="badge-bet badge-over">${icon('arrow-up')}OVER</span>`
+    : `<span class="badge-bet badge-under">${icon('arrow-down')}UNDER</span>`;
 }
 
 function resultBadge(r) {
@@ -897,7 +930,7 @@ function renderStatTab(d) {
       <thead><tr><th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs*</th><th>Rynek P(over)</th><th>Model P(over)</th><th>Reasoning</th></tr></thead>
       <tbody>${c.picks.map(p => `<tr>
         <td>${evBadge(p.ev)}</td>
-        <td><div class="player-name">${p.player}</div><div class="game-label">${p.game}</div></td>
+        <td>${who(p.player, p.game)}</td>
         <td>${betBadge(p.bet)}</td><td class="mono">${p.line}</td><td class="mono">${p.odds}</td>
         <td class="mono">${p.p_market != null ? pct(p.p_market) : '—'}</td>
         <td class="mono">${pct(p.p_over)}</td>
@@ -1029,7 +1062,7 @@ function playerRow(p) {
   };
   return `<details class="player${p.status ? ' is-out' : ''}">
     <summary>
-      <div class="player-top"><span class="player-name">${esc(p.player)}</span>
+      <div class="player-top">${avatar(p.player, p.id, 'sm')}<span class="player-name">${esc(p.player)}</span>
         ${p.status ? '<span class="chip red">Out / Doubtful</span>' : ''}</div>
       <span class="min">${p.avg5.MIN} min</span>
       <div class="avg-row">
@@ -1143,7 +1176,7 @@ function renderCoupon(coupon, statusMessage) {
   const rows = picks.map(p => `
     <tr>
       <td>${evBadge(p.ev)}</td>
-      <td><div class="player-name">${p.player}</div><div class="game-label">${p.game}</div></td>
+      <td>${who(p.player, p.game)}</td>
       <td>${betBadge(p.bet)}</td>
       <td class="mono">${p.line}</td>
       <td class="mono">${p.odds}</td>

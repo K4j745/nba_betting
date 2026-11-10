@@ -37,6 +37,7 @@ from tracker import ResultTracker
 import injuries
 import kalshi
 import live
+import headshots
 import upcoming
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -712,6 +713,7 @@ def export_dashboard_data(
         "research_log":     _research_log(),
         "upcoming":         upcoming.load(),
     }
+    headshots.attach(data)
 
     with open(output_path, "w", encoding="utf-8") as f:
         _json.dump(data, f, indent=2, ensure_ascii=False, default=str)
