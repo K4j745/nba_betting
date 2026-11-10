@@ -61,7 +61,7 @@ class TestSQLiteCache:
         assert int(result["PTS"].iloc[0]) == 99
 
     def test_all_tables_created(self, tmp_path):
-        """Weryfikuje że _init_db() tworzy wszystkie 4 tabele."""
+        """_init_db() tworzy tabele cache; `results` należy do ResultTracker (tracker.py)."""
         import sqlite3
         from data_fetcher import SQLiteCache
         db_path = str(tmp_path / "test.db")
@@ -71,7 +71,7 @@ class TestSQLiteCache:
                 row[0] for row in
                 conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
             }
-        assert {"cache", "odds_history", "coupons", "results"}.issubset(tables)
+        assert {"cache", "odds_history", "coupons"}.issubset(tables)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
