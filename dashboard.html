@@ -36,7 +36,7 @@
 }
 [data-theme="dark"] {
   --bg:           #0a1228;
-  --surface:      rgba(11, 22, 52, 0.72);
+  --surface:      rgba(11, 22, 52, 0.86);
   --surface-2:    rgba(255, 255, 255, 0.07);
   --surface-3:    rgba(255, 255, 255, 0.13);
   --text:         #f4f6fb;
@@ -66,7 +66,7 @@
 }
 [data-theme="light"] {
   --bg:           #dfe5f2;
-  --surface:      rgba(255, 255, 255, 0.66);
+  --surface:      rgba(255, 255, 255, 0.84);
   --surface-2:    rgba(13, 27, 62, 0.05);
   --surface-3:    rgba(13, 27, 62, 0.10);
   --text:         #0d1b3e;
@@ -222,6 +222,7 @@ tr:last-child td { border-bottom: none; }
 tbody tr td:first-child { border-radius: var(--r-inner) 0 0 var(--r-inner); }
 tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
 .player-name { font-weight: 600; }
+td:has(> .player-name) { min-width: 190px; }
 .who { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .who > div { min-width: 0; white-space: nowrap; }
 .avatar {
@@ -333,8 +334,8 @@ details.fold[open] > summary { margin-bottom: 12px; }
 
 .pnl-pos { color: var(--green); font-variant-numeric: tabular-nums; }
 .pnl-neg { color: var(--red);   font-variant-numeric: tabular-nums; }
-.mono    { font-variant-numeric: tabular-nums; }
-.reasoning { font-size: var(--fs-small); color: var(--muted); max-width: 240px; }
+.mono    { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.reasoning { font-size: var(--fs-small); color: var(--muted); max-width: 240px; min-width: 160px; }
 .table-foot { padding: 10px 12px 0; font-size: var(--fs-small); color: var(--muted); }
 
 .empty-state { padding: 44px 24px; text-align: center; color: var(--muted); }
@@ -857,6 +858,11 @@ function daysAgo(dateStr, days) {
 
 /* ── Puste wykresy: chowamy canvas zamiast go usuwać (kolejny render — odświeżenie,
       zmiana motywu — musi go znaleźć) ────────────────────────────────────────── */
+/* Canvas jest dla czytnika ekranu pusty: każdy wykres dostaje role="img" i słowne podsumowanie. */
+function describe(el, text) {
+  el.setAttribute('role', 'img');
+  el.setAttribute('aria-label', text);
+}
 function emptyChart(el, msg) {
   el.style.display = 'none';
   let n = el.parentElement.querySelector('.no-data');
@@ -908,16 +914,26 @@ if (!['PTS', 'REB', 'AST', 'PLAYERS', 'LAB'].includes(_stat)) _stat = 'PTS';
 const STAT_NAME = { PTS: 'punkty', REB: 'zbiórki', AST: 'asysty' };
 
 function setStat(s) {
+  if (s === _stat) return;
   _stat = s;
-  history.replaceState(null, '', s === 'PTS' ? location.pathname : '#' + s.toLowerCase());
+  // pushState: „wstecz” w przeglądarce wraca do poprzedniej zakładki
+  history.pushState(null, '', s === 'PTS' ? location.pathname : '#' + s.toLowerCase());
   if (_data) renderStatTab(_data);
 }
+window.addEventListener('popstate', () => {
+  const s = (location.hash.slice(1) || 'PTS').toUpperCase();
+  _stat = ['PTS', 'REB', 'AST', 'PLAYERS', 'LAB'].includes(s) ? s : 'PTS';
+  if (_data) renderStatTab(_data);
+});
 
 function signed(x, d = 3) { return x == null ? '—' : (x >= 0 ? '+' : '') + x.toFixed(d); }
 
 function renderStatTab(d) {
-  document.querySelectorAll('.stat-tabs .nav-btn')
-    .forEach(b => b.classList.toggle('active', b.dataset.stat === _stat));
+  document.querySelectorAll('.stat-tabs .nav-btn').forEach(b => {
+    const on = b.dataset.stat === _stat;
+    b.classList.toggle('active', on);
+    if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
   document.getElementById('tabPTS').style.display  = _stat === 'PTS' ? '' : 'none';
   document.getElementById('tabStat').style.display = ['REB', 'AST'].includes(_stat) ? '' : 'none';
   document.getElementById('tabLab').style.display  = _stat === 'LAB' ? '' : 'none';
@@ -1287,6 +1303,8 @@ function renderBankrollChart(curve) {
   const values = curve.map(r => r.cumulative_pnl);
   const finalVal = values[values.length - 1];
   const lineColor = finalVal >= 0 ? colors.green : colors.red;
+  describe(el, `Skumulowany wynik od ${labels[0]} do ${labels[labels.length - 1]}: ${finalVal >= 0 ? '+' : ''}${finalVal.toFixed(2)} PLN, `
+    + `najniżej ${Math.min(...values).toFixed(2)} PLN, najwyżej ${Math.max(...values).toFixed(2)} PLN.`);
 
   const ctx = el.getContext('2d');
   const grad = ctx.createLinearGradient(0, 0, 0, 240);
@@ -1340,6 +1358,7 @@ function renderTeamChart(teams) {
   const labels = top.map(t => t.team.length > 20 ? t.team.slice(0, 18) + '…' : t.team);
   const values = top.map(t => +(t.win_rate * 100).toFixed(1));
   const bgColors = values.map(v => v > 52 ? colors.green + 'bb' : colors.red + 'bb');
+  describe(el, 'Skuteczność typów według drużyny: ' + top.map((t, i) => `${t.team} ${values[i]}% (n=${t.n})`).join(', ') + '.');
 
   _charts['team'] = new Chart(document.getElementById('teamChart'), {
     type: 'bar',
@@ -1372,6 +1391,8 @@ function renderCalibrationChart(cal) {
   const colors = chartColors();
   const perfect = cal.prob_pred.map((_, i) => ({ x: cal.prob_pred[i], y: cal.prob_pred[i] }));
   const actual  = cal.prob_pred.map((p, i) => ({ x: p, y: cal.prob_true[i] }));
+  describe(el, `Kalibracja modelu na ${cal.n_samples} typach, przewidziane P(over) → faktyczna skuteczność: `
+    + actual.map(a => `${Math.round(a.x * 100)}% → ${Math.round(a.y * 100)}%`).join(', ') + '.');
 
   _charts['cal'] = new Chart(document.getElementById('calibrationChart'), {
     type: 'scatter',
@@ -1407,6 +1428,7 @@ function renderEvChart(coupon) {
   const labels  = picks.map(p => p.player.split(' ').pop());
   const evVals  = picks.map(p => p.ev != null ? +(p.ev * 100).toFixed(2) : 0);
   const bgColors = evVals.map(v => v > 5 ? colors.green + 'cc' : v >= 0 ? colors.yellow + 'cc' : colors.red + 'cc');
+  describe(el, 'EV typów z kuponu dnia: ' + picks.map((p, i) => `${p.player} ${evVals[i] >= 0 ? '+' : ''}${evVals[i]}%`).join(', ') + '.');
 
   _charts['ev'] = new Chart(document.getElementById('evChart'), {
     type: 'bar',
