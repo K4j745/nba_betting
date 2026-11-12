@@ -345,6 +345,12 @@ class TestCumulativePnL:
             "game_date":        ["2026-03-01", "2026-03-02", "2026-03-03"],
             "simulated_profit": [8.3, 7.5, 8.7],
             "result":           ["WIN", "WIN", "WIN"],
+            # kolumny NOT NULL tabeli results
+            "coupon_id":        [1, 2, 3],
+            "player_name":      ["A", "B", "C"],
+            "bet":              ["over"] * 3,
+            "line":             [20.5] * 3,
+            "odds":             [1.9] * 3,
         })
         with tracker._conn() as conn:
             wins_df.to_sql("results", conn, if_exists="append", index=False)
