@@ -1,6 +1,13 @@
 [
   {
     "date": "2026-11-12",
+    "name": "Rozkład zliczeń dla zbiórek i asyst",
+    "status": "no_edge",
+    "question": "Czy inny rozkład wokół tej samej prognozy (normalny, Poisson, ujemny dwumianowy ze stałą lub indywidualną dyspersją) daje lepsze P(over) niż obecny?",
+    "result": "Żaden wariant nie bije obecnego rozkładu ani nie poprawia ceny Kalshi (wszystkie CI 99,5% zawierają 0). Rozkład zmienia log-loss o ≤0,007, a model traci do rynku 0,008–0,009: ograniczeniem jest średnia, nie rozkład."
+  },
+  {
+    "date": "2026-11-12",
     "name": "Tracking NBA (szanse na zbiórkę, potencjalne asysty)",
     "status": "no_edge",
     "question": "Czy statystyki trackingowe (szanse na zbiórkę, potencjalne asysty) poprawiają cenę Kalshi dla zbiórek i asyst?",
