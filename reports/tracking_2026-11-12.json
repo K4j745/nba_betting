@@ -1,0 +1,241 @@
+{
+  "generated": "2026-11-12",
+  "sample": "dev (< 2026-04-01)",
+  "final_from": "2026-04-01",
+  "predictions": "reports/eval_stats_2026-11-09_predictions.csv",
+  "formula": "logit p = a + b·logit(p_kalshi) + g·x; Δ vs a + b·logit(p_kalshi)",
+  "tracking_days": 438,
+  "tracking_range": [
+    "2024-10-22",
+    "2026-11-09"
+  ],
+  "league_conversion": {
+    "REB": 0.5918,
+    "AST": 0.5426
+  },
+  "stability": {
+    "REB": {
+      "n": 30915,
+      "r_next_game": 0.641,
+      "r_next_10": 0.852
+    },
+    "REB_CHANCES": {
+      "n": 30366,
+      "r_next_game": 0.669,
+      "r_next_10": 0.827
+    },
+    "REB_CONTEST": {
+      "n": 30366,
+      "r_next_game": 0.605,
+      "r_next_10": 0.852
+    },
+    "REB_UNCONTEST": {
+      "n": 30366,
+      "r_next_game": 0.524,
+      "r_next_10": 0.78
+    },
+    "AST": {
+      "n": 30915,
+      "r_next_game": 0.683,
+      "r_next_10": 0.871
+    },
+    "POTENTIAL_AST": {
+      "n": 30366,
+      "r_next_game": 0.543,
+      "r_next_10": 0.8
+    },
+    "PASSES_MADE": {
+      "n": 30366,
+      "r_next_game": 0.788,
+      "r_next_10": 0.888
+    },
+    "TOUCHES": {
+      "n": 30366,
+      "r_next_game": 0.813,
+      "r_next_10": 0.902
+    },
+    "DRIVES": {
+      "n": 30366,
+      "r_next_game": 0.832,
+      "r_next_10": 0.923
+    },
+    "mae_next_REB": {
+      "n": 31462,
+      "avg10": 1.9411,
+      "tracking_x10": 1.9807
+    },
+    "mae_next_AST": {
+      "n": 31462,
+      "avg10": 1.3755,
+      "tracking_x10": 1.3656
+    }
+  },
+  "ci_level": 0.9917,
+  "n_tests": 6,
+  "REB": {
+    "n_lines": 2620,
+    "tracking_coverage": 1.0,
+    "gap": {
+      "n": 2103,
+      "n_games": 518,
+      "delta_logloss_vs_recal": -6e-05,
+      "ci": [
+        -0.00045,
+        0.00033
+      ],
+      "ci95": [
+        -0.00035,
+        0.00023
+      ],
+      "delta_logloss_vs_kalshi": 0.00122,
+      "ci95_vs_kalshi": [
+        0.00018,
+        0.00229
+      ],
+      "passed": false,
+      "gamma": {
+        "coef": 0.058,
+        "ci95": [
+          -0.03,
+          0.15
+        ]
+      }
+    },
+    "line": {
+      "n": 2103,
+      "n_games": 518,
+      "delta_logloss_vs_recal": 0.00047,
+      "ci": [
+        -0.00065,
+        0.00163
+      ],
+      "ci95": [
+        -0.00034,
+        0.00133
+      ],
+      "delta_logloss_vs_kalshi": 0.00175,
+      "ci95_vs_kalshi": [
+        0.00051,
+        0.00301
+      ],
+      "passed": false,
+      "gamma": {
+        "coef": 0.011,
+        "ci95": [
+          -0.067,
+          0.097
+        ]
+      }
+    },
+    "trend": {
+      "n": 2103,
+      "n_games": 518,
+      "delta_logloss_vs_recal": 0.00077,
+      "ci": [
+        -0.0016,
+        0.00325
+      ],
+      "ci95": [
+        -0.00102,
+        0.00254
+      ],
+      "delta_logloss_vs_kalshi": 0.00204,
+      "ci95_vs_kalshi": [
+        -6e-05,
+        0.00413
+      ],
+      "passed": false,
+      "gamma": {
+        "coef": -0.182,
+        "ci95": [
+          -0.525,
+          0.263
+        ]
+      }
+    }
+  },
+  "AST": {
+    "n_lines": 2011,
+    "tracking_coverage": 1.0,
+    "gap": {
+      "n": 1530,
+      "n_games": 460,
+      "delta_logloss_vs_recal": 0.00057,
+      "ci": [
+        -0.00069,
+        0.0018
+      ],
+      "ci95": [
+        -0.00033,
+        0.00146
+      ],
+      "delta_logloss_vs_kalshi": 0.00107,
+      "ci95_vs_kalshi": [
+        -0.00086,
+        0.00305
+      ],
+      "passed": false,
+      "gamma": {
+        "coef": -0.066,
+        "ci95": [
+          -0.235,
+          0.083
+        ]
+      }
+    },
+    "line": {
+      "n": 1530,
+      "n_games": 460,
+      "delta_logloss_vs_recal": 0.00056,
+      "ci": [
+        -0.00055,
+        0.00174
+      ],
+      "ci95": [
+        -0.00028,
+        0.00142
+      ],
+      "delta_logloss_vs_kalshi": 0.00105,
+      "ci95_vs_kalshi": [
+        -0.00092,
+        0.00295
+      ],
+      "passed": false,
+      "gamma": {
+        "coef": -0.043,
+        "ci95": [
+          -0.147,
+          0.061
+        ]
+      }
+    },
+    "trend": {
+      "n": 1530,
+      "n_games": 460,
+      "delta_logloss_vs_recal": 0.00088,
+      "ci": [
+        -0.00121,
+        0.00323
+      ],
+      "ci95": [
+        -0.00082,
+        0.00261
+      ],
+      "delta_logloss_vs_kalshi": 0.00138,
+      "ci95_vs_kalshi": [
+        -0.00103,
+        0.00372
+      ],
+      "passed": false,
+      "gamma": {
+        "coef": -0.06,
+        "ci95": [
+          -0.578,
+          0.352
+        ]
+      }
+    }
+  },
+  "passed": [],
+  "verdict": "brak przewagi: żadna cecha nie poprawia ceny Kalshi; holdout nieużyty"
+}

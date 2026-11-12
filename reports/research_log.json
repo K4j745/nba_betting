@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-12",
+    "name": "Tracking NBA (szanse na zbiórkę, potencjalne asysty)",
+    "status": "no_edge",
+    "question": "Czy statystyki trackingowe (szanse na zbiórkę, potencjalne asysty) poprawiają cenę Kalshi dla zbiórek i asyst?",
+    "result": "Żadna z 6 cech nie poprawia ceny: Δ log-loss od −0,0001 do +0,0009, CI zawiera 0. Szanse na zbiórkę nie są stabilniejsze niż same zbiórki. Holdout nieużyty."
+  },
+  {
     "date": "2026-11-09",
     "name": "Bandyta offline (uczenie przez nagrodę)",
     "status": "no_edge",
