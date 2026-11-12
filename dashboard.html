@@ -1,9 +1,23 @@
 <!DOCTYPE html>
-<html lang="pl" data-theme="dark">
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NBA Betting Dashboard</title>
+<script>
+  // Motyw: wybór użytkownika, a bez niego ustawienie systemu
+  (function () {
+    let t = null;
+    try { t = localStorage.getItem('nba-theme'); } catch (e) {}
+    if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Nagłówki i liczby: Big Shoulders Display; tekst i tabele: Inter.
+     Zapasowo (gdyby nagłówki czytały się gorzej): Oswald, family=Oswald:wght@500..700 i --font-display: 'Oswald'. -->
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700..900&family=Inter:wght@400..700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
 /* ── Design Tokens ─────────────────────────────────────────────────────────── */
@@ -18,12 +32,20 @@
   --ease:      cubic-bezier(.22, 1, .36, 1);
   --duration:  200ms;
   --sidebar-w: 248px;
-  --font:      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', 'Fira Code', Consolas, monospace;
+  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', 'Inter', sans-serif;
+  --font-mono:    ui-monospace, 'SF Mono', 'Fira Code', Consolas, monospace;
+  /* Skala tekstu: nic poniżej 13 px */
+  --fs-label: 13px;   /* etykiety wielkimi literami, znaczniki, nagłówki tabel */
+  --fs-small: 14px;   /* opisy pod wartościami, mecz pod nazwiskiem */
+  --fs-table: 15px;
+  --fs-body:  16px;
+  --fs-title: 22px;   /* tytuły sekcji (font nagłówkowy) */
+  --brand:    #a51c30;   /* czerwień wyłącznie w logo */
 }
 [data-theme="dark"] {
   --bg:           #0a1228;
-  --surface:      rgba(11, 22, 52, 0.72);
+  --surface:      rgba(11, 22, 52, 0.86);
   --surface-2:    rgba(255, 255, 255, 0.07);
   --surface-3:    rgba(255, 255, 255, 0.13);
   --text:         #f4f6fb;
@@ -34,19 +56,26 @@
   --red-dim:      rgba(255, 133, 119, 0.16);
   --yellow:       #f4c25a;
   --yellow-dim:   rgba(244, 194, 90, 0.16);
-  --accent:       #a51c30;           /* ciemna czerwień: aktywne elementy */
-  --accent-text:  #ff96a4;           /* ta sama czerwień rozjaśniona do tekstu na granacie */
+  --accent:       #f4f6fb;           /* biel: element aktywny (zakładka, filtr) */
+  --on-accent:    #0d1b3e;           /* tekst na akcencie */
+  --accent-text:  #f4f6fb;
   --border:       rgba(255, 255, 255, 0.16);
   --glass-hi:     rgba(255, 255, 255, 0.22);
-  --glass-tint:   linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 42%, rgba(165, 28, 48, 0.07));
+  --glass-tint:   linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 42%);
   --shadow:       0 10px 30px rgba(0, 0, 0, 0.42), 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
   --chart-grid:   rgba(255, 255, 255, 0.09);
-  --court-dim:    rgba(6, 12, 32, 0.52);
+  --court-dim:    rgba(6, 12, 32, 0.28);
+  --court-light:  rgba(160, 190, 255, 0.10);
+  /* Boisko O2: granatowy parkiet (jak edycje miejskie NBA). Wariant O1 = ciepłe drewno
+     (#e2b07a #d9a46c #e6b984 #d49c62, pomalowane #8a4b26) + nakładka #13285e z mix-blend-mode: color. */
+  --wood-1: #1b2a52; --wood-2: #18264b; --wood-3: #1e2e58; --wood-4: #162345;
+  --seam:   rgba(0, 0, 0, 0.22);
+  --paint:  #3e1426; --apron: #060c1e; --line: rgba(255, 255, 255, 0.5);
 }
 [data-theme="light"] {
   --bg:           #dfe5f2;
-  --surface:      rgba(255, 255, 255, 0.66);
+  --surface:      rgba(255, 255, 255, 0.84);
   --surface-2:    rgba(13, 27, 62, 0.05);
   --surface-3:    rgba(13, 27, 62, 0.10);
   --text:         #0d1b3e;
@@ -57,22 +86,23 @@
   --red-dim:      rgba(179, 38, 30, 0.11);
   --yellow:       #8a5a00;
   --yellow-dim:   rgba(176, 116, 0, 0.14);
-  --accent:       #8e1528;
-  --accent-text:  #8e1528;
+  --accent:       #0d1b3e;
+  --on-accent:    #ffffff;
+  --accent-text:  #0d1b3e;
   --border:       rgba(13, 27, 62, 0.12);
   --glass-hi:     rgba(255, 255, 255, 0.9);
-  --glass-tint:   linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 45%, rgba(142, 21, 40, 0.04));
+  --glass-tint:   linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 45%);
   --shadow:       0 10px 30px rgba(13, 27, 62, 0.16), 0 1px 2px rgba(13, 27, 62, 0.1);
   --shadow-hover: 0 18px 44px rgba(13, 27, 62, 0.22), 0 2px 4px rgba(13, 27, 62, 0.1);
   --chart-grid:   rgba(13, 27, 62, 0.08);
   --court-dim:    rgba(255, 255, 255, 0.10);
+  --court-light:  rgba(255, 255, 255, 0.25);
+  /* Jasny, szaroniebieski klon */
+  --wood-1: #dfe5ef; --wood-2: #d8dfeb; --wood-3: #e4e9f2; --wood-4: #d3dae7;
+  --seam:   rgba(13, 27, 62, 0.08);
+  --paint:  #c6cfe1; --apron: #b7c2d8; --line: rgba(13, 27, 62, 0.32);
 }
-/* Kolory samego boiska (te same w obu motywach; w ciemnym przyciemnia je --court-dim) */
-:root {
-  --wood-1: #e2b07a; --wood-2: #d9a46c; --wood-3: #e6b984; --wood-4: #d49c62;
-  --paint:  #8a4b26; --apron: #5a3019; --line: rgba(255, 252, 245, 0.92);
-  --rim:    #f07f2e; --ball: #e8732a; --ball-seam: #2b1407;
-}
+:root { --rim: #f07f2e; --ball: #e8732a; --ball-seam: #2b1407; }
 
 /* ── Reset ─────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -82,18 +112,30 @@ body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--fs-body);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   transition: background var(--duration), color var(--duration);
   min-height: max(100vh, calc(min(100vw, 1500px) * 1.35));
   overflow-x: hidden;
 }
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: var(--on-accent); }
 :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
 * { scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0ms !important; } }
 
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: fixed; left: 16px; top: -60px; z-index: 1000;
+  padding: 10px 16px; border-radius: var(--r-control);
+  background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none;
+  transition: top var(--duration) var(--ease);
+}
+.skip-link:focus { top: 16px; }
+main:focus { outline: none; }
 .icon {
   width: 18px; height: 18px; flex-shrink: 0;
   fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
@@ -120,8 +162,9 @@ body {
 .container  { max-width: 1280px; width: 100%; }
 .section    { margin-bottom: 32px; }
 .section-title {
-  font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
-  display: inline-block; padding: 4px 12px; border-radius: 999px; margin-bottom: 14px;
+  font-family: var(--font-display); font-size: var(--fs-title); font-weight: 800; line-height: 1.15;
+  letter-spacing: .03em; text-transform: uppercase;
+  display: inline-block; padding: 6px 16px 5px; border-radius: 999px; margin-bottom: 14px;
 }
 .card { border-radius: var(--r-card); padding: 20px; }
 
@@ -137,32 +180,31 @@ body {
 .logo-icon {
   width: 40px; height: 40px; border-radius: var(--r-control); flex-shrink: 0;
   display: grid; place-items: center; color: #fff;
-  background: linear-gradient(150deg, #24407e, #0f1d44 60%, var(--accent));
+  background: linear-gradient(150deg, #24407e, #0f1d44 60%, var(--brand));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 4px 10px rgba(0, 0, 0, .3);
 }
 .logo-icon .icon { width: 22px; height: 22px; }
-.logo-name { font-weight: 700; font-size: 16px; letter-spacing: -.01em; line-height: 1.2; }
-.logo-sub  { font-size: 12px; color: var(--muted); }
+.logo-name { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: .02em; line-height: 1.05; text-transform: uppercase; }
+.logo-sub  { font-size: var(--fs-label); color: var(--muted); }
 .stat-tabs { display: flex; flex-direction: column; gap: 4px; }
 .nav-btn {
-  display: flex; align-items: center; gap: 12px; width: 100%;
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px;
   padding: 10px 12px; border-radius: var(--r-control);
   border: 1px solid transparent; background: transparent; color: var(--muted);
-  font: inherit; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer;
+  font: inherit; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer;
   transition: background var(--duration) var(--ease), color var(--duration) var(--ease),
               border-color var(--duration) var(--ease), transform var(--duration) var(--ease);
 }
 .nav-btn.active {
-  color: #fff; border-color: rgba(255, 255, 255, .18);
-  background: linear-gradient(160deg, rgba(255, 255, 255, .16), transparent 55%), var(--accent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 4px 10px rgba(0, 0, 0, .28);
+  color: var(--on-accent); background: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
 }
 .sidebar-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px 2px; }
-.updated-at { font-size: 12px; color: var(--muted); line-height: 1.35; font-variant-numeric: tabular-nums; }
+.updated-at { font-size: var(--fs-label); color: var(--muted); line-height: 1.35; font-variant-numeric: tabular-nums; }
 .updated-at b { display: block; color: var(--text); font-weight: 600; }
 .header-actions { display: flex; gap: 6px; }
 .btn-icon {
-  width: 36px; height: 36px; border-radius: var(--r-control);
+  width: 44px; height: 44px; border-radius: var(--r-control);
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
   display: grid; place-items: center; cursor: pointer;
   transition: background var(--duration) var(--ease), transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
@@ -177,12 +219,12 @@ main { position: relative; z-index: 1; min-width: 0; padding-top: 0; }
 /* ── KPI ───────────────────────────────────────────────────────────────────── */
 .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
 .kpi-card { border-radius: var(--r-card); padding: 18px 20px; }
-.kpi-label { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.kpi-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 .kpi-value {
-  font-size: clamp(22px, 2.4vw, 30px); font-weight: 700; letter-spacing: -.02em;
-  margin: 6px 0 4px; font-variant-numeric: tabular-nums; white-space: nowrap;
+  font-family: var(--font-display); font-size: clamp(32px, 3.2vw, 44px); font-weight: 800; line-height: 1.05;
+  letter-spacing: .01em; margin: 6px 0 4px; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
-.kpi-sub   { font-size: 12px; color: var(--muted); }
+.kpi-sub   { font-size: var(--fs-small); color: var(--muted); }
 .text-green  { color: var(--green); }
 .text-red    { color: var(--red); }
 .text-yellow { color: var(--yellow); }
@@ -190,9 +232,9 @@ main { position: relative; z-index: 1; min-width: 0; padding-top: 0; }
 
 /* ── Tabele ────────────────────────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; border-radius: var(--r-inner); }
-table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-table); font-variant-numeric: tabular-nums; }
 th {
-  text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600;
+  text-align: left; padding: 8px 12px; font-size: var(--fs-label); font-weight: 600;
   letter-spacing: .05em; text-transform: uppercase; color: var(--muted);
   border-bottom: 1px solid var(--border); white-space: nowrap;
 }
@@ -201,32 +243,35 @@ tr:last-child td { border-bottom: none; }
 tbody tr td:first-child { border-radius: var(--r-inner) 0 0 var(--r-inner); }
 tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
 .player-name { font-weight: 600; }
+td:has(> .player-name) { min-width: 190px; }
 .who { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .who > div { min-width: 0; white-space: nowrap; }
 .avatar {
-  position: relative; flex-shrink: 0; width: 40px; height: 40px; overflow: hidden;
-  border-radius: 12px; background: var(--surface-3); border: 1px solid var(--border);
+  position: relative; flex-shrink: 0; width: 56px; height: 56px; overflow: hidden;
+  border-radius: 16px; background: var(--surface-3); border: 1px solid var(--border);
   display: grid; place-items: center;
-  font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .02em;
+  font-size: 15px; font-weight: 700; color: var(--muted); letter-spacing: .02em;
 }
 @supports (corner-shape: squircle) { .avatar { corner-shape: squircle; border-radius: 30%; } }
 .avatar img {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: 50% 12%; transform: scale(1.25) translateY(8%);
 }
-.avatar.sm { width: 34px; height: 34px; border-radius: 10px; font-size: 11px; }
-.game-label  { font-size: 12px; color: var(--muted); }
+.avatar.sm { width: 46px; height: 46px; border-radius: 13px; font-size: 13px; }
+.who { gap: 12px; }
+.who .player-name { font-size: 16px; }
+.game-label  { font-size: var(--fs-small); color: var(--muted); }
 
 .badge-bet, .badge-result {
-  display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px;
-  font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px;
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
 }
 .badge-over, .badge-win  { background: var(--green-dim); color: var(--green); }
 .badge-under, .badge-loss { background: var(--red-dim); color: var(--red); }
-.badge-bet .icon { width: 13px; height: 13px; stroke-width: 2.5; margin-left: -3px; }
+.badge-bet .icon { width: 14px; height: 14px; stroke-width: 2.5; margin-left: -3px; }
 .badge-push { background: var(--surface-3); color: var(--muted); }
 
-.ev-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; font-variant-numeric: tabular-nums; }
+.ev-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
 .ev-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .ev-green  { color: var(--green); }
 .ev-yellow { color: var(--yellow); }
@@ -238,15 +283,15 @@ tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
 .conf-bar-wrap { display: flex; align-items: center; gap: 8px; }
 .conf-bar { height: 4px; width: 60px; background: var(--surface-3); border-radius: 999px; overflow: hidden; }
 .conf-fill { height: 100%; border-radius: 999px; background: var(--accent-text); }
-.conf-num { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 28px; }
+.conf-num { font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; min-width: 28px; }
 
 /* ── Wykresy ───────────────────────────────────────────────────────────────── */
 .chart-grid-main { display: grid; grid-template-columns: 2fr 1fr; gap: var(--gap); margin-bottom: var(--gap); }
 .chart-grid-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
 .chart-card { border-radius: var(--r-card); padding: 20px; }
-.chart-card h3 { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 16px; }
+.chart-card h3 { font-size: var(--fs-small); font-weight: 600; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 16px; }
 .chart-container { position: relative; }
-.no-data { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+.no-data { text-align: center; padding: 40px; color: var(--muted); font-size: var(--fs-small); }
 
 /* ── Filtry historii ───────────────────────────────────────────────────────── */
 .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
@@ -256,11 +301,11 @@ tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
   backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
 }
 .filter-btn {
-  padding: 5px 14px; border-radius: 999px; border: 0; background: transparent; color: var(--muted);
-  cursor: pointer; font: inherit; font-size: 12px; font-weight: 600;
+  min-height: 38px; padding: 0 16px; border-radius: 999px; border: 0; background: transparent; color: var(--muted);
+  cursor: pointer; font: inherit; font-size: var(--fs-small); font-weight: 600;
   transition: background var(--duration) var(--ease), color var(--duration) var(--ease), transform var(--duration) var(--ease);
 }
-.filter-btn.active { background: var(--accent); color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .25); }
+.filter-btn.active { background: var(--accent); color: var(--on-accent); box-shadow: 0 2px 6px rgba(0, 0, 0, .25); }
 
 /* ── Werdykt, znaczniki, puste stany ───────────────────────────────────────── */
 .verdict {
@@ -272,55 +317,58 @@ tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
   display: grid; place-items: center; background: var(--yellow-dim); color: var(--yellow);
 }
 .verdict.has-edge .verdict-badge { background: var(--green-dim); color: var(--green); }
-.verdict-title { font-size: 15px; font-weight: 700; }
-.verdict-body  { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.verdict-title { font-size: 18px; font-weight: 700; }
+.verdict-body  { font-size: 15px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
 .chip {
-  display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap;
+  display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: var(--fs-label); font-weight: 600; white-space: nowrap;
   background: var(--yellow-dim); color: var(--yellow);
 }
 .chip.green { background: var(--green-dim); color: var(--green); }
 .chip.red   { background: var(--red-dim); color: var(--red); }
 .chip.muted { background: var(--surface-3); color: var(--muted); }
-.coupon-empty { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.coupon-empty { display: flex; align-items: center; gap: 14px; font-size: 15px; color: var(--muted); line-height: 1.5; }
 .coupon-empty strong { color: var(--text); font-weight: 600; }
 .icon-tile {
   width: 40px; height: 40px; border-radius: var(--r-control); flex-shrink: 0;
   display: grid; place-items: center; background: var(--surface-2); color: var(--accent-text);
 }
 details.fold > summary {
-  cursor: pointer; font-size: 14px; line-height: 1.5; font-weight: 600;
+  cursor: pointer; font-size: 15px; line-height: 1.5; font-weight: 600;
   list-style: none; display: flex; align-items: center; gap: 10px;
+  min-height: 44px; margin: -6px 0; padding: 6px 0;
 }
 details.fold > summary::-webkit-details-marker { display: none; }
 details.fold > summary .icon { transition: transform var(--duration) var(--ease); color: var(--muted); }
 details.fold[open] > summary .icon { transform: rotate(90deg); }
 details.fold > summary:focus-visible { border-radius: var(--r-inner); }
-details.fold[open] > summary { margin-bottom: 12px; }
+details.fold[open] > summary { margin-bottom: 6px; }
 .lab-list { display: grid; gap: 4px; }
 .lab-item { padding: 12px; margin: 0 -12px; border-radius: var(--r-control); transition: background var(--duration) var(--ease); }
 .lab-item + .lab-item { border-top: 1px solid var(--border); }
 .lab-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.lab-name { font-size: 14px; font-weight: 600; }
-.lab-question, .lab-result { font-size: 13px; line-height: 1.5; margin-top: 3px; max-width: 75ch; }
+.lab-name { font-size: 16px; font-weight: 600; }
+.lab-question, .lab-result { font-size: 15px; line-height: 1.5; margin-top: 3px; max-width: 75ch; }
 .lab-question { color: var(--muted); }
-.stat-note { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; display: flex; gap: 8px; }
+.stat-note { font-size: var(--fs-small); color: var(--muted); margin-top: 10px; line-height: 1.5; display: flex; gap: 8px; }
 .stat-note .icon { width: 16px; height: 16px; margin-top: 1px; color: var(--yellow); }
-.paper-note { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; font-size: 12px; color: var(--yellow); line-height: 1.5; }
+.paper-note { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; font-size: var(--fs-small); color: var(--yellow); line-height: 1.5; }
 .paper-note .icon { width: 16px; height: 16px; margin-top: 1px; }
 
-.pnl-pos { color: var(--green); font-variant-numeric: tabular-nums; font-size: 12px; }
-.pnl-neg { color: var(--red);   font-variant-numeric: tabular-nums; font-size: 12px; }
-.mono    { font-variant-numeric: tabular-nums; font-size: 12px; }
+.pnl-pos { color: var(--green); font-variant-numeric: tabular-nums; }
+.pnl-neg { color: var(--red);   font-variant-numeric: tabular-nums; }
+.mono    { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.reasoning { font-size: var(--fs-small); color: var(--muted); max-width: 240px; min-width: 160px; }
+.table-foot { padding: 10px 12px 0; font-size: var(--fs-small); color: var(--muted); }
 
 .empty-state { padding: 44px 24px; text-align: center; color: var(--muted); }
 .empty-icon  { width: 52px; height: 52px; margin: 0 auto 12px; border-radius: 16px; display: grid; place-items: center; background: var(--surface-2); color: var(--accent-text); }
 .empty-icon .icon { width: 24px; height: 24px; }
-.empty-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.empty-body  { font-size: 13px; line-height: 1.6; max-width: 460px; margin: 0 auto; }
+.empty-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.empty-body  { font-size: 15px; line-height: 1.6; max-width: 460px; margin: 0 auto; }
 
 .error-banner {
   background: var(--red-dim); border: 1px solid var(--red); border-radius: var(--r-card);
-  padding: 16px 20px; color: var(--red); font-size: 13px; margin-bottom: 24px; display: none;
+  padding: 16px 20px; color: var(--red); font-size: 15px; margin-bottom: 24px; display: none;
 }
 .error-banner code { font-family: var(--font-mono); background: rgba(0, 0, 0, .2); padding: 1px 5px; border-radius: 4px; }
 
@@ -333,26 +381,26 @@ details.fold[open] > summary { margin-bottom: 12px; }
 .players-meta:empty { display: none; }
 .games-list { display: grid; gap: var(--gap); }
 .game-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: 1; }
-.game-teams { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
-.game-time { font-size: 13px; color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.game-teams { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: .02em; line-height: 1.1; }
+.game-time { font-size: var(--fs-small); color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
 .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.team-name { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px 2px; }
+.team-name { font-size: var(--fs-label); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px 2px; }
 .player { border-radius: var(--r-control); transition: background var(--duration) var(--ease); }
 .player + .player { border-top: 1px solid var(--border); }
 .player > summary {
-  list-style: none; cursor: pointer; padding: 9px 10px; border-radius: var(--r-control);
+  list-style: none; cursor: pointer; padding: 10px; min-height: 44px; border-radius: var(--r-control);
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center;
 }
 .player > summary::-webkit-details-marker { display: none; }
 .player-top { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .player-top .player-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.avg-row { display: flex; gap: 12px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; grid-column: 1 / -1; flex-wrap: wrap; }
+.avg-row { display: flex; gap: 14px; font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; grid-column: 1 / -1; flex-wrap: wrap; }
 .avg-row b { color: var(--text); font-weight: 600; }
-.avg-row .hit { color: var(--accent-text); }
-.player .min { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.avg-row .hit { color: var(--text); font-weight: 600; }
+.player .min { font-size: var(--fs-small); color: var(--muted); font-variant-numeric: tabular-nums; }
 .player[open] { background: var(--surface-2); }
 .player-games { padding: 0 10px 10px; }
-.player-games table { font-size: 12px; }
+.player-games table { font-size: var(--fs-small); }
 .player-games th, .player-games td { padding: 5px 8px; }
 .player-games td.over { color: var(--green); font-weight: 600; }
 .player.is-out .player-name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--red); }
@@ -394,15 +442,17 @@ details.fold[open] > summary { margin-bottom: 12px; }
   .sidebar-foot { margin: 0; padding: 0; grid-column: 2; grid-row: 1; }
   .updated-at { display: none; }
   .stat-tabs { grid-column: 1 / -1; flex-direction: row; overflow-x: auto; gap: 4px; }
-  .nav-btn { width: auto; flex: 1 0 auto; justify-content: center; padding: 8px 12px; font-size: 13px; gap: 8px; }
+  .nav-btn { width: auto; flex: 1 0 auto; justify-content: center; padding: 8px 12px; font-size: 14px; gap: 8px; }
   .nav-btn .icon { width: 16px; height: 16px; }
 }
 @media (max-width: 600px) {
   .kpi-grid { gap: 10px; }
   .kpi-card { padding: 14px; }
-  .kpi-value { font-size: 19px; }
+  .kpi-value { font-size: 30px; }
+  .section-title { font-size: 20px; }
   .stat-tabs { display: grid; grid-template-columns: repeat(5, 1fr); overflow: visible; }
-  .nav-btn { flex-direction: column; gap: 3px; padding: 7px 1px; font-size: 11px; letter-spacing: -.01em; }
+  .nav-btn { flex-direction: column; gap: 3px; padding: 8px 1px; font-size: 12px; letter-spacing: -.01em; }
+  .avatar { width: 48px; height: 48px; border-radius: 14px; }
 }
 
 /* ── Boisko w tle ──────────────────────────────────────────────────────────── */
@@ -416,8 +466,8 @@ details.fold[open] > summary { margin-bottom: 12px; }
   display: flex; flex-direction: column;
   border: 3px solid var(--line);
   background:
-    repeating-linear-gradient(0deg, transparent 0 311px, rgba(70, 35, 10, .10) 311px 312px),
-    repeating-linear-gradient(90deg, rgba(70, 35, 10, .16) 0 1px, transparent 1px 31px),
+    repeating-linear-gradient(0deg, transparent 0 311px, var(--seam) 311px 312px),
+    repeating-linear-gradient(90deg, var(--seam) 0 1px, transparent 1px 31px),
     repeating-linear-gradient(90deg, var(--wood-1) 0 31px, var(--wood-2) 31px 62px,
                                      var(--wood-3) 62px 93px, var(--wood-4) 93px 124px,
                                      var(--wood-2) 124px 155px, var(--wood-1) 155px 186px);
@@ -425,7 +475,7 @@ details.fold[open] > summary { margin-bottom: 12px; }
 }
 .court-floor::after {   /* światło hali + przyciemnienie w ciemnym motywie */
   content: ""; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, rgba(255, 240, 210, .18), transparent 60%), var(--court-dim);
+  background: radial-gradient(ellipse at 50% 40%, var(--court-light), transparent 60%), var(--court-dim);
 }
 .court-end { display: block; width: 100%; height: auto; flex-shrink: 0; }
 .court-mid { flex: 1; position: relative; min-height: 0; }
@@ -464,8 +514,7 @@ details.fold[open] > summary { margin-bottom: 12px; }
 footer.court-footer {
   position: relative; z-index: 1;
   height: calc(min(100vw, 1500px) * 0.105 + 150px);
-  text-align: center; font-size: 11px; color: var(--text);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+  text-align: center; font-size: var(--fs-label); color: var(--text);
   padding: 8px 16px 0;
 }
 </style>
@@ -535,13 +584,14 @@ footer.court-footer {
   <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
   <symbol id="i-loader" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></symbol>
 </svg>
+<a class="skip-link" href="#main">Przejdź do treści</a>
 <div class="shell">
 <!-- Panel boczny -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-icon"><svg class="icon"><use href="#i-ball"/></svg></div>
     <div>
-      <div class="logo-name">NBA Betting</div>
+      <h1 class="logo-name">NBA Betting</h1>
       <div class="logo-sub">Propsy zawodników</div>
     </div>
   </div>
@@ -561,10 +611,11 @@ footer.court-footer {
   </div>
 </aside>
 
-<main>
+<main id="main" tabindex="-1">
 <div class="container">
+  <p class="sr-only" id="liveStatus" role="status" aria-live="polite"></p>
 
-  <div class="error-banner" id="errorBanner">
+  <div class="error-banner" id="errorBanner" role="alert">
     <strong>Nie można załadować danych.</strong><br>
     Uruchom serwer lokalny: <code>python -m http.server 8080</code>
     i otwórz <code>http://localhost:8080/dashboard.html</code>
@@ -583,16 +634,16 @@ footer.court-footer {
   <!-- KPI -->
   <section class="section">
     <div class="kpi-grid" id="kpiGrid">
-      <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="kWinRate">—</div><div class="kpi-sub" id="kWinSub">picks ogółem</div></div>
-      <div class="kpi-card"><div class="kpi-label">ROI (30d)</div><div class="kpi-value" id="kRoi30">—</div><div class="kpi-sub" id="kRoiSub">ostatnie 30 dni</div></div>
-      <div class="kpi-card"><div class="kpi-label">P&amp;L Total</div><div class="kpi-value" id="kPnl">—</div><div class="kpi-sub" id="kPnlSub">skumulowany wynik</div></div>
+      <div class="kpi-card"><div class="kpi-label">Skuteczność</div><div class="kpi-value" id="kWinRate">—</div><div class="kpi-sub" id="kWinSub">typy ogółem</div></div>
+      <div class="kpi-card"><div class="kpi-label" title="Zwrot z inwestycji">ROI (30 dni)</div><div class="kpi-value" id="kRoi30">—</div><div class="kpi-sub" id="kRoiSub">ostatnie 30 dni</div></div>
+      <div class="kpi-card"><div class="kpi-label">Zysk / strata</div><div class="kpi-value" id="kPnl">—</div><div class="kpi-sub" id="kPnlSub">skumulowany wynik</div></div>
       <div class="kpi-card"><div class="kpi-label">Model vs Kalshi</div><div class="kpi-value" id="kEdge">—</div><div class="kpi-sub" id="kEdgeSub">Δ log-loss (base)</div></div>
     </div>
   </section>
 
   <!-- Today's Coupon -->
   <section class="section">
-    <div class="section-title" id="couponTitle">Kupon Dnia</div>
+    <h2 class="section-title" id="couponTitle">Kupon dnia</h2>
     <div class="card" id="couponCard">
       <div class="empty-state">
         <div class="empty-icon"><svg class="icon"><use href="#i-loader"/></svg></div>
@@ -603,16 +654,16 @@ footer.court-footer {
 
   <!-- Charts -->
   <section class="section">
-    <div class="section-title">Wykresy</div>
+    <h2 class="section-title">Wykresy</h2>
     <div class="chart-grid-main">
       <div class="chart-card">
-        <h3>Bankroll Curve · 90d</h3>
+        <h3>Saldo · 90 dni</h3>
         <div class="chart-container" style="height:240px">
           <canvas id="bankrollChart"></canvas>
         </div>
       </div>
       <div class="chart-card">
-        <h3>Win Rate per Drużyna</h3>
+        <h3>Skuteczność według drużyny</h3>
         <div class="chart-container" style="height:240px">
           <canvas id="teamChart"></canvas>
         </div>
@@ -620,13 +671,13 @@ footer.court-footer {
     </div>
     <div class="chart-grid-bottom">
       <div class="chart-card">
-        <h3>Kalibracja Modelu</h3>
+        <h3>Kalibracja modelu</h3>
         <div class="chart-container" style="height:220px">
           <canvas id="calibrationChart"></canvas>
         </div>
       </div>
       <div class="chart-card">
-        <h3>Rozkład EV · Kupon Dnia</h3>
+        <h3>Rozkład EV · kupon dnia</h3>
         <div class="chart-container" style="height:220px">
           <canvas id="evChart"></canvas>
         </div>
@@ -637,11 +688,11 @@ footer.court-footer {
   <!-- History -->
   <section class="section">
     <div class="history-header">
-      <div class="section-title" style="margin-bottom:0">Historia Zakładów</div>
-      <div class="filter-group">
-        <button class="filter-btn" data-days="7"  onclick="setFilter(7)">7d</button>
-        <button class="filter-btn active" data-days="30" onclick="setFilter(30)">30d</button>
-        <button class="filter-btn" data-days="90" onclick="setFilter(90)">90d</button>
+      <h2 class="section-title" style="margin-bottom:0">Historia zakładów</h2>
+      <div class="filter-group" role="group" aria-label="Okres historii">
+        <button class="filter-btn" data-days="7"  onclick="setFilter(7)" aria-pressed="false">7 dni</button>
+        <button class="filter-btn active" data-days="30" onclick="setFilter(30)" aria-pressed="true">30 dni</button>
+        <button class="filter-btn" data-days="90" onclick="setFilter(90)" aria-pressed="false">90 dni</button>
       </div>
     </div>
     <div class="card">
@@ -655,7 +706,7 @@ footer.court-footer {
   </section>
   <!-- Research: model vs rynek -->
   <section class="section" id="researchSection" style="display:none">
-    <div class="section-title">Model vs bukmacherzy</div>
+    <h2 class="section-title">Model vs bukmacherzy</h2>
     <details class="card fold">
       <summary><svg class="icon"><use href="#i-chevron"/></svg><span id="researchSummary"></span></summary>
       <div class="kpi-sub" id="researchMeta" style="margin-bottom:10px"></div>
@@ -680,18 +731,18 @@ footer.court-footer {
   <div id="tabStat" style="display:none">
     <section class="section">
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="sWin">—</div><div class="kpi-sub" id="sWinSub">—</div></div>
-        <div class="kpi-card"><div class="kpi-label">ROI</div><div class="kpi-value" id="sRoi">—</div><div class="kpi-sub" id="sRoiSub">na zakład, po prowizji Kalshi</div></div>
-        <div class="kpi-card"><div class="kpi-label">P&amp;L</div><div class="kpi-value" id="sPnl">—</div><div class="kpi-sub">stawka 1 j. na pick</div></div>
+        <div class="kpi-card"><div class="kpi-label">Skuteczność</div><div class="kpi-value" id="sWin">—</div><div class="kpi-sub" id="sWinSub">—</div></div>
+        <div class="kpi-card"><div class="kpi-label" title="Zwrot z inwestycji">ROI</div><div class="kpi-value" id="sRoi">—</div><div class="kpi-sub" id="sRoiSub">na zakład, po prowizji Kalshi</div></div>
+        <div class="kpi-card"><div class="kpi-label">Zysk / strata</div><div class="kpi-value" id="sPnl">—</div><div class="kpi-sub">stawka 1 j. na typ</div></div>
         <div class="kpi-card"><div class="kpi-label">Model vs Kalshi</div><div class="kpi-value" id="sEdge">—</div><div class="kpi-sub" id="sEdgeSub">Δ log-loss (base)</div></div>
       </div>
     </section>
     <section class="section">
-      <div class="section-title" id="sCouponTitle">Kupon Dnia</div>
+      <h2 class="section-title" id="sCouponTitle">Kupon dnia</h2>
       <div class="card" id="sCouponCard"></div>
     </section>
     <section class="section">
-      <div class="section-title">Historia (weryfikacja z logów NBA)</div>
+      <h2 class="section-title">Historia (weryfikacja z logów NBA)</h2>
       <div class="card"><div class="table-wrap" id="sHistory"></div></div>
     </section>
   </div>
@@ -699,7 +750,7 @@ footer.court-footer {
   <!-- Zawodnicy: najbliższe mecze -->
   <div id="tabPlayers" style="display:none">
     <section class="section">
-      <div class="section-title" id="playersTitle">Najbliższe mecze</div>
+      <h2 class="section-title" id="playersTitle">Najbliższe mecze</h2>
       <div><div class="kpi-sub players-meta" id="playersMeta"></div></div>
       <div class="games-list" id="gamesList"></div>
     </section>
@@ -708,14 +759,14 @@ footer.court-footer {
   <!-- Badania: lista testów -->
   <div id="tabLab" style="display:none">
     <section class="section">
-      <div class="section-title">Co sprawdziliśmy</div>
+      <h2 class="section-title">Co sprawdziliśmy</h2>
       <div class="card"><div class="lab-list" id="labList"></div></div>
     </section>
   </div>
 
   <!-- Model vs Kalshi (wszystkie zakładki) -->
   <section class="section" id="kalshiSection" style="display:none">
-    <div class="section-title" id="kalshiTitle">Model vs Kalshi</div>
+    <h2 class="section-title" id="kalshiTitle">Model vs Kalshi</h2>
     <details class="card fold">
       <summary><svg class="icon"><use href="#i-chevron"/></svg><span id="kalshiSummary"></span></summary>
       <div class="kpi-sub" id="kalshiMeta" style="margin-bottom:10px"></div>
@@ -743,7 +794,7 @@ footer.court-footer {
 </div><!-- /container -->
 </main>
 </div><!-- /shell -->
-<footer class="court-footer">Paper trading · dane: stats.nba.com, The Odds API, Kalshi, raport kontuzji NBA · model nie ma przewagi nad rynkiem</footer>
+<footer class="court-footer">Zakłady papierowe · dane: stats.nba.com, The Odds API, Kalshi, raport kontuzji NBA · model nie ma przewagi nad rynkiem</footer>
 
 <script>
 /* ── State ─────────────────────────────────────────────────────────────────── */
@@ -756,23 +807,32 @@ const isDark = () => document.documentElement.getAttribute('data-theme') === 'da
 /* ── Theme ─────────────────────────────────────────────────────────────────── */
 const icon = (name, cls = 'icon') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 function setThemeIcon(theme) {
-  document.getElementById('themeToggle').innerHTML = icon(theme === 'dark' ? 'sun' : 'moon');
+  const b = document.getElementById('themeToggle');
+  b.innerHTML = icon(theme === 'dark' ? 'sun' : 'moon');
+  const label = theme === 'dark' ? 'Włącz jasny motyw' : 'Włącz ciemny motyw';
+  b.setAttribute('aria-label', label); b.title = label;
 }
 function refresh(btn) {
   btn.classList.remove('spinning'); void btn.offsetWidth; btn.classList.add('spinning');
   loadData();
 }
 
-(function initTheme() {
-  const saved = localStorage.getItem('nba-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  setThemeIcon(saved);
-})();
+setThemeIcon(document.documentElement.getAttribute('data-theme'));
+// Bez zapisanego wyboru motyw idzie za systemem także po zmianie w trakcie
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+  let saved = null;
+  try { saved = localStorage.getItem('nba-theme'); } catch (_) {}
+  if (saved) return;
+  const t = e.matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  setThemeIcon(t);
+  if (_data) renderCharts(_data);
+});
 
 document.getElementById('themeToggle').addEventListener('click', () => {
   const next = isDark() ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('nba-theme', next);
+  try { localStorage.setItem('nba-theme', next); } catch (e) {}
   setThemeIcon(next);
   if (_data) renderCharts(_data);
 });
@@ -818,9 +878,9 @@ function betBadge(bet) {
 }
 
 function resultBadge(r) {
-  if (r === 'WIN')  return '<span class="badge-result badge-win">WIN</span>';
-  if (r === 'LOSS') return '<span class="badge-result badge-loss">LOSS</span>';
-  return '<span class="badge-result badge-push">PUSH</span>';
+  if (r === 'WIN')  return '<span class="badge-result badge-win">wygrana</span>';
+  if (r === 'LOSS') return '<span class="badge-result badge-loss">przegrana</span>';
+  return '<span class="badge-result badge-push">zwrot</span>';
 }
 
 function daysAgo(dateStr, days) {
@@ -831,6 +891,11 @@ function daysAgo(dateStr, days) {
 
 /* ── Puste wykresy: chowamy canvas zamiast go usuwać (kolejny render — odświeżenie,
       zmiana motywu — musi go znaleźć) ────────────────────────────────────────── */
+/* Canvas jest dla czytnika ekranu pusty: każdy wykres dostaje role="img" i słowne podsumowanie. */
+function describe(el, text) {
+  el.setAttribute('role', 'img');
+  el.setAttribute('aria-label', text);
+}
 function emptyChart(el, msg) {
   el.style.display = 'none';
   let n = el.parentElement.querySelector('.no-data');
@@ -849,15 +914,23 @@ function cssVar(name) {
 }
 
 /* ── Data Load ──────────────────────────────────────────────────────────────── */
+function announce(msg) {
+  const el = document.getElementById('liveStatus');
+  el.textContent = ''; setTimeout(() => { el.textContent = msg; }, 50);
+}
 async function loadData() {
+  announce('Ładowanie danych…');
   try {
     const r = await fetch('dashboard_data.json?t=' + Date.now());
     if (!r.ok) throw new Error('HTTP ' + r.status);
     _data = await r.json();
     document.getElementById('errorBanner').style.display = 'none';
     render(_data);
+    const ts = _data.generated_at ? _data.generated_at.replace('T', ' ').slice(0, 16) : '';
+    announce(`Dane załadowane${ts ? ', aktualizacja ' + ts : ''}.`);
   } catch(e) {
     console.error('Dashboard load error:', e);
+    announce('Nie można załadować danych.');
     document.getElementById('errorBanner').style.display = 'block';
   }
 }
@@ -882,16 +955,26 @@ if (!['PTS', 'REB', 'AST', 'PLAYERS', 'LAB'].includes(_stat)) _stat = 'PTS';
 const STAT_NAME = { PTS: 'punkty', REB: 'zbiórki', AST: 'asysty' };
 
 function setStat(s) {
+  if (s === _stat) return;
   _stat = s;
-  history.replaceState(null, '', s === 'PTS' ? location.pathname : '#' + s.toLowerCase());
+  // pushState: „wstecz” w przeglądarce wraca do poprzedniej zakładki
+  history.pushState(null, '', s === 'PTS' ? location.pathname : '#' + s.toLowerCase());
   if (_data) renderStatTab(_data);
 }
+window.addEventListener('popstate', () => {
+  const s = (location.hash.slice(1) || 'PTS').toUpperCase();
+  _stat = ['PTS', 'REB', 'AST', 'PLAYERS', 'LAB'].includes(s) ? s : 'PTS';
+  if (_data) renderStatTab(_data);
+});
 
 function signed(x, d = 3) { return x == null ? '—' : (x >= 0 ? '+' : '') + x.toFixed(d); }
 
 function renderStatTab(d) {
-  document.querySelectorAll('.stat-tabs .nav-btn')
-    .forEach(b => b.classList.toggle('active', b.dataset.stat === _stat));
+  document.querySelectorAll('.stat-tabs .nav-btn').forEach(b => {
+    const on = b.dataset.stat === _stat;
+    b.classList.toggle('active', on);
+    if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
   document.getElementById('tabPTS').style.display  = _stat === 'PTS' ? '' : 'none';
   document.getElementById('tabStat').style.display = ['REB', 'AST'].includes(_stat) ? '' : 'none';
   document.getElementById('tabLab').style.display  = _stat === 'LAB' ? '' : 'none';
@@ -919,7 +1002,7 @@ function renderStatTab(d) {
 
   // Kupon: ta sama tabela co dla punktów
   const c = tab.coupon;
-  document.getElementById('sCouponTitle').textContent = `Kupon Dnia · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
+  document.getElementById('sCouponTitle').textContent = `Kupon dnia · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
   const card = document.getElementById('sCouponCard');
   if (!c || !c.picks || !c.picks.length) {
     card.innerHTML = couponEmpty('Brak typów na dziś', c
@@ -927,24 +1010,24 @@ function renderStatTab(d) {
       : 'Brak linii Kalshi dla dzisiejszych meczów albo pipeline jeszcze nie działał.');
   } else {
     card.innerHTML = `<div class="table-wrap"><table>
-      <thead><tr><th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs*</th><th>Rynek P(over)</th><th>Model P(over)</th><th>Reasoning</th></tr></thead>
+      <thead><tr><th>EV</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs*</th><th>Rynek P(over)</th><th>Model P(over)</th><th>Uzasadnienie</th></tr></thead>
       <tbody>${c.picks.map(p => `<tr>
         <td>${evBadge(p.ev)}</td>
         <td>${who(p.player, p.game)}</td>
         <td>${betBadge(p.bet)}</td><td class="mono">${p.line}</td><td class="mono">${p.odds}</td>
         <td class="mono">${p.p_market != null ? pct(p.p_market) : '—'}</td>
         <td class="mono">${pct(p.p_over)}</td>
-        <td class="mono" style="font-size:11px;color:var(--muted);max-width:220px">${p.reasoning || '—'}</td></tr>`).join('')}
+        <td class="reasoning">${p.reasoning || '—'}</td></tr>`).join('')}
       </tbody></table></div>
       <div class="stat-note">${icon('alert')}<span>* kurs = 1 / (cena kontraktu + prowizja Kalshi). ${c.injury_report ? `Raport kontuzji: ${c.n_out} Out/Doubtful.` : 'Bez raportu kontuzji.'}
-      Paper trading — to nie rekomendacja zakładów.</span></div>`;
+      Zakłady papierowe — to nie rekomendacja.</span></div>`;
   }
 
   const h = tab.history || [];
   document.getElementById('sHistory').innerHTML = !h.length
     ? `<div class="empty-state"><div class="empty-icon">${icon('chart')}</div><div class="empty-title">Brak historii</div>
        <div class="empty-body">Wyniki pojawią się, gdy logi meczów trafią do repo (branch data).</div></div>`
-    : `<table><thead><tr><th>Data</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>P&amp;L</th></tr></thead>
+    : `<table><thead><tr><th>Data</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>Zysk / strata</th></tr></thead>
        <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
          <td><div class="player-name">${r.player}</div><div class="game-label">${r.game || ''}</div></td>
          <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
@@ -1010,7 +1093,7 @@ function winSub(wins, n) {
   if (!n) return 'brak rozliczonych typów';
   const ci = wilson(wins, n);
   const range = ci ? ` · 95%: ${Math.round(ci[0] * 100)}–${Math.round(ci[1] * 100)}%` : '';
-  return `${wins}W / ${n - wins}L${range} ${smallSample(n)}`;
+  return `${wins} wygr. / ${n - wins} przegr.${range} ${smallSample(n)}`;
 }
 
 function foldSummary(cis, market) {
@@ -1147,7 +1230,7 @@ function renderKPI(d) {
   const pnl = k.pnl_total;
   document.getElementById('kPnl').textContent  = plnFmt(pnl);
   document.getElementById('kPnl').className    = 'kpi-value ' + clrVal(pnl);
-  document.getElementById('kPnlSub').textContent = 'symulowany P&L';
+  document.getElementById('kPnlSub').textContent = 'symulacja, łącznie';
 
   const rows = ((d.stats || {}).PTS?.kalshi_eval || {}).rows || [];
   const base = rows.find(r => r.features === 'base');
@@ -1160,7 +1243,7 @@ function renderKPI(d) {
 function renderCoupon(coupon, statusMessage) {
   const today = (_data && _data.game_date) ? _data.game_date : new Date().toISOString().slice(0, 10);
   const dateLabel = (coupon && coupon.date) ? coupon.date : today;
-  document.getElementById('couponTitle').textContent = `Kupon Dnia · ${dateLabel}`;
+  document.getElementById('couponTitle').textContent = `Kupon dnia · ${dateLabel}`;
 
   const card = document.getElementById('couponCard');
 
@@ -1182,20 +1265,20 @@ function renderCoupon(coupon, statusMessage) {
       <td class="mono">${p.odds}</td>
       <td class="mono">${p.p_over != null ? pct(p.bet==='over' ? p.p_over : 1-p.p_over) : '—'}</td>
       <td>${confBar(p.confidence)}</td>
-      <td class="mono" style="font-size:11px;color:var(--muted);max-width:220px">${p.reasoning||'—'}</td>
+      <td class="reasoning">${p.reasoning||'—'}</td>
     </tr>`).join('');
 
   card.innerHTML = `
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>P(win)</th><th>Confidence</th><th>Reasoning</th>
+          <th>EV</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>P(wygranej)</th><th>Pewność</th><th>Uzasadnienie</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <div style="margin-top:12px;font-size:12px;color:var(--muted)">
-      ${picks.length} pick${picks.length>1?'i':''} · Stake: ${coupon.simulated_total_stake ?? '—'} PLN · Model ${coupon.model_version ?? '?'}
+    <div class="table-foot">
+      ${picks.length} ${picks.length === 1 ? 'typ' : picks.length < 5 ? 'typy' : 'typów'} · Stawka: ${coupon.simulated_total_stake ?? '—'} PLN · Model ${coupon.model_version ?? '?'}
       ${coupon.n_predictions != null ? ` · ${coupon.n_predictions} predykcji zapisanych` : ''}
     </div>
     ${coupon.paper_trading ? `<div class="paper-note">${icon('alert')}<span>Symulacja (paper trading). Ewaluacja nie wykazała przewagi modelu nad rynkiem — wysokie EV
@@ -1209,6 +1292,7 @@ function destroyChart(id) {
 }
 
 function renderCharts(d) {
+  Chart.defaults.font.family = cssVar('--font');
   renderBankrollChart(d.bankroll_curve || []);
   renderTeamChart(d.win_rate_by_team || []);
   renderCalibrationChart(d.calibration || {});
@@ -1236,11 +1320,11 @@ function baseOptions(colors) {
     scales: {
       x: {
         grid: { color: colors.grid },
-        ticks: { color: colors.muted, font: { size: 10 } },
+        ticks: { color: colors.muted, font: { size: 12 } },
       },
       y: {
         grid: { color: colors.grid },
-        ticks: { color: colors.muted, font: { size: 10 } },
+        ticks: { color: colors.muted, font: { size: 12 } },
       },
     },
   };
@@ -1260,6 +1344,8 @@ function renderBankrollChart(curve) {
   const values = curve.map(r => r.cumulative_pnl);
   const finalVal = values[values.length - 1];
   const lineColor = finalVal >= 0 ? colors.green : colors.red;
+  describe(el, `Skumulowany wynik od ${labels[0]} do ${labels[labels.length - 1]}: ${finalVal >= 0 ? '+' : ''}${finalVal.toFixed(2)} PLN, `
+    + `najniżej ${Math.min(...values).toFixed(2)} PLN, najwyżej ${Math.max(...values).toFixed(2)} PLN.`);
 
   const ctx = el.getContext('2d');
   const grad = ctx.createLinearGradient(0, 0, 0, 240);
@@ -1287,13 +1373,13 @@ function renderBankrollChart(curve) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => `P&L: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y.toFixed(2)} PLN`,
+            label: ctx => `Wynik: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y.toFixed(2)} PLN`,
           },
         },
       },
       scales: {
-        x: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, maxTicksLimit: 10 } },
-        y: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => (v>=0?'+':'')+v+' PLN' } },
+        x: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, maxTicksLimit: 10 } },
+        y: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => (v>=0?'+':'')+v+' PLN' } },
       },
     },
   });
@@ -1313,6 +1399,7 @@ function renderTeamChart(teams) {
   const labels = top.map(t => t.team.length > 20 ? t.team.slice(0, 18) + '…' : t.team);
   const values = top.map(t => +(t.win_rate * 100).toFixed(1));
   const bgColors = values.map(v => v > 52 ? colors.green + 'bb' : colors.red + 'bb');
+  describe(el, 'Skuteczność typów według drużyny: ' + top.map((t, i) => `${t.team} ${values[i]}% (n=${t.n})`).join(', ') + '.');
 
   _charts['team'] = new Chart(document.getElementById('teamChart'), {
     type: 'bar',
@@ -1324,10 +1411,10 @@ function renderTeamChart(teams) {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.parsed.x}% win rate (n=${top[c.dataIndex].n})` } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `skuteczność ${c.parsed.x}% (n=${top[c.dataIndex].n}) · ${c.parsed.x > 52 ? 'powyżej' : 'poniżej'} progu 52%` } } },
       scales: {
-        x: { min: 0, max: 100, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => v + '%' } },
-        y: { grid: { display: false }, ticks: { color: colors.text, font: { size: 10 } } },
+        x: { min: 0, max: 100, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => v + '%' } },
+        y: { grid: { display: false }, ticks: { color: colors.text, font: { size: 12 } } },
       },
     },
   });
@@ -1345,22 +1432,24 @@ function renderCalibrationChart(cal) {
   const colors = chartColors();
   const perfect = cal.prob_pred.map((_, i) => ({ x: cal.prob_pred[i], y: cal.prob_pred[i] }));
   const actual  = cal.prob_pred.map((p, i) => ({ x: p, y: cal.prob_true[i] }));
+  describe(el, `Kalibracja modelu na ${cal.n_samples} typach, przewidziane P(over) → faktyczna skuteczność: `
+    + actual.map(a => `${Math.round(a.x * 100)}% → ${Math.round(a.y * 100)}%`).join(', ') + '.');
 
   _charts['cal'] = new Chart(document.getElementById('calibrationChart'), {
     type: 'scatter',
     data: {
       datasets: [
-        { label: 'Idealna', data: perfect, borderColor: colors.muted + '88', borderDash: [4, 4], showLine: true, pointRadius: 0, borderWidth: 1.5 },
+        { label: 'Idealna (przerywana)', data: perfect, borderColor: colors.muted + '88', borderDash: [4, 4], showLine: true, pointRadius: 0, pointStyle: 'line', borderWidth: 1.5 },
         { label: `Model (n=${cal.n_samples})`, data: actual, borderColor: colors.blue, backgroundColor: colors.blue, showLine: true, pointRadius: 5, borderWidth: 2, tension: 0 },
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: true, labels: { color: colors.muted, font: { size: 11 }, boxWidth: 16 } } },
+      plugins: { legend: { display: true, labels: { color: colors.muted, font: { size: 13 }, usePointStyle: true, pointStyleWidth: 18 } } },
       scales: {
-        x: { min: 0, max: 1, title: { display: true, text: 'P(over) przewidziane', color: colors.muted, font: { size: 10 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => (v*100).toFixed(0)+'%' } },
-        y: { min: 0, max: 1, title: { display: true, text: 'Faktyczny win rate', color: colors.muted, font: { size: 10 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => (v*100).toFixed(0)+'%' } },
+        x: { min: 0, max: 1, title: { display: true, text: 'P(over) przewidziane', color: colors.muted, font: { size: 12 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => (v*100).toFixed(0)+'%' } },
+        y: { min: 0, max: 1, title: { display: true, text: 'Faktyczna skuteczność', color: colors.muted, font: { size: 12 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => (v*100).toFixed(0)+'%' } },
       },
     },
   });
@@ -1380,6 +1469,7 @@ function renderEvChart(coupon) {
   const labels  = picks.map(p => p.player.split(' ').pop());
   const evVals  = picks.map(p => p.ev != null ? +(p.ev * 100).toFixed(2) : 0);
   const bgColors = evVals.map(v => v > 5 ? colors.green + 'cc' : v >= 0 ? colors.yellow + 'cc' : colors.red + 'cc');
+  describe(el, 'EV typów z kuponu dnia: ' + picks.map((p, i) => `${p.player} ${evVals[i] >= 0 ? '+' : ''}${evVals[i]}%`).join(', ') + '.');
 
   _charts['ev'] = new Chart(document.getElementById('evChart'), {
     type: 'bar',
@@ -1390,10 +1480,10 @@ function renderEvChart(coupon) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `EV: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y}%` } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `EV: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y}% · ${c.parsed.y > 5 ? 'powyżej progu 5%' : c.parsed.y >= 0 ? 'dodatnie, poniżej progu' : 'ujemne'}` } } },
       scales: {
-        x: { grid: { display: false }, ticks: { color: colors.text, font: { size: 11 } } },
-        y: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 10 }, callback: v => v + '%' } },
+        x: { grid: { display: false }, ticks: { color: colors.text, font: { size: 13 } } },
+        y: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => v + '%' } },
       },
     },
   });
@@ -1404,6 +1494,7 @@ function setFilter(days) {
   _filterDays = days;
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.classList.toggle('active', +b.dataset.days === days);
+    b.setAttribute('aria-pressed', String(+b.dataset.days === days));
   });
   if (_data) renderHistory(_data.bet_history || [], days);
 }
@@ -1436,11 +1527,11 @@ function renderHistory(history, days) {
 
   wrap.innerHTML = `<table>
     <thead><tr>
-      <th>Data</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>Faktyczne</th><th>Wynik</th><th>P&amp;L</th>
+      <th>Data</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>Zysk / strata</th>
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>
-  <div style="padding:10px 12px;font-size:11px;color:var(--muted)">${filtered.length} wyników · pokazuję ${Math.min(filtered.length,100)}</div>`;
+  <div class="table-foot">${filtered.length} wyników · pokazuję ${Math.min(filtered.length,100)}</div>`;
 }
 
 
