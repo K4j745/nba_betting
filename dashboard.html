@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html lang="pl" data-theme="dark">
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NBA Betting Dashboard</title>
+<script>
+  // Motyw: wybór użytkownika, a bez niego ustawienie systemu
+  (function () {
+    let t = null;
+    try { t = localStorage.getItem('nba-theme'); } catch (e) {}
+    if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Nagłówki i liczby: Big Shoulders Display; tekst i tabele: Inter.
@@ -115,6 +124,18 @@ body {
 * { scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0ms !important; } }
 
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: fixed; left: 16px; top: -60px; z-index: 1000;
+  padding: 10px 16px; border-radius: var(--r-control);
+  background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none;
+  transition: top var(--duration) var(--ease);
+}
+.skip-link:focus { top: 16px; }
+main:focus { outline: none; }
 .icon {
   width: 18px; height: 18px; flex-shrink: 0;
   fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
@@ -167,7 +188,7 @@ body {
 .logo-sub  { font-size: var(--fs-label); color: var(--muted); }
 .stat-tabs { display: flex; flex-direction: column; gap: 4px; }
 .nav-btn {
-  display: flex; align-items: center; gap: 12px; width: 100%;
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px;
   padding: 10px 12px; border-radius: var(--r-control);
   border: 1px solid transparent; background: transparent; color: var(--muted);
   font: inherit; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer;
@@ -183,7 +204,7 @@ body {
 .updated-at b { display: block; color: var(--text); font-weight: 600; }
 .header-actions { display: flex; gap: 6px; }
 .btn-icon {
-  width: 36px; height: 36px; border-radius: var(--r-control);
+  width: 44px; height: 44px; border-radius: var(--r-control);
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
   display: grid; place-items: center; cursor: pointer;
   transition: background var(--duration) var(--ease), transform var(--duration) var(--ease), border-color var(--duration) var(--ease);
@@ -280,7 +301,7 @@ td:has(> .player-name) { min-width: 190px; }
   backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
 }
 .filter-btn {
-  padding: 5px 14px; border-radius: 999px; border: 0; background: transparent; color: var(--muted);
+  min-height: 38px; padding: 0 16px; border-radius: 999px; border: 0; background: transparent; color: var(--muted);
   cursor: pointer; font: inherit; font-size: var(--fs-small); font-weight: 600;
   transition: background var(--duration) var(--ease), color var(--duration) var(--ease), transform var(--duration) var(--ease);
 }
@@ -314,12 +335,13 @@ td:has(> .player-name) { min-width: 190px; }
 details.fold > summary {
   cursor: pointer; font-size: 15px; line-height: 1.5; font-weight: 600;
   list-style: none; display: flex; align-items: center; gap: 10px;
+  min-height: 44px; margin: -6px 0; padding: 6px 0;
 }
 details.fold > summary::-webkit-details-marker { display: none; }
 details.fold > summary .icon { transition: transform var(--duration) var(--ease); color: var(--muted); }
 details.fold[open] > summary .icon { transform: rotate(90deg); }
 details.fold > summary:focus-visible { border-radius: var(--r-inner); }
-details.fold[open] > summary { margin-bottom: 12px; }
+details.fold[open] > summary { margin-bottom: 6px; }
 .lab-list { display: grid; gap: 4px; }
 .lab-item { padding: 12px; margin: 0 -12px; border-radius: var(--r-control); transition: background var(--duration) var(--ease); }
 .lab-item + .lab-item { border-top: 1px solid var(--border); }
@@ -366,7 +388,7 @@ details.fold[open] > summary { margin-bottom: 12px; }
 .player { border-radius: var(--r-control); transition: background var(--duration) var(--ease); }
 .player + .player { border-top: 1px solid var(--border); }
 .player > summary {
-  list-style: none; cursor: pointer; padding: 9px 10px; border-radius: var(--r-control);
+  list-style: none; cursor: pointer; padding: 10px; min-height: 44px; border-radius: var(--r-control);
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center;
 }
 .player > summary::-webkit-details-marker { display: none; }
@@ -562,13 +584,14 @@ footer.court-footer {
   <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
   <symbol id="i-loader" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></symbol>
 </svg>
+<a class="skip-link" href="#main">Przejdź do treści</a>
 <div class="shell">
 <!-- Panel boczny -->
 <aside class="sidebar">
   <div class="logo">
     <div class="logo-icon"><svg class="icon"><use href="#i-ball"/></svg></div>
     <div>
-      <div class="logo-name">NBA Betting</div>
+      <h1 class="logo-name">NBA Betting</h1>
       <div class="logo-sub">Propsy zawodników</div>
     </div>
   </div>
@@ -588,10 +611,11 @@ footer.court-footer {
   </div>
 </aside>
 
-<main>
+<main id="main" tabindex="-1">
 <div class="container">
+  <p class="sr-only" id="liveStatus" role="status" aria-live="polite"></p>
 
-  <div class="error-banner" id="errorBanner">
+  <div class="error-banner" id="errorBanner" role="alert">
     <strong>Nie można załadować danych.</strong><br>
     Uruchom serwer lokalny: <code>python -m http.server 8080</code>
     i otwórz <code>http://localhost:8080/dashboard.html</code>
@@ -610,16 +634,16 @@ footer.court-footer {
   <!-- KPI -->
   <section class="section">
     <div class="kpi-grid" id="kpiGrid">
-      <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="kWinRate">—</div><div class="kpi-sub" id="kWinSub">picks ogółem</div></div>
-      <div class="kpi-card"><div class="kpi-label">ROI (30d)</div><div class="kpi-value" id="kRoi30">—</div><div class="kpi-sub" id="kRoiSub">ostatnie 30 dni</div></div>
-      <div class="kpi-card"><div class="kpi-label">P&amp;L Total</div><div class="kpi-value" id="kPnl">—</div><div class="kpi-sub" id="kPnlSub">skumulowany wynik</div></div>
+      <div class="kpi-card"><div class="kpi-label">Skuteczność</div><div class="kpi-value" id="kWinRate">—</div><div class="kpi-sub" id="kWinSub">typy ogółem</div></div>
+      <div class="kpi-card"><div class="kpi-label" title="Zwrot z inwestycji">ROI (30 dni)</div><div class="kpi-value" id="kRoi30">—</div><div class="kpi-sub" id="kRoiSub">ostatnie 30 dni</div></div>
+      <div class="kpi-card"><div class="kpi-label">Zysk / strata</div><div class="kpi-value" id="kPnl">—</div><div class="kpi-sub" id="kPnlSub">skumulowany wynik</div></div>
       <div class="kpi-card"><div class="kpi-label">Model vs Kalshi</div><div class="kpi-value" id="kEdge">—</div><div class="kpi-sub" id="kEdgeSub">Δ log-loss (base)</div></div>
     </div>
   </section>
 
   <!-- Today's Coupon -->
   <section class="section">
-    <div class="section-title" id="couponTitle">Kupon Dnia</div>
+    <h2 class="section-title" id="couponTitle">Kupon dnia</h2>
     <div class="card" id="couponCard">
       <div class="empty-state">
         <div class="empty-icon"><svg class="icon"><use href="#i-loader"/></svg></div>
@@ -630,16 +654,16 @@ footer.court-footer {
 
   <!-- Charts -->
   <section class="section">
-    <div class="section-title">Wykresy</div>
+    <h2 class="section-title">Wykresy</h2>
     <div class="chart-grid-main">
       <div class="chart-card">
-        <h3>Bankroll Curve · 90d</h3>
+        <h3>Saldo · 90 dni</h3>
         <div class="chart-container" style="height:240px">
           <canvas id="bankrollChart"></canvas>
         </div>
       </div>
       <div class="chart-card">
-        <h3>Win Rate per Drużyna</h3>
+        <h3>Skuteczność według drużyny</h3>
         <div class="chart-container" style="height:240px">
           <canvas id="teamChart"></canvas>
         </div>
@@ -647,13 +671,13 @@ footer.court-footer {
     </div>
     <div class="chart-grid-bottom">
       <div class="chart-card">
-        <h3>Kalibracja Modelu</h3>
+        <h3>Kalibracja modelu</h3>
         <div class="chart-container" style="height:220px">
           <canvas id="calibrationChart"></canvas>
         </div>
       </div>
       <div class="chart-card">
-        <h3>Rozkład EV · Kupon Dnia</h3>
+        <h3>Rozkład EV · kupon dnia</h3>
         <div class="chart-container" style="height:220px">
           <canvas id="evChart"></canvas>
         </div>
@@ -664,11 +688,11 @@ footer.court-footer {
   <!-- History -->
   <section class="section">
     <div class="history-header">
-      <div class="section-title" style="margin-bottom:0">Historia Zakładów</div>
-      <div class="filter-group">
-        <button class="filter-btn" data-days="7"  onclick="setFilter(7)">7d</button>
-        <button class="filter-btn active" data-days="30" onclick="setFilter(30)">30d</button>
-        <button class="filter-btn" data-days="90" onclick="setFilter(90)">90d</button>
+      <h2 class="section-title" style="margin-bottom:0">Historia zakładów</h2>
+      <div class="filter-group" role="group" aria-label="Okres historii">
+        <button class="filter-btn" data-days="7"  onclick="setFilter(7)" aria-pressed="false">7 dni</button>
+        <button class="filter-btn active" data-days="30" onclick="setFilter(30)" aria-pressed="true">30 dni</button>
+        <button class="filter-btn" data-days="90" onclick="setFilter(90)" aria-pressed="false">90 dni</button>
       </div>
     </div>
     <div class="card">
@@ -682,7 +706,7 @@ footer.court-footer {
   </section>
   <!-- Research: model vs rynek -->
   <section class="section" id="researchSection" style="display:none">
-    <div class="section-title">Model vs bukmacherzy</div>
+    <h2 class="section-title">Model vs bukmacherzy</h2>
     <details class="card fold">
       <summary><svg class="icon"><use href="#i-chevron"/></svg><span id="researchSummary"></span></summary>
       <div class="kpi-sub" id="researchMeta" style="margin-bottom:10px"></div>
@@ -707,18 +731,18 @@ footer.court-footer {
   <div id="tabStat" style="display:none">
     <section class="section">
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-label">Win Rate</div><div class="kpi-value" id="sWin">—</div><div class="kpi-sub" id="sWinSub">—</div></div>
-        <div class="kpi-card"><div class="kpi-label">ROI</div><div class="kpi-value" id="sRoi">—</div><div class="kpi-sub" id="sRoiSub">na zakład, po prowizji Kalshi</div></div>
-        <div class="kpi-card"><div class="kpi-label">P&amp;L</div><div class="kpi-value" id="sPnl">—</div><div class="kpi-sub">stawka 1 j. na pick</div></div>
+        <div class="kpi-card"><div class="kpi-label">Skuteczność</div><div class="kpi-value" id="sWin">—</div><div class="kpi-sub" id="sWinSub">—</div></div>
+        <div class="kpi-card"><div class="kpi-label" title="Zwrot z inwestycji">ROI</div><div class="kpi-value" id="sRoi">—</div><div class="kpi-sub" id="sRoiSub">na zakład, po prowizji Kalshi</div></div>
+        <div class="kpi-card"><div class="kpi-label">Zysk / strata</div><div class="kpi-value" id="sPnl">—</div><div class="kpi-sub">stawka 1 j. na typ</div></div>
         <div class="kpi-card"><div class="kpi-label">Model vs Kalshi</div><div class="kpi-value" id="sEdge">—</div><div class="kpi-sub" id="sEdgeSub">Δ log-loss (base)</div></div>
       </div>
     </section>
     <section class="section">
-      <div class="section-title" id="sCouponTitle">Kupon Dnia</div>
+      <h2 class="section-title" id="sCouponTitle">Kupon dnia</h2>
       <div class="card" id="sCouponCard"></div>
     </section>
     <section class="section">
-      <div class="section-title">Historia (weryfikacja z logów NBA)</div>
+      <h2 class="section-title">Historia (weryfikacja z logów NBA)</h2>
       <div class="card"><div class="table-wrap" id="sHistory"></div></div>
     </section>
   </div>
@@ -726,7 +750,7 @@ footer.court-footer {
   <!-- Zawodnicy: najbliższe mecze -->
   <div id="tabPlayers" style="display:none">
     <section class="section">
-      <div class="section-title" id="playersTitle">Najbliższe mecze</div>
+      <h2 class="section-title" id="playersTitle">Najbliższe mecze</h2>
       <div><div class="kpi-sub players-meta" id="playersMeta"></div></div>
       <div class="games-list" id="gamesList"></div>
     </section>
@@ -735,14 +759,14 @@ footer.court-footer {
   <!-- Badania: lista testów -->
   <div id="tabLab" style="display:none">
     <section class="section">
-      <div class="section-title">Co sprawdziliśmy</div>
+      <h2 class="section-title">Co sprawdziliśmy</h2>
       <div class="card"><div class="lab-list" id="labList"></div></div>
     </section>
   </div>
 
   <!-- Model vs Kalshi (wszystkie zakładki) -->
   <section class="section" id="kalshiSection" style="display:none">
-    <div class="section-title" id="kalshiTitle">Model vs Kalshi</div>
+    <h2 class="section-title" id="kalshiTitle">Model vs Kalshi</h2>
     <details class="card fold">
       <summary><svg class="icon"><use href="#i-chevron"/></svg><span id="kalshiSummary"></span></summary>
       <div class="kpi-sub" id="kalshiMeta" style="margin-bottom:10px"></div>
@@ -770,7 +794,7 @@ footer.court-footer {
 </div><!-- /container -->
 </main>
 </div><!-- /shell -->
-<footer class="court-footer">Paper trading · dane: stats.nba.com, The Odds API, Kalshi, raport kontuzji NBA · model nie ma przewagi nad rynkiem</footer>
+<footer class="court-footer">Zakłady papierowe · dane: stats.nba.com, The Odds API, Kalshi, raport kontuzji NBA · model nie ma przewagi nad rynkiem</footer>
 
 <script>
 /* ── State ─────────────────────────────────────────────────────────────────── */
@@ -783,23 +807,32 @@ const isDark = () => document.documentElement.getAttribute('data-theme') === 'da
 /* ── Theme ─────────────────────────────────────────────────────────────────── */
 const icon = (name, cls = 'icon') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 function setThemeIcon(theme) {
-  document.getElementById('themeToggle').innerHTML = icon(theme === 'dark' ? 'sun' : 'moon');
+  const b = document.getElementById('themeToggle');
+  b.innerHTML = icon(theme === 'dark' ? 'sun' : 'moon');
+  const label = theme === 'dark' ? 'Włącz jasny motyw' : 'Włącz ciemny motyw';
+  b.setAttribute('aria-label', label); b.title = label;
 }
 function refresh(btn) {
   btn.classList.remove('spinning'); void btn.offsetWidth; btn.classList.add('spinning');
   loadData();
 }
 
-(function initTheme() {
-  const saved = localStorage.getItem('nba-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  setThemeIcon(saved);
-})();
+setThemeIcon(document.documentElement.getAttribute('data-theme'));
+// Bez zapisanego wyboru motyw idzie za systemem także po zmianie w trakcie
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+  let saved = null;
+  try { saved = localStorage.getItem('nba-theme'); } catch (_) {}
+  if (saved) return;
+  const t = e.matches ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  setThemeIcon(t);
+  if (_data) renderCharts(_data);
+});
 
 document.getElementById('themeToggle').addEventListener('click', () => {
   const next = isDark() ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('nba-theme', next);
+  try { localStorage.setItem('nba-theme', next); } catch (e) {}
   setThemeIcon(next);
   if (_data) renderCharts(_data);
 });
@@ -845,9 +878,9 @@ function betBadge(bet) {
 }
 
 function resultBadge(r) {
-  if (r === 'WIN')  return '<span class="badge-result badge-win">WIN</span>';
-  if (r === 'LOSS') return '<span class="badge-result badge-loss">LOSS</span>';
-  return '<span class="badge-result badge-push">PUSH</span>';
+  if (r === 'WIN')  return '<span class="badge-result badge-win">wygrana</span>';
+  if (r === 'LOSS') return '<span class="badge-result badge-loss">przegrana</span>';
+  return '<span class="badge-result badge-push">zwrot</span>';
 }
 
 function daysAgo(dateStr, days) {
@@ -881,15 +914,23 @@ function cssVar(name) {
 }
 
 /* ── Data Load ──────────────────────────────────────────────────────────────── */
+function announce(msg) {
+  const el = document.getElementById('liveStatus');
+  el.textContent = ''; setTimeout(() => { el.textContent = msg; }, 50);
+}
 async function loadData() {
+  announce('Ładowanie danych…');
   try {
     const r = await fetch('dashboard_data.json?t=' + Date.now());
     if (!r.ok) throw new Error('HTTP ' + r.status);
     _data = await r.json();
     document.getElementById('errorBanner').style.display = 'none';
     render(_data);
+    const ts = _data.generated_at ? _data.generated_at.replace('T', ' ').slice(0, 16) : '';
+    announce(`Dane załadowane${ts ? ', aktualizacja ' + ts : ''}.`);
   } catch(e) {
     console.error('Dashboard load error:', e);
+    announce('Nie można załadować danych.');
     document.getElementById('errorBanner').style.display = 'block';
   }
 }
@@ -961,7 +1002,7 @@ function renderStatTab(d) {
 
   // Kupon: ta sama tabela co dla punktów
   const c = tab.coupon;
-  document.getElementById('sCouponTitle').textContent = `Kupon Dnia · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
+  document.getElementById('sCouponTitle').textContent = `Kupon dnia · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
   const card = document.getElementById('sCouponCard');
   if (!c || !c.picks || !c.picks.length) {
     card.innerHTML = couponEmpty('Brak typów na dziś', c
@@ -969,7 +1010,7 @@ function renderStatTab(d) {
       : 'Brak linii Kalshi dla dzisiejszych meczów albo pipeline jeszcze nie działał.');
   } else {
     card.innerHTML = `<div class="table-wrap"><table>
-      <thead><tr><th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs*</th><th>Rynek P(over)</th><th>Model P(over)</th><th>Reasoning</th></tr></thead>
+      <thead><tr><th>EV</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs*</th><th>Rynek P(over)</th><th>Model P(over)</th><th>Uzasadnienie</th></tr></thead>
       <tbody>${c.picks.map(p => `<tr>
         <td>${evBadge(p.ev)}</td>
         <td>${who(p.player, p.game)}</td>
@@ -979,14 +1020,14 @@ function renderStatTab(d) {
         <td class="reasoning">${p.reasoning || '—'}</td></tr>`).join('')}
       </tbody></table></div>
       <div class="stat-note">${icon('alert')}<span>* kurs = 1 / (cena kontraktu + prowizja Kalshi). ${c.injury_report ? `Raport kontuzji: ${c.n_out} Out/Doubtful.` : 'Bez raportu kontuzji.'}
-      Paper trading — to nie rekomendacja zakładów.</span></div>`;
+      Zakłady papierowe — to nie rekomendacja.</span></div>`;
   }
 
   const h = tab.history || [];
   document.getElementById('sHistory').innerHTML = !h.length
     ? `<div class="empty-state"><div class="empty-icon">${icon('chart')}</div><div class="empty-title">Brak historii</div>
        <div class="empty-body">Wyniki pojawią się, gdy logi meczów trafią do repo (branch data).</div></div>`
-    : `<table><thead><tr><th>Data</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>P&amp;L</th></tr></thead>
+    : `<table><thead><tr><th>Data</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>Zysk / strata</th></tr></thead>
        <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
          <td><div class="player-name">${r.player}</div><div class="game-label">${r.game || ''}</div></td>
          <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
@@ -1052,7 +1093,7 @@ function winSub(wins, n) {
   if (!n) return 'brak rozliczonych typów';
   const ci = wilson(wins, n);
   const range = ci ? ` · 95%: ${Math.round(ci[0] * 100)}–${Math.round(ci[1] * 100)}%` : '';
-  return `${wins}W / ${n - wins}L${range} ${smallSample(n)}`;
+  return `${wins} wygr. / ${n - wins} przegr.${range} ${smallSample(n)}`;
 }
 
 function foldSummary(cis, market) {
@@ -1189,7 +1230,7 @@ function renderKPI(d) {
   const pnl = k.pnl_total;
   document.getElementById('kPnl').textContent  = plnFmt(pnl);
   document.getElementById('kPnl').className    = 'kpi-value ' + clrVal(pnl);
-  document.getElementById('kPnlSub').textContent = 'symulowany P&L';
+  document.getElementById('kPnlSub').textContent = 'symulacja, łącznie';
 
   const rows = ((d.stats || {}).PTS?.kalshi_eval || {}).rows || [];
   const base = rows.find(r => r.features === 'base');
@@ -1202,7 +1243,7 @@ function renderKPI(d) {
 function renderCoupon(coupon, statusMessage) {
   const today = (_data && _data.game_date) ? _data.game_date : new Date().toISOString().slice(0, 10);
   const dateLabel = (coupon && coupon.date) ? coupon.date : today;
-  document.getElementById('couponTitle').textContent = `Kupon Dnia · ${dateLabel}`;
+  document.getElementById('couponTitle').textContent = `Kupon dnia · ${dateLabel}`;
 
   const card = document.getElementById('couponCard');
 
@@ -1231,13 +1272,13 @@ function renderCoupon(coupon, statusMessage) {
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>EV</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>P(win)</th><th>Confidence</th><th>Reasoning</th>
+          <th>EV</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>P(wygranej)</th><th>Pewność</th><th>Uzasadnienie</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
     <div class="table-foot">
-      ${picks.length} pick${picks.length>1?'i':''} · Stake: ${coupon.simulated_total_stake ?? '—'} PLN · Model ${coupon.model_version ?? '?'}
+      ${picks.length} ${picks.length === 1 ? 'typ' : picks.length < 5 ? 'typy' : 'typów'} · Stawka: ${coupon.simulated_total_stake ?? '—'} PLN · Model ${coupon.model_version ?? '?'}
       ${coupon.n_predictions != null ? ` · ${coupon.n_predictions} predykcji zapisanych` : ''}
     </div>
     ${coupon.paper_trading ? `<div class="paper-note">${icon('alert')}<span>Symulacja (paper trading). Ewaluacja nie wykazała przewagi modelu nad rynkiem — wysokie EV
@@ -1332,7 +1373,7 @@ function renderBankrollChart(curve) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => `P&L: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y.toFixed(2)} PLN`,
+            label: ctx => `Wynik: ${ctx.parsed.y >= 0 ? '+' : ''}${ctx.parsed.y.toFixed(2)} PLN`,
           },
         },
       },
@@ -1370,7 +1411,7 @@ function renderTeamChart(teams) {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.parsed.x}% win rate (n=${top[c.dataIndex].n})` } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `skuteczność ${c.parsed.x}% (n=${top[c.dataIndex].n}) · ${c.parsed.x > 52 ? 'powyżej' : 'poniżej'} progu 52%` } } },
       scales: {
         x: { min: 0, max: 100, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => v + '%' } },
         y: { grid: { display: false }, ticks: { color: colors.text, font: { size: 12 } } },
@@ -1398,17 +1439,17 @@ function renderCalibrationChart(cal) {
     type: 'scatter',
     data: {
       datasets: [
-        { label: 'Idealna', data: perfect, borderColor: colors.muted + '88', borderDash: [4, 4], showLine: true, pointRadius: 0, borderWidth: 1.5 },
+        { label: 'Idealna (przerywana)', data: perfect, borderColor: colors.muted + '88', borderDash: [4, 4], showLine: true, pointRadius: 0, pointStyle: 'line', borderWidth: 1.5 },
         { label: `Model (n=${cal.n_samples})`, data: actual, borderColor: colors.blue, backgroundColor: colors.blue, showLine: true, pointRadius: 5, borderWidth: 2, tension: 0 },
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: true, labels: { color: colors.muted, font: { size: 13 }, boxWidth: 16 } } },
+      plugins: { legend: { display: true, labels: { color: colors.muted, font: { size: 13 }, usePointStyle: true, pointStyleWidth: 18 } } },
       scales: {
         x: { min: 0, max: 1, title: { display: true, text: 'P(over) przewidziane', color: colors.muted, font: { size: 12 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => (v*100).toFixed(0)+'%' } },
-        y: { min: 0, max: 1, title: { display: true, text: 'Faktyczny win rate', color: colors.muted, font: { size: 12 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => (v*100).toFixed(0)+'%' } },
+        y: { min: 0, max: 1, title: { display: true, text: 'Faktyczna skuteczność', color: colors.muted, font: { size: 12 } }, grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => (v*100).toFixed(0)+'%' } },
       },
     },
   });
@@ -1439,7 +1480,7 @@ function renderEvChart(coupon) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `EV: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y}%` } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `EV: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y}% · ${c.parsed.y > 5 ? 'powyżej progu 5%' : c.parsed.y >= 0 ? 'dodatnie, poniżej progu' : 'ujemne'}` } } },
       scales: {
         x: { grid: { display: false }, ticks: { color: colors.text, font: { size: 13 } } },
         y: { grid: { color: colors.grid }, ticks: { color: colors.muted, font: { size: 12 }, callback: v => v + '%' } },
@@ -1453,6 +1494,7 @@ function setFilter(days) {
   _filterDays = days;
   document.querySelectorAll('.filter-btn').forEach(b => {
     b.classList.toggle('active', +b.dataset.days === days);
+    b.setAttribute('aria-pressed', String(+b.dataset.days === days));
   });
   if (_data) renderHistory(_data.bet_history || [], days);
 }
@@ -1485,7 +1527,7 @@ function renderHistory(history, days) {
 
   wrap.innerHTML = `<table>
     <thead><tr>
-      <th>Data</th><th>Gracz · Mecz</th><th>Bet</th><th>Linia</th><th>Kurs</th><th>Faktyczne</th><th>Wynik</th><th>P&amp;L</th>
+      <th>Data</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>Zysk / strata</th>
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>
