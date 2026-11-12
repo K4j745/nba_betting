@@ -1,0 +1,80 @@
+name: Deploy dashboardu (GitHub Pages)
+
+# Publikuje dashboard.html + aktualne dane z main, bez uruchamiania pipeline'u.
+#   - push do main ze zmianą wyglądu → sam deploy, dane zostają takie, jakie są w repo
+#     (commity danych z pipeline'u mają [skip ci], więc tego nie odpalają),
+#   - ręcznie (workflow_dispatch),
+#   - jako krok pipeline'u po commicie nowych danych (workflow_call).
+# Artefakt ma w nazwie numer próby: przy „Re-run” nie powstają dwa artefakty
+# „github-pages” w jednym przebiegu (błąd „Multiple artifacts named github-pages”).
+on:
+  push:
+    branches: [main]
+    paths:
+      - dashboard.html
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+  workflow_call:
+
+# Jeden deploy na raz; nowszy czeka, nie anuluje trwającego
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      ARTIFACT: github-pages-${{ github.run_attempt }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: main    # najnowszy main (po commicie danych, gdy wywołane z pipeline'u)
+
+      - name: Przygotuj katalog _site
+        run: |
+          mkdir -p _site
+          cp dashboard.html _site/
+
+          # Dane — jeśli nie ma (pierwsza iteracja), wstaw placeholder
+          if [ -f dashboard_data.json ]; then
+            cp dashboard_data.json _site/
+          else
+            echo '{"generated_at":"","kpi":{},"today_coupon":null,"bet_history":[],"bankroll_curve":[],"calibration":{},"win_rate_by_team":[],"model_stats":{}}' \
+              > _site/dashboard_data.json
+          fi
+
+          # index.html → przekierowanie do dashboardu
+          cat > _site/index.html <<'HTML'
+          <!DOCTYPE html>
+          <html><head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="0;url=dashboard.html">
+            <title>NBA Betting Dashboard</title>
+          </head><body>
+            <a href="dashboard.html">Przejdź do dashboardu →</a>
+          </body></html>
+          HTML
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+          name: ${{ env.ARTIFACT }}
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.ARTIFACT }}
