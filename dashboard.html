@@ -45,7 +45,7 @@
 }
 [data-theme="dark"] {
   --bg:           #0a1228;
-  --surface:      rgba(11, 22, 52, 0.86);
+  --surface:      rgba(11, 22, 52, 0.55);
   --surface-2:    rgba(255, 255, 255, 0.07);
   --surface-3:    rgba(255, 255, 255, 0.13);
   --text:         #f4f6fb;
@@ -61,7 +61,7 @@
   --accent-text:  #f4f6fb;
   --border:       rgba(255, 255, 255, 0.16);
   --glass-hi:     rgba(255, 255, 255, 0.22);
-  --glass-tint:   linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 42%);
+  --glass-tint:   linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 110px, rgba(0, 0, 0, 0.14));
   --shadow:       0 10px 30px rgba(0, 0, 0, 0.42), 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
   --chart-grid:   rgba(255, 255, 255, 0.09);
@@ -75,7 +75,7 @@
 }
 [data-theme="light"] {
   --bg:           #dfe5f2;
-  --surface:      rgba(255, 255, 255, 0.84);
+  --surface:      rgba(255, 255, 255, 0.55);
   --surface-2:    rgba(13, 27, 62, 0.05);
   --surface-3:    rgba(13, 27, 62, 0.10);
   --text:         #0d1b3e;
@@ -91,7 +91,7 @@
   --accent-text:  #0d1b3e;
   --border:       rgba(13, 27, 62, 0.12);
   --glass-hi:     rgba(255, 255, 255, 0.9);
-  --glass-tint:   linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 45%);
+  --glass-tint:   linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.2) 110px, rgba(13, 27, 62, 0.04));
   --shadow:       0 10px 30px rgba(13, 27, 62, 0.16), 0 1px 2px rgba(13, 27, 62, 0.1);
   --shadow-hover: 0 18px 44px rgba(13, 27, 62, 0.22), 0 2px 4px rgba(13, 27, 62, 0.1);
   --chart-grid:   rgba(13, 27, 62, 0.08);
@@ -142,12 +142,14 @@ main:focus { outline: none; }
 }
 
 /* ── Szkło ─────────────────────────────────────────────────────────────────── */
-.glass, .card, .kpi-card, .chart-card, .verdict, .sidebar, .section-title {
+/* Jedna reguła dla wszystkich szklanych paneli, żeby połysk i krycie były wszędzie takie same */
+.glass, .card, .kpi-card, .chart-card, .verdict, .sidebar, .section-title, .filter-group, .players-meta {
   background: var(--glass-tint), var(--surface);
   border: 1px solid var(--border);
   box-shadow: inset 0 1px 0 var(--glass-hi), var(--shadow);
-  backdrop-filter: blur(22px) saturate(140%);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  /* saturate 115%: przy kryciu 0,55 mocniejsze nasycenie podbijało czerwone pole boiska pod panelami */
+  backdrop-filter: blur(22px) saturate(115%);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
 }
 @supports (corner-shape: squircle) {
   .card, .kpi-card, .chart-card, .verdict, .sidebar, .btn-icon, .nav-btn, .logo-icon { corner-shape: squircle; }
@@ -297,8 +299,6 @@ td:has(> .player-name) { min-width: 190px; }
 .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
 .filter-group {
   display: flex; gap: 2px; padding: 3px; border-radius: 999px;
-  background: var(--surface); border: 1px solid var(--border);
-  backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
 }
 .filter-btn {
   min-height: 38px; padding: 0 16px; border-radius: 999px; border: 0; background: transparent; color: var(--muted);
@@ -375,8 +375,6 @@ details.fold[open] > summary { margin-bottom: 6px; }
 /* ── Zawodnicy ─────────────────────────────────────────────────────────────── */
 .players-meta {
   display: inline-block; margin: 0 0 14px; padding: 6px 12px; border-radius: var(--r-control);
-  background: var(--glass-tint), var(--surface); border: 1px solid var(--border);
-  backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
 }
 .players-meta:empty { display: none; }
 .games-list { display: grid; gap: var(--gap); }
