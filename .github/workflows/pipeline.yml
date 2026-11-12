@@ -100,59 +100,11 @@ jobs:
           fi
 
   # ────────────────────────────────────────────────────────────────────────────
-  # Job 2: Deploy dashboardu na GitHub Pages
+  # Job 2: Deploy dashboardu na GitHub Pages (wspólny workflow pages.yml)
   # ────────────────────────────────────────────────────────────────────────────
   deploy:
     needs: pipeline
-    runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Checkout repo (po commit danych)
-        uses: actions/checkout@v4
-        with:
-          ref: main    # pobierz najnowszy main z nowym dashboard_data.json
-
-      - name: Przygotuj katalog _site
-        run: |
-          mkdir -p _site
-
-          # Dashboard HTML
-          cp dashboard.html _site/
-
-          # Dane — jeśli nie ma (pierwsza iteracja), wstaw placeholder
-          if [ -f dashboard_data.json ]; then
-            cp dashboard_data.json _site/
-          else
-            echo '{"generated_at":"","kpi":{},"today_coupon":null,"bet_history":[],"bankroll_curve":[],"calibration":{},"win_rate_by_team":[],"model_stats":{}}' \
-              > _site/dashboard_data.json
-          fi
-
-          # index.html → przekierowanie do dashboardu
-          cat > _site/index.html <<'EOF'
-          <!DOCTYPE html>
-          <html><head>
-            <meta charset="UTF-8">
-            <meta http-equiv="refresh" content="0;url=dashboard.html">
-            <title>NBA Betting Dashboard</title>
-          </head><body>
-            <a href="dashboard.html">Przejdź do dashboardu →</a>
-          </body></html>
-          EOF
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    uses: ./.github/workflows/pages.yml
