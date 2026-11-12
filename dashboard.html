@@ -383,8 +383,17 @@ details.fold[open] > summary { margin-bottom: 6px; }
 .game-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: 1; }
 .game-teams { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: .02em; line-height: 1.1; }
 .game-time { font-size: var(--fs-small); color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.team-tag { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.team-logo {
+  width: 18px; height: 18px; flex-shrink: 0; object-fit: contain; box-sizing: border-box;
+  padding: 2px; border-radius: 50%; background: rgba(255, 255, 255, .92);   /* ciemne loga czytelne na granacie */
+}
+[data-theme="light"] .team-logo { background: transparent; padding: 0; }
+.team-logo.md { width: 24px; height: 24px; padding: 3px; }
+.team-logo.lg { width: 34px; height: 34px; padding: 4px; margin-right: 4px; }
+.game-teams .at { font-family: 'Inter', sans-serif; font-size: 16px; color: var(--muted); font-weight: 600; margin: 0 4px; vertical-align: 3px; }
 .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.team-name { font-size: var(--fs-label); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px 2px; }
+.team-name { display: flex; align-items: center; gap: 8px; font-size: var(--fs-label); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px 2px; }
 .player { border-radius: var(--r-control); transition: background var(--duration) var(--ease); }
 .player + .player { border-top: 1px solid var(--border); }
 .player > summary {
@@ -866,9 +875,37 @@ function avatar(name, id, cls = '') {
   const img = id ? `<img src="${HEADSHOT(id)}" alt="" loading="lazy" onerror="this.remove()">` : '';
   return `<span class="avatar ${cls}" aria-hidden="true">${esc(initials(name))}${img}</span>`;
 }
+/* Loga drużyn z CDN NBA: skrót albo pełna nazwa → ID drużyny (1610612700 + n). */
+const TEAM_N = {ATL: 37, BKN: 51, BOS: 38, CHA: 66, CHI: 41, CLE: 39, DAL: 42, DEN: 43, DET: 65, GSW: 44,
+  HOU: 45, IND: 54, LAC: 46, LAL: 47, MEM: 63, MIA: 48, MIL: 49, MIN: 50, NOP: 40, NYK: 52, OKC: 60, ORL: 53,
+  PHI: 55, PHX: 56, POR: 57, SAC: 58, SAS: 59, TOR: 61, UTA: 62, WAS: 64};
+const TEAM_NICK = {Hawks: 'ATL', Nets: 'BKN', Celtics: 'BOS', Hornets: 'CHA', Bulls: 'CHI', Cavaliers: 'CLE',
+  Mavericks: 'DAL', Nuggets: 'DEN', Pistons: 'DET', Warriors: 'GSW', Rockets: 'HOU', Pacers: 'IND',
+  Clippers: 'LAC', Lakers: 'LAL', Grizzlies: 'MEM', Heat: 'MIA', Bucks: 'MIL', Timberwolves: 'MIN',
+  Pelicans: 'NOP', Knicks: 'NYK', Thunder: 'OKC', Magic: 'ORL', '76ers': 'PHI', Suns: 'PHX',
+  'Trail Blazers': 'POR', Blazers: 'POR', Kings: 'SAC', Spurs: 'SAS', Raptors: 'TOR', Jazz: 'UTA', Wizards: 'WAS'};
+function teamAbbr(t) {
+  t = String(t || '').trim();
+  if (TEAM_N[t.toUpperCase()]) return t.toUpperCase();
+  const nick = Object.keys(TEAM_NICK).find(n => t.endsWith(n));
+  return nick ? TEAM_NICK[nick] : null;
+}
+function teamLogo(t, cls = '') {
+  const a = teamAbbr(t);
+  return a ? `<img class="team-logo ${cls}" src="https://cdn.nba.com/logos/nba/${1610612700 + TEAM_N[a]}/global/L/logo.svg"`
+    + ` alt="" loading="lazy" onerror="this.remove()">` : '';
+}
+/* „LAL @ DAL” / „Denver Nuggets @ Utah Jazz” → nazwy z małymi logami */
+function gameLabel(game) {
+  const parts = String(game || '').split(/\s+(@|vs\.?)\s+/);
+  if (parts.length !== 3) return esc(game || '');
+  return `<span class="team-tag">${teamLogo(parts[0])}${esc(parts[0])}</span> ${esc(parts[1])} `
+    + `<span class="team-tag">${teamLogo(parts[2])}${esc(parts[2])}</span>`;
+}
+
 function who(name, game, id) {
   return `<div class="who">${avatar(name, id)}<div><div class="player-name">${esc(name)}</div>`
-    + `<div class="game-label">${esc(game || '')}</div></div></div>`;
+    + `<div class="game-label">${gameLabel(game)}</div></div></div>`;
 }
 
 function betBadge(bet) {
@@ -1029,7 +1066,7 @@ function renderStatTab(d) {
        <div class="empty-body">Wyniki pojawią się, gdy logi meczów trafią do repo (branch data).</div></div>`
     : `<table><thead><tr><th>Data</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>Zysk / strata</th></tr></thead>
        <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
-         <td><div class="player-name">${r.player}</div><div class="game-label">${r.game || ''}</div></td>
+         <td><div class="player-name">${r.player}</div><div class="game-label">${gameLabel(r.game)}</div></td>
          <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
          <td class="mono">${r.actual ?? '—'}</td>
          <td>${r.result ? resultBadge(r.result) : '<span class="badge-result badge-push">czeka</span>'}</td>
@@ -1178,10 +1215,11 @@ function renderPlayers(u) {
   }
   list.innerHTML = games.map((g, i) => `<details class="card fold"${i === 0 ? ' open' : ''}>
     <summary>${icon('chevron')}<div class="game-head">
-      <span class="game-teams">${esc(g.away)} @ ${esc(g.home)}</span>
+      <span class="game-teams"><span class="team-tag">${teamLogo(g.away, 'lg')}${esc(g.away)}</span>
+        <span class="at">@</span> <span class="team-tag">${teamLogo(g.home, 'lg')}${esc(g.home)}</span></span>
       <span class="game-time">${fmtTip(g.tip)}</span></div></summary>
     <div class="team-grid">${[g.away, g.home].map(t => `<div>
-      <div class="team-name">${esc(t === g.home ? g.home_name : g.away_name)}</div>
+      <div class="team-name">${teamLogo(t, 'md')}${esc(t === g.home ? g.home_name : g.away_name)}</div>
       ${(g.teams[t] || []).map(playerRow).join('') || '<div class="no-data">Brak danych w logach</div>'}
     </div>`).join('')}</div>
   </details>`).join('');
@@ -1515,7 +1553,7 @@ function renderHistory(history, days) {
     const pnlStr = r.profit != null ? (r.profit >= 0 ? '+' : '') + r.profit.toFixed(2) + ' PLN' : '—';
     return `<tr>
       <td class="mono">${r.date}</td>
-      <td><div class="player-name">${r.player}</div><div class="game-label">${r.game||''}</div></td>
+      <td><div class="player-name">${r.player}</div><div class="game-label">${gameLabel(r.game)}</div></td>
       <td>${betBadge(r.bet)}</td>
       <td class="mono">${r.line ?? '—'}</td>
       <td class="mono">${r.odds ?? '—'}</td>
