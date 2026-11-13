@@ -40,7 +40,7 @@
   /* Czcionki */
   --font-text:    'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;  /* tekst, tabele, znaczniki */
   --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;                            /* tytuły sekcji, logo, mecze */
-  --font-num:     var(--font-display);   /* duże liczby (KPI); np. var(--font-text), żeby liczby były w kroju tekstu */
+  --font-num:     var(--font-text);      /* duże liczby (KPI); var(--font-display) = liczby w kroju nagłówków */
   --font-mono:    ui-monospace, 'SF Mono', 'Fira Code', Consolas, monospace;
   /* Skala tekstu: nic poniżej 13 px */
   --fs-label:   13px;   /* etykiety wielkimi literami, znaczniki, nagłówki tabel */
@@ -50,9 +50,9 @@
   --fs-lead:    18px;   /* tytuł werdyktu, tytuły pustych stanów */
   --fs-title:   22px;   /* tytuły sekcji (font nagłówkowy) */
   --fs-heading: 24px;   /* logo, nazwy meczów */
-  --fs-kpi:     clamp(32px, 3.2vw, 44px);
+  --fs-kpi:     clamp(26px, 2.3vw, 32px);
   --fs-tab-xs:  12px;   /* wyjątek: zakładki w 5 kolumnach na telefonie */
-  --brand:    #a51c30;   /* czerwień wyłącznie w logo */
+  --brand:    #a51c30;   /* czerwień marki: logo i napis aktywnej zakładki */
 }
 [data-theme="dark"] {
   --bg:           #0a1228;
@@ -70,6 +70,8 @@
   --warning-dim:  rgba(244, 194, 90, 0.16);
   --accent:       #f4f6fb;           /* biel: element aktywny (zakładka, filtr) */
   --on-accent:    #0d1b3e;           /* tekst na akcencie */
+  --nav-active-bg: #f4f6fb;          /* aktywna zakładka w panelu: biała pigułka… */
+  --nav-active-fg: var(--brand);     /* …z czerwonym napisem i ikoną */
   --accent-text:  #f4f6fb;
   --border:       rgba(255, 255, 255, 0.16);
   --border-strong: rgba(255, 255, 255, 0.28);
@@ -101,6 +103,8 @@
   --warning-dim:  rgba(176, 116, 0, 0.14);
   --accent:       #0d1b3e;
   --on-accent:    #ffffff;
+  --nav-active-bg: rgba(165, 28, 48, 0.10);
+  --nav-active-fg: var(--brand);
   --accent-text:  #0d1b3e;
   --border:       rgba(13, 27, 62, 0.12);
   --border-strong: rgba(13, 27, 62, 0.2);
@@ -213,8 +217,8 @@ main:focus { outline: none; }
               border-color var(--duration) var(--ease), transform var(--duration) var(--ease);
 }
 .nav-btn.active {
-  color: var(--on-accent); background: var(--accent);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+  color: var(--nav-active-fg); background: var(--nav-active-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
 }
 .sidebar-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px 2px; }
 .updated-at { font-size: var(--fs-label); color: var(--muted); line-height: 1.35; font-variant-numeric: tabular-nums; }
@@ -234,13 +238,14 @@ main:focus { outline: none; }
 main { position: relative; z-index: 1; min-width: 0; padding-top: 0; }
 
 /* ── KPI ───────────────────────────────────────────────────────────────────── */
-.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+.kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
 .kpi-card { border-radius: var(--r-card); padding: 18px 20px; }
 .kpi-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 .kpi-value {
   font-family: var(--font-num); font-size: var(--fs-kpi); font-weight: 800; line-height: 1.05;
-  letter-spacing: .01em; margin: 6px 0 4px; font-variant-numeric: tabular-nums; white-space: nowrap;
+  letter-spacing: -.02em; margin: 6px 0 4px; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
+.kpi-unit  { font-size: .6em; font-weight: 700; letter-spacing: 0; margin-left: .15em; }
 .kpi-sub   { font-size: var(--fs-small); color: var(--muted); }
 .text-green  { color: var(--positive); }
 .text-red    { color: var(--negative); }
@@ -448,7 +453,7 @@ details.fold[open] > summary { margin-bottom: 6px; }
 
 /* ── Wąskie ekrany: panel boczny staje się górnym paskiem ─────────────────── */
 @media (max-width: 1100px) {
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .chart-grid-main, .chart-grid-bottom { grid-template-columns: 1fr; }
 }
 @media (max-width: 860px) {
@@ -470,11 +475,12 @@ details.fold[open] > summary { margin-bottom: 6px; }
 @media (max-width: 600px) {
   .kpi-grid { gap: 10px; }
   .kpi-card { padding: 14px; }
-  :root { --fs-kpi: 30px; --fs-title: 20px; }
+  :root { --fs-kpi: 24px; --fs-title: 20px; }
   .stat-tabs { display: grid; grid-template-columns: repeat(5, 1fr); overflow: visible; }
   .nav-btn { flex-direction: column; gap: 3px; padding: 8px 1px; font-size: var(--fs-tab-xs); letter-spacing: -.01em; }
   .avatar { width: 48px; height: 48px; border-radius: 14px; }
 }
+@media (max-width: 360px) { :root { --fs-kpi: 21px; } }
 
 /* ── Boisko w tle ──────────────────────────────────────────────────────────── */
 .court {
@@ -860,7 +866,6 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 
 /* ── Helpers ────────────────────────────────────────────────────────────────── */
 const pct   = (v, decimals=1) => v == null ? '—' : `${(v*100).toFixed(decimals)}%`;
-const plnFmt = v => v == null ? '—' : (v >= 0 ? `+${v.toFixed(2)}` : v.toFixed(2)) + ' PLN';
 const clrVal = (v, thr=0) => v == null ? '' : (v > thr ? 'text-green' : v < thr ? 'text-red' : '');
 
 function evBadge(ev) {
@@ -1278,7 +1283,8 @@ function renderKPI(d) {
   document.getElementById('kRoiSub').innerHTML   = `${n30} typów · 30 dni ${smallSample(n30)}`;
 
   const pnl = k.pnl_total;
-  document.getElementById('kPnl').textContent  = plnFmt(pnl);
+  // jednostka mniejszym stopniem, żeby kwota mieściła się w karcie także na telefonie
+  document.getElementById('kPnl').innerHTML    = pnl == null ? '—' : `${signed(pnl, 2)}<span class="kpi-unit">PLN</span>`;
   document.getElementById('kPnl').className    = 'kpi-value ' + clrVal(pnl);
   document.getElementById('kPnlSub').textContent = 'symulacja, łącznie';
 
