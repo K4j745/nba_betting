@@ -355,7 +355,33 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     df["exp_margin"] = df["team_exp_pts"] - opp_exp_pts + HOME_COURT * (2 * df["IS_HOME"] - 1)
     df["abs_margin"] = df["exp_margin"].abs()     # ryzyko „blowoutu” = mniej minut dla starterów
 
+    # ── Poprzedni sezon (zamknięty przed każdym meczem bieżącego)
+    df = df.merge(prior_season_table(df), on=["PLAYER_ID", "SEASON"], how="left")
+    df["has_prev"] = (df["n_prev"].fillna(0) >= PRIOR_MIN_GAMES).astype(int)
+    for c in ("prev_min", "prev_reb", "prev_ast"):
+        df[c] = df[c].where(df["has_prev"] == 1)
+    df["team_changed"] = ((df["has_prev"] == 1) & (df["TEAM_ID"] != df["prev_team"])).astype(int)
+    df = df.drop(columns=["n_prev", "prev_team"])
+
     return df.sort_values(["GAME_DATE", "GAME_ID", "PLAYER_ID"]).reset_index(drop=True)
+
+
+PRIOR_MIN_GAMES = 10   # mecze w poprzednim sezonie, żeby jego średnia coś znaczyła
+
+
+def prior_season_table(df: pd.DataFrame) -> pd.DataFrame:
+    """Podsumowanie (zawodnik, sezon) przypisane do NASTĘPNEGO sezonu: liczba meczów, średnie minuty,
+    zbiórki i asysty, główna drużyna."""
+    played = df[df["MIN"] > 0]
+    agg = played.groupby(["PLAYER_ID", "SEASON"]).agg(
+        n_prev=("GAME_ID", "size"), prev_min=("MIN", "mean"),
+        prev_reb=("REB", "mean"), prev_ast=("AST", "mean")).reset_index()
+    team = (played.groupby(["PLAYER_ID", "SEASON", "TEAM_ID"]).size().rename("n").reset_index()
+            .sort_values("n").drop_duplicates(["PLAYER_ID", "SEASON"], keep="last")
+            .rename(columns={"TEAM_ID": "prev_team"})[["PLAYER_ID", "SEASON", "prev_team"]])
+    agg = agg.merge(team, on=["PLAYER_ID", "SEASON"])
+    agg["SEASON"] = agg["SEASON"].map(lambda s: season_str(int(s[:4]) + 1))
+    return agg
 
 
 def _haversine_km(lat1, lon1, lat2, lon2):
@@ -475,6 +501,11 @@ BASE_FEATURE_COLS = [
 ABSENCE_FEATURE_COLS = [*ABSENCE_COLS, "vac_pts_delta", "vac_min_delta"]
 EFFICIENCY_FEATURE_COLS = ["ts_10", "ts_season", "gmsc_avg_10"]
 # ── Modele zbiórek i asyst: wspólny kontekst + cechy danej statystyki
+# Poprzedni sezon (2026-11-13): MAE w pierwszych 20 meczach sezonu −0,1…−0,9% (REB 5/5 sezonów,
+# AST 3/5) — prior_role.py; bez przewagi nad Kalshi na dev
+PRIOR_FEATURE_COLS = {"REB": ["prev_reb", "prev_min", "has_prev", "team_changed"],
+                      "AST": ["prev_ast", "prev_min", "has_prev", "team_changed"]}
+
 _SHARED_CONTEXT = [
     "min_avg_5", "min_avg_10", "min_last", "usg_avg_10", "fga_avg_10", "pts_avg_10",
     "games_in_season", "IS_HOME", "IS_PLAYOFFS", "days_rest", "is_b2b", "h2h_games",
@@ -487,8 +518,11 @@ def _stat_cols(lo: str) -> list[str]:
             f"{lo}_std_10", f"{lo}_trend", f"{lo}_per36_10", f"season_{lo}_avg", f"{lo}_avg_vs_opp"]
 
 
-REB_BASE_FEATURE_COLS = _SHARED_CONTEXT + _stat_cols("reb") + ["oreb_avg_10", "opp_reb_allowed"]
-AST_BASE_FEATURE_COLS = _SHARED_CONTEXT + _stat_cols("ast") + ["opp_ast_allowed"]
+# _OLD: zestawy sprzed poprzedniego sezonu (porównanie w prior_role.holdout_check)
+REB_BASE_FEATURE_COLS_OLD = _SHARED_CONTEXT + _stat_cols("reb") + ["oreb_avg_10", "opp_reb_allowed"]
+AST_BASE_FEATURE_COLS_OLD = _SHARED_CONTEXT + _stat_cols("ast") + ["opp_ast_allowed"]
+REB_BASE_FEATURE_COLS = REB_BASE_FEATURE_COLS_OLD + PRIOR_FEATURE_COLS["REB"]
+AST_BASE_FEATURE_COLS = AST_BASE_FEATURE_COLS_OLD + PRIOR_FEATURE_COLS["AST"]
 # Statystyka → (cechy bazowe, cechy absencji). Punkty bez zmian.
 TARGETS = {
     "PTS": (None, None),   # uzupełniane niżej (BASE/ABSENCE_FEATURE_COLS)

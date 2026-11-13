@@ -27,9 +27,10 @@ import pandas as pd
 
 import market_model as mm
 from feature_lab import FINAL_FROM
-from evaluate_stats import _cluster_ci
-from history import RAW_DIR, TARGETS, load_dataset
-from market_tests import evaluate
+from evaluate_stats import _cluster_ci, _logloss
+from history import (AST_BASE_FEATURE_COLS, AST_BASE_FEATURE_COLS_OLD, RAW_DIR, REB_BASE_FEATURE_COLS,
+                     REB_BASE_FEATURE_COLS_OLD, TARGETS, load_dataset)
+from market_tests import evaluate, game_ci
 from points_model import train_points_model
 
 logger = logging.getLogger(__name__)
@@ -131,6 +132,52 @@ def forecast_check(data: pd.DataFrame, rng) -> dict:
     return out
 
 
+HOLDOUT_SETS = {"REB": {"old": REB_BASE_FEATURE_COLS_OLD, "new": REB_BASE_FEATURE_COLS},
+                "AST": {"old": AST_BASE_FEATURE_COLS_OLD, "new": AST_BASE_FEATURE_COLS}}
+
+
+def holdout_check() -> dict:
+    """Test zapowiedziany 2026-11-13 przed uruchomieniem: model REB/AST z cechami poprzedniego sezonu
+    vs bez nich na liniach Kalshi od FINAL_FROM. Główna hipoteza: na liniach z pierwszych EARLY_GAMES
+    meczów sezonu Δ log-loss po korekcie rynku (lm + d_new vs lm + d_old) < 0. CI 97,5% (2 statystyki)."""
+    from evaluate import attach_games
+    from evaluate_stats import walk_forward
+    from kalshi import load_history, main_lines
+
+    rng = np.random.default_rng(0)
+    data, hist = load_dataset(), load_history()
+    level = 1 - 0.05 / 2
+    out = {"hypothesis": "early-season holdout: market-corrected Δ log-loss (new − old) < 0", "ci_level": level}
+    for st, sets in HOLDOUT_SETS.items():
+        lines = main_lines(hist[hist["stat"] == st]).rename(columns={"player": "player_name"}).assign(bookmaker="kalshi")
+        d, _ = attach_games(lines.drop(columns=["name_key"]), data)
+        d["y_over"] = (d[st] > d["line"]).astype(int)
+        d = walk_forward(d, data, st, sets).sort_values("game_date").reset_index(drop=True)
+        d["lm"] = mm._logit(d["p_mid"])
+        for k in sets:
+            d[f"d_{k}"] = mm._logit(d[f"p_{k}"]) - d["lm"]
+        p_old, _ = mm.walk_forward(d, ["lm", "d_old"])
+        p_new, _ = mm.walk_forward(d, ["lm", "d_new"])
+        y, games = d["y_over"].to_numpy(), d["GAME_ID"].astype(str).to_numpy()
+        hold = (d["game_date"] >= FINAL_FROM).to_numpy() & ~np.isnan(p_old) & ~np.isnan(p_new)
+        early = hold & (d["games_in_season"] < EARLY_GAMES).to_numpy()
+        res = {}
+        for name, sel in (("early", early), ("all", hold)):
+            dm = _logloss(p_new[sel], y[sel]) - _logloss(p_old[sel], y[sel])
+            dr = (_logloss(d["p_new"].to_numpy()[sel], y[sel]) - _logloss(d["p_old"].to_numpy()[sel], y[sel]))
+            mae = (np.abs(d[st] - d["mu_new"]) - np.abs(d[st] - d["mu_old"])).to_numpy()[sel]
+            res[name] = {"n": int(sel.sum()), "n_games": int(pd.Series(games[sel]).nunique()),
+                         "market_corrected": {"delta_logloss": round(float(dm.mean()), 5),
+                                              "ci": game_ci(dm, games[sel], rng, level)},
+                         "raw_model": {"delta_logloss": round(float(dr.mean()), 5),
+                                       "ci": game_ci(dr, games[sel], rng, level)},
+                         "mae_delta": round(float(mae.mean()), 4)}
+        res["passed"] = res["early"]["market_corrected"]["ci"][1] < 0
+        out[st] = res
+        logger.info("holdout %s: %s", st, res)
+    return out
+
+
 def run(final: bool = False) -> dict:
     rng = np.random.default_rng(0)
     pred = pd.read_csv(mm.latest_predictions(), parse_dates=["game_date"], dtype={"GAME_ID": str})
@@ -155,4 +202,13 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
     ap = argparse.ArgumentParser()
     ap.add_argument("--final", action="store_true")
-    run(ap.parse_args().final)
+    ap.add_argument("--holdout-model", action="store_true",
+                    help="zapowiedziany test: model REB/AST z cechami poprzedniego sezonu na holdoucie Kalshi")
+    a = ap.parse_args()
+    if a.holdout_model:
+        r = {"generated": date.today().isoformat(), **holdout_check()}
+        out = mm.REPORT_DIR / f"prior_role_holdout_{r['generated']}.json"
+        out.write_text(json.dumps(r, indent=2, ensure_ascii=False))
+        logger.info("Raport: %s", out)
+    else:
+        run(a.final)

@@ -1,0 +1,87 @@
+{
+  "generated": "2026-11-13",
+  "hypothesis": "early-season holdout: market-corrected Δ log-loss (new − old) < 0",
+  "ci_level": 0.975,
+  "REB": {
+    "early": {
+      "n": 2079,
+      "n_games": 183,
+      "market_corrected": {
+        "delta_logloss": -1e-05,
+        "ci": [
+          -0.00077,
+          0.00072
+        ]
+      },
+      "raw_model": {
+        "delta_logloss": -0.00295,
+        "ci": [
+          -0.00655,
+          0.00068
+        ]
+      },
+      "mae_delta": -0.0069
+    },
+    "all": {
+      "n": 3068,
+      "n_games": 344,
+      "market_corrected": {
+        "delta_logloss": 2e-05,
+        "ci": [
+          -0.00061,
+          0.00063
+        ]
+      },
+      "raw_model": {
+        "delta_logloss": -0.00202,
+        "ci": [
+          -0.00487,
+          0.0008
+        ]
+      },
+      "mae_delta": -0.0039
+    },
+    "passed": false
+  },
+  "AST": {
+    "early": {
+      "n": 1796,
+      "n_games": 183,
+      "market_corrected": {
+        "delta_logloss": 2e-05,
+        "ci": [
+          -0.00014,
+          0.00018
+        ]
+      },
+      "raw_model": {
+        "delta_logloss": -0.00182,
+        "ci": [
+          -0.00504,
+          0.0013
+        ]
+      },
+      "mae_delta": -0.0077
+    },
+    "all": {
+      "n": 2566,
+      "n_games": 340,
+      "market_corrected": {
+        "delta_logloss": 5e-05,
+        "ci": [
+          -0.00011,
+          0.00022
+        ]
+      },
+      "raw_model": {
+        "delta_logloss": -0.00152,
+        "ci": [
+          -0.00401,
+          0.00107
+        ]
+      },
+      "mae_delta": -0.0079
+    },
+    "passed": false
+  }
+}

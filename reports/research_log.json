@@ -4,7 +4,7 @@
     "name": "Poprzedni sezon, wiek i zmiana roli",
     "status": "forecast_only",
     "question": "Czy średnia z poprzedniego sezonu, wiek, zmiana drużyny lub zmiana minut mówią coś, czego nie ma w cenie Kalshi?",
-    "result": "Wobec Kalshi żadna z 5 cech nie przechodzi (PTS/REB/AST, CI 99,7% zawierają 0). Bez rynku poprzedni sezon lekko poprawia prognozę w pierwszych 20 meczach: zbiórki −0,1…−0,9% MAE w 5 z 5 sezonów, asysty w 3 z 5, punkty niejednoznacznie. Linii Kalshi z początku sezonu w dev prawie nie ma (2%)."
+    "result": "Wobec Kalshi żadna z 5 cech nie przechodzi (PTS/REB/AST, CI 99,7% zawierają 0). Bez rynku poprzedni sezon lekko poprawia prognozę w pierwszych 20 meczach: zbiórki −0,1…−0,9% MAE w 5 z 5 sezonów, asysty w 3 z 5, punkty niejednoznacznie. Linii Kalshi z początku sezonu w dev prawie nie ma (2%). Dodane do modelu REB/AST; zapowiedziany test na holdoucie (linie od 1.04, w tym 2026-27): po korekcie Kalshi Δ ≈ 0 (REB −0,00001, AST +0,00002), sam model lepszy o ~0,4% MAE."
   },
   {
     "date": "2026-11-13",

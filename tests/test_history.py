@@ -165,3 +165,14 @@ def test_decay_features_split_minutes_and_rate(feats):
     r = feats.loc[3]
     assert r["pts_exp_hl"] == pytest.approx(r["min_hl2"] * r["pts36_hl"] / 36)
     assert np.isnan(feats.loc[0, "min_hl2"])          # pierwszy mecz: brak historii
+
+
+def test_prior_season_table_moves_to_next_season_and_main_team():
+    import pandas as pd
+    from history import prior_season_table
+    df = pd.DataFrame({"PLAYER_ID": [1] * 5, "SEASON": ["2024-25"] * 5, "GAME_ID": list("abcde"),
+                       "TEAM_ID": [10, 10, 10, 20, 20], "MIN": [30, 30, 30, 20, 0],
+                       "REB": [9, 9, 9, 6, 0], "AST": [3, 3, 3, 3, 0]})
+    t = prior_season_table(df).iloc[0]
+    assert t["SEASON"] == "2025-26" and t["n_prev"] == 4          # mecz z 0 min pominięty
+    assert t["prev_team"] == 10 and abs(t["prev_reb"] - 8.25) < 1e-9
