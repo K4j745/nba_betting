@@ -1,6 +1,13 @@
 [
   {
     "date": "2026-11-13",
+    "name": "Poprzedni sezon, wiek i zmiana roli",
+    "status": "forecast_only",
+    "question": "Czy średnia z poprzedniego sezonu, wiek, zmiana drużyny lub zmiana minut mówią coś, czego nie ma w cenie Kalshi?",
+    "result": "Wobec Kalshi żadna z 5 cech nie przechodzi (PTS/REB/AST, CI 99,7% zawierają 0). Bez rynku poprzedni sezon lekko poprawia prognozę w pierwszych 20 meczach: zbiórki −0,1…−0,9% MAE w 5 z 5 sezonów, asysty w 3 z 5, punkty niejednoznacznie. Linii Kalshi z początku sezonu w dev prawie nie ma (2%)."
+  },
+  {
+    "date": "2026-11-13",
     "name": "Sędziowie meczu (zbiórki, asysty)",
     "status": "no_edge",
     "question": "Czy obsada sędziowska (znana rano w dniu meczu) mówi coś o zbiórkach i asystach, czego nie ma w cenie Kalshi?",

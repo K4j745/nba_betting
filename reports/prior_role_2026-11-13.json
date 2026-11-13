@@ -1,0 +1,435 @@
+{
+  "generated": "2026-11-13",
+  "sample": "dev",
+  "final_from": "2026-04-01",
+  "predictions": "eval_stats_2026-11-09_predictions.csv",
+  "coverage": {
+    "has_prev": 0.9,
+    "age": 0.957,
+    "matched": 0.957
+  },
+  "dev_share": {
+    "team_changed": 0.184,
+    "early": 0.056
+  },
+  "ci_level": 0.9967,
+  "AST": {
+    "prev_gap": {
+      "n": 1530,
+      "share_nonzero": 0.94,
+      "delta_logloss": 0.00044,
+      "ci": [
+        -0.0004,
+        0.00128
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.023,
+        "ci95": [
+          -0.146,
+          0.11
+        ]
+      }
+    },
+    "prev_gap_early": {
+      "n": 1530,
+      "share_nonzero": 0.025,
+      "delta_logloss": 0.00069,
+      "ci": [
+        -0.00033,
+        0.00178
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.028,
+        "ci95": [
+          -0.497,
+          0.448
+        ]
+      }
+    },
+    "age": {
+      "n": 1530,
+      "share_nonzero": 0.899,
+      "delta_logloss": 0.00029,
+      "ci": [
+        -0.00084,
+        0.00144
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.001,
+        "ci95": [
+          -0.017,
+          0.017
+        ]
+      }
+    },
+    "team_changed": {
+      "n": 1530,
+      "share_nonzero": 0.213,
+      "delta_logloss": 0.00015,
+      "ci": [
+        -0.00124,
+        0.00149
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.15,
+        "ci95": [
+          -0.335,
+          0.1
+        ]
+      }
+    },
+    "min_delta": {
+      "n": 1530,
+      "share_nonzero": 0.939,
+      "delta_logloss": 0.00137,
+      "ci": [
+        -0.00113,
+        0.00368
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.001,
+        "ci95": [
+          -0.019,
+          0.017
+        ]
+      }
+    }
+  },
+  "PTS": {
+    "prev_gap": {
+      "n": 2817,
+      "share_nonzero": 0.929,
+      "delta_logloss": 6e-05,
+      "ci": [
+        -0.0005,
+        0.00065
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.041,
+        "ci95": [
+          -0.029,
+          0.105
+        ]
+      }
+    },
+    "prev_gap_early": {
+      "n": 2817,
+      "share_nonzero": 0.022,
+      "delta_logloss": 2e-05,
+      "ci": [
+        -0.00034,
+        0.00036
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.122,
+        "ci95": [
+          -0.166,
+          0.381
+        ]
+      }
+    },
+    "age": {
+      "n": 2817,
+      "share_nonzero": 0.908,
+      "delta_logloss": 0.00032,
+      "ci": [
+        -0.00054,
+        0.00116
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.004,
+        "ci95": [
+          -0.012,
+          0.017
+        ]
+      }
+    },
+    "team_changed": {
+      "n": 2817,
+      "share_nonzero": 0.21,
+      "delta_logloss": 0.00059,
+      "ci": [
+        -0.00067,
+        0.00194
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.058,
+        "ci95": [
+          -0.238,
+          0.119
+        ]
+      }
+    },
+    "min_delta": {
+      "n": 2817,
+      "share_nonzero": 0.928,
+      "delta_logloss": 0.00019,
+      "ci": [
+        -0.00107,
+        0.0014
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.013,
+        "ci95": [
+          -0.027,
+          0.002
+        ]
+      }
+    }
+  },
+  "REB": {
+    "prev_gap": {
+      "n": 2103,
+      "share_nonzero": 0.944,
+      "delta_logloss": 0.00051,
+      "ci": [
+        -0.0032,
+        0.00402
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.114,
+        "ci95": [
+          -0.023,
+          0.278
+        ]
+      }
+    },
+    "prev_gap_early": {
+      "n": 2103,
+      "share_nonzero": 0.019,
+      "delta_logloss": -0.00049,
+      "ci": [
+        -0.00188,
+        0.00084
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.518,
+        "ci95": [
+          0.056,
+          1.051
+        ]
+      }
+    },
+    "age": {
+      "n": 2103,
+      "share_nonzero": 0.905,
+      "delta_logloss": 0.0007,
+      "ci": [
+        -0.00216,
+        0.00358
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.007,
+        "ci95": [
+          -0.021,
+          0.01
+        ]
+      }
+    },
+    "team_changed": {
+      "n": 2103,
+      "share_nonzero": 0.189,
+      "delta_logloss": 0.00039,
+      "ci": [
+        -0.00189,
+        0.00258
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.028,
+        "ci95": [
+          -0.211,
+          0.163
+        ]
+      }
+    },
+    "min_delta": {
+      "n": 2103,
+      "share_nonzero": 0.944,
+      "delta_logloss": 0.00084,
+      "ci": [
+        -0.00189,
+        0.00388
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.011,
+        "ci95": [
+          -0.029,
+          0.007
+        ]
+      }
+    }
+  },
+  "forecast_early_season": {
+    "PTS": {
+      "2022-23": {
+        "n": 9498,
+        "mae_base": 4.4333,
+        "mae_prior": 4.4417,
+        "delta": 0.0084,
+        "ci95": [
+          0.0026,
+          0.0135
+        ]
+      },
+      "2023-24": {
+        "n": 9973,
+        "mae_base": 4.1491,
+        "mae_prior": 4.1415,
+        "delta": -0.0076,
+        "ci95": [
+          -0.0163,
+          0.0017
+        ]
+      },
+      "2024-25": {
+        "n": 10111,
+        "mae_base": 4.2377,
+        "mae_prior": 4.2247,
+        "delta": -0.013,
+        "ci95": [
+          -0.0194,
+          -0.0065
+        ]
+      },
+      "2025-26": {
+        "n": 10100,
+        "mae_base": 4.3527,
+        "mae_prior": 4.3479,
+        "delta": -0.0048,
+        "ci95": [
+          -0.0117,
+          0.0027
+        ]
+      },
+      "2026-27": {
+        "n": 2716,
+        "mae_base": 4.5166,
+        "mae_prior": 4.501,
+        "delta": -0.0155,
+        "ci95": [
+          -0.032,
+          0.0015
+        ]
+      }
+    },
+    "REB": {
+      "2022-23": {
+        "n": 9498,
+        "mae_base": 1.8665,
+        "mae_prior": 1.8641,
+        "delta": -0.0025,
+        "ci95": [
+          -0.0054,
+          0.0004
+        ]
+      },
+      "2023-24": {
+        "n": 9973,
+        "mae_base": 1.7808,
+        "mae_prior": 1.775,
+        "delta": -0.0058,
+        "ci95": [
+          -0.0091,
+          -0.002
+        ]
+      },
+      "2024-25": {
+        "n": 10111,
+        "mae_base": 1.8119,
+        "mae_prior": 1.8041,
+        "delta": -0.0078,
+        "ci95": [
+          -0.0109,
+          -0.0048
+        ]
+      },
+      "2025-26": {
+        "n": 10100,
+        "mae_base": 1.8148,
+        "mae_prior": 1.8082,
+        "delta": -0.0065,
+        "ci95": [
+          -0.0098,
+          -0.0032
+        ]
+      },
+      "2026-27": {
+        "n": 2716,
+        "mae_base": 1.8479,
+        "mae_prior": 1.8314,
+        "delta": -0.0165,
+        "ci95": [
+          -0.0249,
+          -0.0078
+        ]
+      }
+    },
+    "AST": {
+      "2022-23": {
+        "n": 9498,
+        "mae_base": 1.2333,
+        "mae_prior": 1.2333,
+        "delta": 0.0,
+        "ci95": [
+          -0.002,
+          0.0022
+        ]
+      },
+      "2023-24": {
+        "n": 9973,
+        "mae_base": 1.2232,
+        "mae_prior": 1.2171,
+        "delta": -0.0062,
+        "ci95": [
+          -0.0091,
+          -0.0035
+        ]
+      },
+      "2024-25": {
+        "n": 10111,
+        "mae_base": 1.2265,
+        "mae_prior": 1.2226,
+        "delta": -0.0039,
+        "ci95": [
+          -0.0059,
+          -0.0019
+        ]
+      },
+      "2025-26": {
+        "n": 10100,
+        "mae_base": 1.2706,
+        "mae_prior": 1.2705,
+        "delta": -0.0,
+        "ci95": [
+          -0.0025,
+          0.0022
+        ]
+      },
+      "2026-27": {
+        "n": 2716,
+        "mae_base": 1.3127,
+        "mae_prior": 1.3051,
+        "delta": -0.0076,
+        "ci95": [
+          -0.0134,
+          -0.0022
+        ]
+      }
+    }
+  }
+}
