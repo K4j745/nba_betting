@@ -65,3 +65,9 @@ def test_injury_report_drives_live_absences():
     assert live.iloc[0]["n_out"] == 1
     assert live.iloc[0]["vac_min"] == 30.0
     assert live.iloc[0]["vac_pts"] == 12.0
+
+
+def test_season_of_uses_game_date_not_last_game():
+    from live import season_of
+    assert season_of("2026-10-21") == "2026-27"
+    assert season_of("2026-04-10") == "2025-26"

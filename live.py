@@ -25,7 +25,7 @@ import pandas as pd
 from config import DB_PATH, ODDS_MAX, ODDS_MIN, STAKE_PER_PICK
 from history import (
     ABSENCE_DAYS, STAT_COLS, TARGETS, TEAM_ABBR_TO_ID,
-    load_logs, make_features, norm_name, player_game_table, team_game_table,
+    load_logs, make_features, norm_name, player_game_table, season_str, team_game_table,
 )
 from points_model import train_points_model
 
@@ -63,6 +63,13 @@ def data_age_days(games: pd.DataFrame, today: str) -> int:
 # ─────────────────────────────────────────────────────────────────────────────
 # Propsy → wiersze przyszłych meczów
 # ─────────────────────────────────────────────────────────────────────────────
+def season_of(game_date) -> str:
+    """Sezon z daty meczu (od sierpnia nowy sezon) — nie z ostatniego meczu zawodnika, który na
+    początku sezonu jest jeszcze z poprzedniego (źle liczyłoby games_in_season i poprzedni sezon)."""
+    d = pd.Timestamp(game_date)
+    return season_str(d.year if d.month >= 8 else d.year - 1)
+
+
 def props_to_rows(props: list[dict], games: pd.DataFrame, game_date: str) -> pd.DataFrame:
     """
     Jeden wiersz na zawodnika z propsem (cechy liczone tak jak w treningu).
@@ -86,7 +93,7 @@ def props_to_rows(props: list[dict], games: pd.DataFrame, game_date: str) -> pd.
         is_home = r["TEAM_ABBREVIATION"] == home
         opp = away if is_home else home
         rows.append({
-            "SEASON": r["SEASON"], "IS_PLAYOFFS": r["IS_PLAYOFFS"],
+            "SEASON": season_of(game_date), "IS_PLAYOFFS": r["IS_PLAYOFFS"],
             "GAME_ID": f"LIVE-{game_date}-{home}-{away}",
             "GAME_DATE": pd.Timestamp(game_date),
             "PLAYER_ID": r["PLAYER_ID"], "PLAYER_NAME": r["PLAYER_NAME"],
