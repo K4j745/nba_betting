@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-13",
+    "name": "Sędziowie meczu (zbiórki, asysty)",
+    "status": "no_edge",
+    "question": "Czy obsada sędziowska (znana rano w dniu meczu) mówi coś o zbiórkach i asystach, czego nie ma w cenie Kalshi?",
+    "result": "Żadna z 4 cech (efekt sędziów na zbiórki, asysty, faule, tempo) nie poprawia ceny Kalshi (CI 99,4% zawierają 0). Tendencje sędziów prawie nie powtarzają się między sezonami (korelacja −0,01…0,18). Słaby ślad tylko dla asyst (γ 0,25, CI 95% 0,02–0,51, bez poprawki)."
+  },
+  {
     "date": "2026-11-12",
     "name": "Rozkład zliczeń dla zbiórek i asyst",
     "status": "no_edge",

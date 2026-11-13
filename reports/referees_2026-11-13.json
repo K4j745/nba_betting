@@ -1,0 +1,158 @@
+{
+  "generated": "2026-11-13",
+  "sample": "dev",
+  "final_from": "2026-04-01",
+  "predictions": "eval_stats_2026-11-09_predictions.csv",
+  "coverage": {
+    "REB": 0.955,
+    "AST": 0.954
+  },
+  "n_officials": 92,
+  "feature_sd": {
+    "ref_reb": 0.541,
+    "ref_ast": 0.458,
+    "ref_pf": 0.513,
+    "ref_pace": 0.708
+  },
+  "ci_level": 0.9938,
+  "AST": {
+    "ref_reb": {
+      "n": 1530,
+      "share_nonzero": 1.0,
+      "delta_logloss": 0.00021,
+      "ci": [
+        -0.00107,
+        0.00157
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.058,
+        "ci95": [
+          -0.237,
+          0.142
+        ]
+      }
+    },
+    "ref_ast": {
+      "n": 1530,
+      "share_nonzero": 1.0,
+      "delta_logloss": -0.00111,
+      "ci": [
+        -0.00414,
+        0.00168
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.245,
+        "ci95": [
+          0.023,
+          0.51
+        ]
+      }
+    },
+    "ref_pf": {
+      "n": 1530,
+      "share_nonzero": 1.0,
+      "delta_logloss": 0.00032,
+      "ci": [
+        -0.00089,
+        0.00148
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.001,
+        "ci95": [
+          -0.183,
+          0.188
+        ]
+      }
+    },
+    "ref_pace": {
+      "n": 1530,
+      "share_nonzero": 1.0,
+      "delta_logloss": 0.00047,
+      "ci": [
+        -0.00087,
+        0.00181
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.027,
+        "ci95": [
+          -0.14,
+          0.207
+        ]
+      }
+    }
+  },
+  "REB": {
+    "ref_reb": {
+      "n": 2103,
+      "share_nonzero": 1.0,
+      "delta_logloss": 0.0001,
+      "ci": [
+        -0.00106,
+        0.00131
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.075,
+        "ci95": [
+          -0.286,
+          0.093
+        ]
+      }
+    },
+    "ref_ast": {
+      "n": 2103,
+      "share_nonzero": 1.0,
+      "delta_logloss": 0.00032,
+      "ci": [
+        -0.002,
+        0.00286
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": 0.137,
+        "ci95": [
+          -0.092,
+          0.38
+        ]
+      }
+    },
+    "ref_pf": {
+      "n": 2103,
+      "share_nonzero": 1.0,
+      "delta_logloss": 0.00038,
+      "ci": [
+        -0.00104,
+        0.00179
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.048,
+        "ci95": [
+          -0.209,
+          0.112
+        ]
+      }
+    },
+    "ref_pace": {
+      "n": 2103,
+      "share_nonzero": 1.0,
+      "delta_logloss": 0.00026,
+      "ci": [
+        -0.00038,
+        0.00091
+      ],
+      "passed": false,
+      "delta_coef": {
+        "coef": -0.02,
+        "ci95": [
+          -0.183,
+          0.148
+        ]
+      }
+    }
+  }
+}
