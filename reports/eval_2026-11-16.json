@@ -1,0 +1,1299 @@
+{
+  "generated": "2026-11-16",
+  "feature_sets": {
+    "base": 26,
+    "absence": 32,
+    "efficiency": 29,
+    "fatigue": 33,
+    "context": 30
+  },
+  "lines_total": 4197,
+  "lines_matched": 4035,
+  "lines_unmatched": 162,
+  "game_dates": [
+    "2026-03-13",
+    "2026-06-03",
+    "2026-06-05",
+    "2026-06-08",
+    "2026-06-10",
+    "2026-06-13",
+    "2026-10-20",
+    "2026-10-21",
+    "2026-10-22",
+    "2026-10-23",
+    "2026-10-24",
+    "2026-10-25",
+    "2026-10-26",
+    "2026-10-27",
+    "2026-10-28",
+    "2026-10-29",
+    "2026-10-30",
+    "2026-10-31",
+    "2026-11-01",
+    "2026-11-02",
+    "2026-11-04",
+    "2026-11-05",
+    "2026-11-07",
+    "2026-11-08",
+    "2026-11-09",
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-14",
+    "2026-11-15"
+  ],
+  "books": {
+    "pinnacle": {
+      "base": {
+        "scores": {
+          "n": 1902,
+          "over_rate": 0.47,
+          "logloss_model": 0.7197,
+          "logloss_market": 0.6906,
+          "logloss_diff": 0.0291,
+          "logloss_diff_ci95": [
+            0.0189,
+            0.0402
+          ],
+          "brier_model": 0.2616,
+          "brier_market": 0.2487,
+          "mae_points": 5.327,
+          "mae_line": 5.14,
+          "avg_margin": 0.0684
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1382,
+            "hit_rate": 0.488,
+            "roi": -0.0775,
+            "roi_ci95": [
+              -0.1284,
+              -0.0286
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1179,
+            "hit_rate": 0.479,
+            "roi": -0.0918,
+            "roi_ci95": [
+              -0.1452,
+              -0.0383
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1039,
+            "hit_rate": 0.493,
+            "roi": -0.0659,
+            "roi_ci95": [
+              -0.1248,
+              -0.0065
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 740,
+            "hit_rate": 0.496,
+            "roi": -0.0541,
+            "roi_ci95": [
+              -0.1226,
+              0.0145
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 101,
+            "p_mean": 0.233,
+            "over_freq": 0.564
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 278,
+            "p_mean": 0.36,
+            "over_freq": 0.428
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 245,
+            "p_mean": 0.427,
+            "over_freq": 0.457
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 353,
+            "p_mean": 0.475,
+            "over_freq": 0.47
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 370,
+            "p_mean": 0.525,
+            "over_freq": 0.489
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 318,
+            "p_mean": 0.574,
+            "over_freq": 0.465
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 207,
+            "p_mean": 0.637,
+            "over_freq": 0.478
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 30,
+            "p_mean": 0.738,
+            "over_freq": 0.367
+          }
+        ]
+      },
+      "absence": {
+        "scores": {
+          "n": 1902,
+          "over_rate": 0.47,
+          "logloss_model": 0.7183,
+          "logloss_market": 0.6906,
+          "logloss_diff": 0.0277,
+          "logloss_diff_ci95": [
+            0.0167,
+            0.0387
+          ],
+          "brier_model": 0.2608,
+          "brier_market": 0.2487,
+          "mae_points": 5.297,
+          "mae_line": 5.14,
+          "avg_margin": 0.0684
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1402,
+            "hit_rate": 0.494,
+            "roi": -0.0674,
+            "roi_ci95": [
+              -0.1154,
+              -0.0223
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1166,
+            "hit_rate": 0.504,
+            "roi": -0.0453,
+            "roi_ci95": [
+              -0.1001,
+              0.0071
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1053,
+            "hit_rate": 0.506,
+            "roi": -0.0409,
+            "roi_ci95": [
+              -0.0972,
+              0.0203
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 735,
+            "hit_rate": 0.495,
+            "roi": -0.0587,
+            "roi_ci95": [
+              -0.126,
+              0.0112
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 95,
+            "p_mean": 0.224,
+            "over_freq": 0.526
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 280,
+            "p_mean": 0.358,
+            "over_freq": 0.436
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 276,
+            "p_mean": 0.427,
+            "over_freq": 0.417
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 371,
+            "p_mean": 0.476,
+            "over_freq": 0.491
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 351,
+            "p_mean": 0.526,
+            "over_freq": 0.467
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 261,
+            "p_mean": 0.574,
+            "over_freq": 0.498
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 223,
+            "p_mean": 0.638,
+            "over_freq": 0.484
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 45,
+            "p_mean": 0.735,
+            "over_freq": 0.489
+          }
+        ]
+      },
+      "efficiency": {
+        "scores": {
+          "n": 1902,
+          "over_rate": 0.47,
+          "logloss_model": 0.7191,
+          "logloss_market": 0.6906,
+          "logloss_diff": 0.0286,
+          "logloss_diff_ci95": [
+            0.0176,
+            0.0396
+          ],
+          "brier_model": 0.2613,
+          "brier_market": 0.2487,
+          "mae_points": 5.326,
+          "mae_line": 5.14,
+          "avg_margin": 0.0684
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1403,
+            "hit_rate": 0.491,
+            "roi": -0.0719,
+            "roi_ci95": [
+              -0.1218,
+              -0.0218
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1156,
+            "hit_rate": 0.49,
+            "roi": -0.0706,
+            "roi_ci95": [
+              -0.1264,
+              -0.0151
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1018,
+            "hit_rate": 0.493,
+            "roi": -0.0639,
+            "roi_ci95": [
+              -0.1206,
+              -0.006
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 720,
+            "hit_rate": 0.5,
+            "roi": -0.0465,
+            "roi_ci95": [
+              -0.118,
+              0.0255
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 106,
+            "p_mean": 0.237,
+            "over_freq": 0.519
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 264,
+            "p_mean": 0.36,
+            "over_freq": 0.439
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 256,
+            "p_mean": 0.427,
+            "over_freq": 0.473
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 336,
+            "p_mean": 0.476,
+            "over_freq": 0.432
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 404,
+            "p_mean": 0.525,
+            "over_freq": 0.507
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 301,
+            "p_mean": 0.573,
+            "over_freq": 0.462
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 209,
+            "p_mean": 0.636,
+            "over_freq": 0.498
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 26,
+            "p_mean": 0.756,
+            "over_freq": 0.308
+          }
+        ]
+      },
+      "fatigue": {
+        "scores": {
+          "n": 1902,
+          "over_rate": 0.47,
+          "logloss_model": 0.7196,
+          "logloss_market": 0.6906,
+          "logloss_diff": 0.029,
+          "logloss_diff_ci95": [
+            0.0176,
+            0.0398
+          ],
+          "brier_model": 0.2616,
+          "brier_market": 0.2487,
+          "mae_points": 5.328,
+          "mae_line": 5.14,
+          "avg_margin": 0.0684
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1389,
+            "hit_rate": 0.487,
+            "roi": -0.0792,
+            "roi_ci95": [
+              -0.1277,
+              -0.0286
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1183,
+            "hit_rate": 0.489,
+            "roi": -0.0752,
+            "roi_ci95": [
+              -0.1265,
+              -0.0197
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1046,
+            "hit_rate": 0.49,
+            "roi": -0.0705,
+            "roi_ci95": [
+              -0.1296,
+              -0.0126
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 718,
+            "hit_rate": 0.504,
+            "roi": -0.04,
+            "roi_ci95": [
+              -0.1114,
+              0.0283
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 103,
+            "p_mean": 0.234,
+            "over_freq": 0.553
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 275,
+            "p_mean": 0.36,
+            "over_freq": 0.429
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 238,
+            "p_mean": 0.427,
+            "over_freq": 0.471
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 344,
+            "p_mean": 0.475,
+            "over_freq": 0.462
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 383,
+            "p_mean": 0.524,
+            "over_freq": 0.473
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 308,
+            "p_mean": 0.574,
+            "over_freq": 0.481
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 218,
+            "p_mean": 0.636,
+            "over_freq": 0.477
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 33,
+            "p_mean": 0.739,
+            "over_freq": 0.424
+          }
+        ]
+      },
+      "context": {
+        "scores": {
+          "n": 1902,
+          "over_rate": 0.47,
+          "logloss_model": 0.7196,
+          "logloss_market": 0.6906,
+          "logloss_diff": 0.0291,
+          "logloss_diff_ci95": [
+            0.0185,
+            0.0396
+          ],
+          "brier_model": 0.2615,
+          "brier_market": 0.2487,
+          "mae_points": 5.319,
+          "mae_line": 5.14,
+          "avg_margin": 0.0684
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1397,
+            "hit_rate": 0.487,
+            "roi": -0.0788,
+            "roi_ci95": [
+              -0.1291,
+              -0.0289
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1172,
+            "hit_rate": 0.49,
+            "roi": -0.0715,
+            "roi_ci95": [
+              -0.1267,
+              -0.0144
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1044,
+            "hit_rate": 0.494,
+            "roi": -0.063,
+            "roi_ci95": [
+              -0.1242,
+              -0.0058
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 731,
+            "hit_rate": 0.488,
+            "roi": -0.0664,
+            "roi_ci95": [
+              -0.1357,
+              0.0015
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 103,
+            "p_mean": 0.234,
+            "over_freq": 0.553
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 274,
+            "p_mean": 0.36,
+            "over_freq": 0.416
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 240,
+            "p_mean": 0.427,
+            "over_freq": 0.488
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 359,
+            "p_mean": 0.476,
+            "over_freq": 0.457
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 353,
+            "p_mean": 0.524,
+            "over_freq": 0.484
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 327,
+            "p_mean": 0.573,
+            "over_freq": 0.45
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 219,
+            "p_mean": 0.635,
+            "over_freq": 0.521
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 27,
+            "p_mean": 0.743,
+            "over_freq": 0.333
+          }
+        ]
+      }
+    },
+    "unibet": {
+      "base": {
+        "scores": {
+          "n": 2133,
+          "over_rate": 0.479,
+          "logloss_model": 0.7251,
+          "logloss_market": 0.6926,
+          "logloss_diff": 0.0325,
+          "logloss_diff_ci95": [
+            0.0213,
+            0.0435
+          ],
+          "brier_model": 0.2638,
+          "brier_market": 0.2497,
+          "mae_points": 5.271,
+          "mae_line": 5.062,
+          "avg_margin": 0.0724
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1562,
+            "hit_rate": 0.497,
+            "roi": -0.073,
+            "roi_ci95": [
+              -0.1188,
+              -0.0261
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1312,
+            "hit_rate": 0.5,
+            "roi": -0.0682,
+            "roi_ci95": [
+              -0.1201,
+              -0.0184
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1142,
+            "hit_rate": 0.504,
+            "roi": -0.0594,
+            "roi_ci95": [
+              -0.1145,
+              -0.0048
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 812,
+            "hit_rate": 0.511,
+            "roi": -0.0474,
+            "roi_ci95": [
+              -0.1109,
+              0.0146
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 112,
+            "p_mean": 0.225,
+            "over_freq": 0.518
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 287,
+            "p_mean": 0.359,
+            "over_freq": 0.474
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 268,
+            "p_mean": 0.427,
+            "over_freq": 0.474
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 371,
+            "p_mean": 0.475,
+            "over_freq": 0.488
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 389,
+            "p_mean": 0.525,
+            "over_freq": 0.478
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 363,
+            "p_mean": 0.573,
+            "over_freq": 0.468
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 295,
+            "p_mean": 0.638,
+            "over_freq": 0.478
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 48,
+            "p_mean": 0.742,
+            "over_freq": 0.479
+          }
+        ]
+      },
+      "absence": {
+        "scores": {
+          "n": 2133,
+          "over_rate": 0.479,
+          "logloss_model": 0.7212,
+          "logloss_market": 0.6926,
+          "logloss_diff": 0.0285,
+          "logloss_diff_ci95": [
+            0.018,
+            0.039
+          ],
+          "brier_model": 0.2623,
+          "brier_market": 0.2497,
+          "mae_points": 5.232,
+          "mae_line": 5.062,
+          "avg_margin": 0.0724
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1559,
+            "hit_rate": 0.5,
+            "roi": -0.0685,
+            "roi_ci95": [
+              -0.1155,
+              -0.0237
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1317,
+            "hit_rate": 0.505,
+            "roi": -0.0592,
+            "roi_ci95": [
+              -0.1077,
+              -0.0099
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1179,
+            "hit_rate": 0.511,
+            "roi": -0.0475,
+            "roi_ci95": [
+              -0.1007,
+              0.0058
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 831,
+            "hit_rate": 0.511,
+            "roi": -0.0461,
+            "roi_ci95": [
+              -0.1074,
+              0.0174
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 106,
+            "p_mean": 0.229,
+            "over_freq": 0.528
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 288,
+            "p_mean": 0.36,
+            "over_freq": 0.458
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 294,
+            "p_mean": 0.427,
+            "over_freq": 0.456
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 368,
+            "p_mean": 0.476,
+            "over_freq": 0.5
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 399,
+            "p_mean": 0.525,
+            "over_freq": 0.454
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 308,
+            "p_mean": 0.574,
+            "over_freq": 0.484
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 304,
+            "p_mean": 0.638,
+            "over_freq": 0.507
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 66,
+            "p_mean": 0.74,
+            "over_freq": 0.485
+          }
+        ]
+      },
+      "efficiency": {
+        "scores": {
+          "n": 2133,
+          "over_rate": 0.479,
+          "logloss_model": 0.7241,
+          "logloss_market": 0.6926,
+          "logloss_diff": 0.0315,
+          "logloss_diff_ci95": [
+            0.0208,
+            0.0428
+          ],
+          "brier_model": 0.2633,
+          "brier_market": 0.2497,
+          "mae_points": 5.267,
+          "mae_line": 5.062,
+          "avg_margin": 0.0724
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1559,
+            "hit_rate": 0.493,
+            "roi": -0.0807,
+            "roi_ci95": [
+              -0.1264,
+              -0.0331
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1307,
+            "hit_rate": 0.502,
+            "roi": -0.0644,
+            "roi_ci95": [
+              -0.1118,
+              -0.0148
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1145,
+            "hit_rate": 0.503,
+            "roi": -0.0629,
+            "roi_ci95": [
+              -0.1172,
+              -0.0098
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 795,
+            "hit_rate": 0.513,
+            "roi": -0.0441,
+            "roi_ci95": [
+              -0.1083,
+              0.0156
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 116,
+            "p_mean": 0.229,
+            "over_freq": 0.517
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 286,
+            "p_mean": 0.362,
+            "over_freq": 0.465
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 248,
+            "p_mean": 0.426,
+            "over_freq": 0.496
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 381,
+            "p_mean": 0.476,
+            "over_freq": 0.465
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 405,
+            "p_mean": 0.525,
+            "over_freq": 0.481
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 371,
+            "p_mean": 0.574,
+            "over_freq": 0.472
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 282,
+            "p_mean": 0.638,
+            "over_freq": 0.493
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 44,
+            "p_mean": 0.751,
+            "over_freq": 0.455
+          }
+        ]
+      },
+      "fatigue": {
+        "scores": {
+          "n": 2133,
+          "over_rate": 0.479,
+          "logloss_model": 0.7252,
+          "logloss_market": 0.6926,
+          "logloss_diff": 0.0325,
+          "logloss_diff_ci95": [
+            0.0214,
+            0.0438
+          ],
+          "brier_model": 0.2638,
+          "brier_market": 0.2497,
+          "mae_points": 5.272,
+          "mae_line": 5.062,
+          "avg_margin": 0.0724
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1557,
+            "hit_rate": 0.488,
+            "roi": -0.0904,
+            "roi_ci95": [
+              -0.1363,
+              -0.0418
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1313,
+            "hit_rate": 0.505,
+            "roi": -0.0594,
+            "roi_ci95": [
+              -0.1092,
+              -0.0082
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1162,
+            "hit_rate": 0.509,
+            "roi": -0.0524,
+            "roi_ci95": [
+              -0.1061,
+              0.0008
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 835,
+            "hit_rate": 0.516,
+            "roi": -0.0388,
+            "roi_ci95": [
+              -0.1029,
+              0.0222
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 114,
+            "p_mean": 0.226,
+            "over_freq": 0.544
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 283,
+            "p_mean": 0.36,
+            "over_freq": 0.47
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 264,
+            "p_mean": 0.427,
+            "over_freq": 0.477
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 361,
+            "p_mean": 0.476,
+            "over_freq": 0.479
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 403,
+            "p_mean": 0.523,
+            "over_freq": 0.449
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 359,
+            "p_mean": 0.574,
+            "over_freq": 0.482
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 301,
+            "p_mean": 0.639,
+            "over_freq": 0.485
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 48,
+            "p_mean": 0.748,
+            "over_freq": 0.583
+          }
+        ]
+      },
+      "context": {
+        "scores": {
+          "n": 2133,
+          "over_rate": 0.479,
+          "logloss_model": 0.7253,
+          "logloss_market": 0.6926,
+          "logloss_diff": 0.0326,
+          "logloss_diff_ci95": [
+            0.0217,
+            0.043
+          ],
+          "brier_model": 0.2637,
+          "brier_market": 0.2497,
+          "mae_points": 5.264,
+          "mae_line": 5.062,
+          "avg_margin": 0.0724
+        },
+        "bets": [
+          {
+            "ev_threshold": 0.0,
+            "bets": 1568,
+            "hit_rate": 0.493,
+            "roi": -0.0816,
+            "roi_ci95": [
+              -0.1281,
+              -0.0371
+            ]
+          },
+          {
+            "ev_threshold": 0.03,
+            "bets": 1313,
+            "hit_rate": 0.495,
+            "roi": -0.0775,
+            "roi_ci95": [
+              -0.1286,
+              -0.0279
+            ]
+          },
+          {
+            "ev_threshold": 0.05,
+            "bets": 1162,
+            "hit_rate": 0.502,
+            "roi": -0.0645,
+            "roi_ci95": [
+              -0.1153,
+              -0.0114
+            ]
+          },
+          {
+            "ev_threshold": 0.1,
+            "bets": 791,
+            "hit_rate": 0.507,
+            "roi": -0.0556,
+            "roi_ci95": [
+              -0.1213,
+              0.0132
+            ]
+          }
+        ],
+        "calibration": [
+          {
+            "bin": "(0.0, 0.3]",
+            "n": 117,
+            "p_mean": 0.229,
+            "over_freq": 0.53
+          },
+          {
+            "bin": "(0.3, 0.4]",
+            "n": 278,
+            "p_mean": 0.36,
+            "over_freq": 0.464
+          },
+          {
+            "bin": "(0.4, 0.45]",
+            "n": 269,
+            "p_mean": 0.427,
+            "over_freq": 0.502
+          },
+          {
+            "bin": "(0.45, 0.5]",
+            "n": 372,
+            "p_mean": 0.477,
+            "over_freq": 0.446
+          },
+          {
+            "bin": "(0.5, 0.55]",
+            "n": 381,
+            "p_mean": 0.525,
+            "over_freq": 0.478
+          },
+          {
+            "bin": "(0.55, 0.6]",
+            "n": 368,
+            "p_mean": 0.572,
+            "over_freq": 0.484
+          },
+          {
+            "bin": "(0.6, 0.7]",
+            "n": 299,
+            "p_mean": 0.637,
+            "over_freq": 0.492
+          },
+          {
+            "bin": "(0.7, 1.0]",
+            "n": 49,
+            "p_mean": 0.74,
+            "over_freq": 0.469
+          }
+        ]
+      }
+    }
+  },
+  "ablation": {
+    "pinnacle": {
+      "absence_vs_base": {
+        "logloss_diff": -0.0014,
+        "logloss_diff_ci95": [
+          -0.0069,
+          0.0044
+        ],
+        "mae_diff": -0.031,
+        "mae_diff_ci95": [
+          -0.072,
+          0.014
+        ]
+      },
+      "efficiency_vs_base": {
+        "logloss_diff": -0.0005,
+        "logloss_diff_ci95": [
+          -0.0033,
+          0.002
+        ],
+        "mae_diff": -0.002,
+        "mae_diff_ci95": [
+          -0.023,
+          0.02
+        ]
+      },
+      "fatigue_vs_base": {
+        "logloss_diff": -0.0001,
+        "logloss_diff_ci95": [
+          -0.0022,
+          0.002
+        ],
+        "mae_diff": 0.001,
+        "mae_diff_ci95": [
+          -0.016,
+          0.02
+        ]
+      },
+      "context_vs_base": {
+        "logloss_diff": -0.0001,
+        "logloss_diff_ci95": [
+          -0.0021,
+          0.0019
+        ],
+        "mae_diff": -0.008,
+        "mae_diff_ci95": [
+          -0.025,
+          0.01
+        ]
+      }
+    },
+    "unibet": {
+      "absence_vs_base": {
+        "logloss_diff": -0.0039,
+        "logloss_diff_ci95": [
+          -0.0102,
+          0.0024
+        ],
+        "mae_diff": -0.039,
+        "mae_diff_ci95": [
+          -0.081,
+          0.002
+        ]
+      },
+      "efficiency_vs_base": {
+        "logloss_diff": -0.001,
+        "logloss_diff_ci95": [
+          -0.0035,
+          0.0014
+        ],
+        "mae_diff": -0.004,
+        "mae_diff_ci95": [
+          -0.024,
+          0.016
+        ]
+      },
+      "fatigue_vs_base": {
+        "logloss_diff": 0.0001,
+        "logloss_diff_ci95": [
+          -0.0019,
+          0.002
+        ],
+        "mae_diff": 0.001,
+        "mae_diff_ci95": [
+          -0.015,
+          0.017
+        ]
+      },
+      "context_vs_base": {
+        "logloss_diff": 0.0002,
+        "logloss_diff_ci95": [
+          -0.0017,
+          0.0021
+        ],
+        "mae_diff": -0.007,
+        "mae_diff_ci95": [
+          -0.023,
+          0.009
+        ]
+      }
+    }
+  },
+  "unibet_vs_pinnacle_fair": {
+    "n_same_line": 1272,
+    "bets": [
+      {
+        "ev_threshold": 0.0,
+        "bets": 154,
+        "hit_rate": 0.552,
+        "roi": 0.034,
+        "roi_ci95": [
+          -0.1088,
+          0.1799
+        ]
+      },
+      {
+        "ev_threshold": 0.03,
+        "bets": 38,
+        "hit_rate": 0.447,
+        "roi": -0.1626,
+        "roi_ci95": [
+          -0.4582,
+          0.1398
+        ]
+      },
+      {
+        "ev_threshold": 0.05,
+        "bets": 13,
+        "hit_rate": 0.462,
+        "roi": -0.1346,
+        "roi_ci95": [
+          -0.5771,
+          0.4308
+        ]
+      },
+      {
+        "ev_threshold": 0.1,
+        "bets": 2,
+        "hit_rate": 0.5,
+        "roi": -0.095,
+        "roi_ci95": [
+          -1.0,
+          0.81
+        ]
+      }
+    ]
+  }
+}
