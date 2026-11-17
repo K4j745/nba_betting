@@ -7,7 +7,7 @@ import market_tests as mt
 def _data(n=8):
     return pd.DataFrame({"GAME_ID": [f"g{i}" for i in range(n)], "PLAYER_ID": 1,
                          "GAME_DATE": pd.date_range("2026-01-01", periods=n), "IS_HOME": 1, "tz_shift": 2.0,
-                         "games_in_season": 30, "PTS": [10, 12, 8, 10, 12, 8, 30, 10.0], "REB": 5.0, "AST": 5.0})
+                         "games_in_season": 30, "PTS": [10, 12, 8, 10, 12, 8, 30, 10.0], "REB": 5.0, "AST": 5.0, "FG3M": 2.0})
 
 
 def _pred(game):

@@ -1,6 +1,6 @@
 # nba_betting/evaluate_stats.py
 """
-Ewaluacja modeli PTS / REB / AST względem cen Kalshi (darmowa historia od 12.2025).
+Ewaluacja modeli PTS / REB / AST / FG3M (trójki) względem cen Kalshi (darmowa historia od 12.2025).
 
 Dla każdej statystyki:
   - linie: główna linia Kalshi na zawodnika i mecz (cena najbliższa 0,5), cena = środek
@@ -130,7 +130,7 @@ def run() -> dict:
     report = {"generated": date.today().isoformat(), "source": "kalshi (środek bid/ask ≥ 1 h przed meczem)",
               "stats": {}}
     preds = []
-    for stat in ("PTS", "REB", "AST"):
+    for stat in ("PTS", "REB", "AST", "FG3M"):
         lines = main_lines(hist[hist["stat"] == stat]).rename(columns={"player": "player_name"}).assign(bookmaker="kalshi")
         matched, unmatched = attach_games(lines.drop(columns=["name_key"]), data)
         matched["y_over"] = (matched[stat] > matched["line"]).astype(int)
@@ -148,7 +148,7 @@ def run() -> dict:
     stem = REPORT_DIR / f"eval_stats_{report['generated']}"
     Path(f"{stem}.json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
     cols = ["stat", "game_date", "tip", "player_name", "GAME_ID", "PLAYER_ID", "line", "bid", "ask", "p_mid",
-            "mu_base", "p_base", "mu_absence", "p_absence", "y_over", "PTS", "REB", "AST"]
+            "mu_base", "p_base", "mu_absence", "p_absence", "y_over", "PTS", "REB", "AST", "FG3M"]
     pd.concat(preds)[cols].to_csv(f"{stem}_predictions.csv", index=False)
     logger.info("Raport: %s.json", stem)
     return report

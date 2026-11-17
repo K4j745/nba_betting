@@ -476,7 +476,7 @@ details.fold[open] > summary { margin-bottom: 6px; }
   .kpi-grid { gap: 10px; }
   .kpi-card { padding: 14px; }
   :root { --fs-kpi: 24px; --fs-title: 20px; }
-  .stat-tabs { display: grid; grid-template-columns: repeat(5, 1fr); overflow: visible; }
+  .stat-tabs { display: grid; grid-template-columns: repeat(4, 1fr); overflow: visible; }   /* 7 zakładek: 2 rzędy */
   .nav-btn { flex-direction: column; gap: 3px; padding: 8px 1px; font-size: var(--fs-tab-xs); letter-spacing: -.01em; }
   .avatar { width: 48px; height: 48px; border-radius: 14px; }
 }
@@ -609,6 +609,8 @@ footer.court-footer {
   <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.3A6.5 6.5 0 0 1 21.5 20"/></symbol>
   <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
   <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M4 7.5A1.5 1.5 0 0 1 5.5 6h13A1.5 1.5 0 0 1 20 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 16.5V14a2 2 0 0 0 0-4zM14 6v12" stroke-dasharray="0"/><path d="M7.5 10.5h3.5M7.5 13.5h2.5"/></symbol>
+  <symbol id="i-three" viewBox="0 0 24 24"><path d="M3 18.5a9 9 0 0 1 18 0"/><path d="M9.5 7.5h5l-2.6 3.1a2.6 2.6 0 1 1-2.4 3.6"/></symbol>
   <symbol id="i-loader" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></symbol>
 </svg>
 <a class="skip-link" href="#main">Przejdź do treści</a>
@@ -623,9 +625,11 @@ footer.court-footer {
     </div>
   </div>
   <nav class="stat-tabs" aria-label="Statystyka">
-    <button class="nav-btn active" data-stat="PTS" onclick="setStat('PTS')"><svg class="icon"><use href="#i-ball"/></svg>Punkty</button>
+    <button class="nav-btn active" data-stat="DAILY" onclick="setStat('DAILY')"><svg class="icon"><use href="#i-ticket"/></svg>Kupon dnia</button>
+    <button class="nav-btn" data-stat="PTS" onclick="setStat('PTS')"><svg class="icon"><use href="#i-ball"/></svg>Punkty</button>
     <button class="nav-btn" data-stat="REB" onclick="setStat('REB')"><svg class="icon"><use href="#i-rebound"/></svg>Zbiórki</button>
     <button class="nav-btn" data-stat="AST" onclick="setStat('AST')"><svg class="icon"><use href="#i-assist"/></svg>Asysty</button>
+    <button class="nav-btn" data-stat="FG3M" onclick="setStat('FG3M')"><svg class="icon"><use href="#i-three"/></svg>Trójki</button>
     <button class="nav-btn" data-stat="PLAYERS" onclick="setStat('PLAYERS')"><svg class="icon"><use href="#i-users"/></svg>Zawodnicy</button>
     <button class="nav-btn" data-stat="LAB" onclick="setStat('LAB')"><svg class="icon"><use href="#i-flask"/></svg>Badania</button>
   </nav>
@@ -656,6 +660,27 @@ footer.court-footer {
     </div>
   </div>
 
+
+  <!-- Kupon dnia: jeden typ na mecz ze wszystkich modeli -->
+  <div id="tabDaily" style="display:none">
+    <section class="section">
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">Skuteczność</div><div class="kpi-value" id="dWin">—</div><div class="kpi-sub" id="dWinSub">—</div></div>
+        <div class="kpi-card"><div class="kpi-label" title="Zwrot z inwestycji">ROI</div><div class="kpi-value" id="dRoi">—</div><div class="kpi-sub" id="dRoiSub">na typ, kursy po prowizji</div></div>
+        <div class="kpi-card"><div class="kpi-label">Zysk / strata</div><div class="kpi-value" id="dPnl">—</div><div class="kpi-sub">stawka 1 j. na typ</div></div>
+        <div class="kpi-card"><div class="kpi-label">Reguła na historii Kalshi</div><div class="kpi-value" id="dBt">—</div><div class="kpi-sub" id="dBtSub">backtest</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <h2 class="section-title" id="dCouponTitle">Kupon dnia</h2>
+      <div class="card" id="dCouponCard"></div>
+    </section>
+    <section class="section">
+      <h2 class="section-title">Historia kuponu dnia</h2>
+      <div><div class="kpi-sub players-meta">Odtworzona z zapisanych predykcji tą samą regułą · wyniki z logów NBA</div></div>
+      <div class="card"><div class="table-wrap" id="dHistory"></div></div>
+    </section>
+  </div>
 
   <div id="tabPTS">
   <!-- KPI -->
@@ -1004,20 +1029,21 @@ function render(d) {
 }
 
 /* ── Zakładki Punkty / Zbiórki / Asysty ─────────────────────────────────────────── */
-let _stat = (location.hash.slice(1) || 'PTS').toUpperCase();
-if (!['PTS', 'REB', 'AST', 'PLAYERS', 'LAB'].includes(_stat)) _stat = 'PTS';
-const STAT_NAME = { PTS: 'punkty', REB: 'zbiórki', AST: 'asysty' };
+const TABS = ['DAILY', 'PTS', 'REB', 'AST', 'FG3M', 'PLAYERS', 'LAB'];
+const tabFromHash = () => { const s = (location.hash.slice(1) || 'DAILY').toUpperCase(); return TABS.includes(s) ? s : 'DAILY'; };
+let _stat = tabFromHash();
+const STAT_NAME = { PTS: 'punkty', REB: 'zbiórki', AST: 'asysty', FG3M: 'trójki' };
+const STAT_SHORT = { PTS: 'pkt', REB: 'zb.', AST: 'as.', FG3M: '3pt' };
 
 function setStat(s) {
   if (s === _stat) return;
   _stat = s;
   // pushState: „wstecz” w przeglądarce wraca do poprzedniej zakładki
-  history.pushState(null, '', s === 'PTS' ? location.pathname : '#' + s.toLowerCase());
+  history.pushState(null, '', s === 'DAILY' ? location.pathname : '#' + s.toLowerCase());
   if (_data) renderStatTab(_data);
 }
 window.addEventListener('popstate', () => {
-  const s = (location.hash.slice(1) || 'PTS').toUpperCase();
-  _stat = ['PTS', 'REB', 'AST', 'PLAYERS', 'LAB'].includes(s) ? s : 'PTS';
+  _stat = tabFromHash();
   if (_data) renderStatTab(_data);
 });
 
@@ -1030,13 +1056,15 @@ function renderStatTab(d) {
     if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
   document.getElementById('tabPTS').style.display  = _stat === 'PTS' ? '' : 'none';
-  document.getElementById('tabStat').style.display = ['REB', 'AST'].includes(_stat) ? '' : 'none';
+  document.getElementById('tabStat').style.display = ['REB', 'AST', 'FG3M'].includes(_stat) ? '' : 'none';
+  document.getElementById('tabDaily').style.display = _stat === 'DAILY' ? '' : 'none';
   document.getElementById('tabLab').style.display  = _stat === 'LAB' ? '' : 'none';
   document.getElementById('tabPlayers').style.display = _stat === 'PLAYERS' ? '' : 'none';
   const tab = (d.stats || {})[_stat] || {};
   renderKalshiEval(tab.kalshi_eval);
   if (_stat === 'LAB') { renderLab(d.research_log); return; }
   if (_stat === 'PLAYERS') { renderPlayers(d.upcoming); return; }
+  if (_stat === 'DAILY') { renderDaily(d.daily, d.game_date); return; }
   if (_stat === 'PTS') return;
 
   const k = tab.kpi || {};
@@ -1056,7 +1084,7 @@ function renderStatTab(d) {
 
   // Kupon: ta sama tabela co dla punktów
   const c = tab.coupon;
-  document.getElementById('sCouponTitle').textContent = `Kupon dnia · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
+  document.getElementById('sCouponTitle').textContent = `Typy · ${STAT_NAME[_stat]} · ${(c && c.date) || d.game_date}`;
   const card = document.getElementById('sCouponCard');
   if (!c || !c.picks || !c.picks.length) {
     card.innerHTML = couponEmpty('Brak typów na dziś', c
@@ -1084,6 +1112,61 @@ function renderStatTab(d) {
     : `<table><thead><tr><th>Data</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>Zysk / strata</th></tr></thead>
        <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
          <td><div class="player-name">${r.player}</div><div class="game-label">${gameLabel(r.game)}</div></td>
+         <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
+         <td class="mono">${r.actual ?? '—'}</td>
+         <td>${r.result ? resultBadge(r.result) : '<span class="badge-result badge-push">czeka</span>'}</td>
+         <td class="${(r.profit || 0) >= 0 ? 'pnl-pos' : 'pnl-neg'}">${r.profit == null ? '—' : signed(r.profit, 2) + ' j.'}</td></tr>`).join('')}
+       </tbody></table>`;
+}
+
+/* ── Kupon dnia ─────────────────────────────────────────────────────────────── */
+function renderDaily(dl, gameDate) {
+  dl = dl || {};
+  const k = dl.kpi || {};
+  const wr = k.picks ? k.wins / k.picks : null;
+  document.getElementById('dWin').textContent = pct(wr, 1);
+  document.getElementById('dWin').className = 'kpi-value ' + sampleClr(wr == null ? null : wr - 0.5, k.picks);
+  document.getElementById('dWinSub').innerHTML = winSub(k.wins ?? 0, k.picks ?? 0);
+  document.getElementById('dRoi').textContent = pct(k.roi, 1);
+  document.getElementById('dRoi').className = 'kpi-value ' + sampleClr(k.roi, k.picks);
+  document.getElementById('dRoiSub').innerHTML = `na typ, kursy po prowizji ${smallSample(k.picks)}`;
+  document.getElementById('dPnl').textContent = signed(k.pnl, 2) + ' j.';
+  document.getElementById('dPnl').className = 'kpi-value ' + clrVal(k.pnl);
+  const bt = dl.backtest && dl.backtest.holdout;
+  document.getElementById('dBt').textContent = bt && bt.roi != null ? pct(bt.roi, 1) : '—';
+  document.getElementById('dBt').className = 'kpi-value ' + (bt && bt.roi != null ? clrVal(bt.roi) : '');
+  document.getElementById('dBtSub').textContent = bt && bt.picks
+    ? `ROI na liniach od 1.04 · ${bt.picks} typów` + (bt.roi_ci95 ? ` · 95%: ${pct(bt.roi_ci95[0], 0)}…${pct(bt.roi_ci95[1], 0)}` : '')
+    : 'brak raportu daily';
+
+  document.getElementById('dCouponTitle').textContent = `Kupon dnia · ${dl.date || gameDate || ''}`;
+  const card = document.getElementById('dCouponCard');
+  const picks = dl.picks || [];
+  if (!picks.length) {
+    card.innerHTML = couponEmpty('Brak kuponu na dziś', dl.n_candidates
+      ? `${dl.n_candidates} linii sprawdzonych w ${dl.n_games} meczach, żadna nie ma dodatniej wartości oczekiwanej.`
+      : 'Brak dzisiejszych predykcji: nie ma meczów albo pipeline jeszcze nie działał.');
+  } else {
+    card.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Zawodnik · Mecz</th><th>Statystyka</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Pewność</th><th>EV</th></tr></thead>
+      <tbody>${picks.map(p => `<tr>
+        <td>${who(p.player, p.game, p.player_id)}</td>
+        <td>${esc(STAT_NAME[p.stat] || p.stat)}</td>
+        <td>${betBadge(p.bet)}</td><td class="mono">${p.line}</td>
+        <td class="mono" title="${esc(p.bookmaker || '')}">${p.odds}</td>
+        <td>${confBar(Math.round(100 * p.confidence))}</td>
+        <td>${evBadge(p.ev)}</td></tr>`).join('')}
+      </tbody></table></div>
+      <div class="stat-note">${icon('alert')}<span>Reguła: ${esc(dl.rule || '')}. Typy papierowe: model nie bije rynku, to nie rekomendacja zakładów.</span></div>`;
+  }
+
+  const h = dl.history || [];
+  document.getElementById('dHistory').innerHTML = !h.length
+    ? `<div class="empty-state"><div class="empty-icon">${icon('chart')}</div><div class="empty-title">Brak historii</div>
+       <div class="empty-body">Wyniki pojawią się dzień po pierwszym kuponie dnia, gdy logi meczów trafią do repo.</div></div>`
+    : `<table><thead><tr><th>Data</th><th>Zawodnik · Mecz</th><th>Stat.</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>P&amp;L</th></tr></thead>
+       <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
+         <td>${who(r.player, r.game, r.player_id)}</td><td>${esc(STAT_SHORT[r.stat] || r.stat)}</td>
          <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
          <td class="mono">${r.actual ?? '—'}</td>
          <td>${r.result ? resultBadge(r.result) : '<span class="badge-result badge-push">czeka</span>'}</td>

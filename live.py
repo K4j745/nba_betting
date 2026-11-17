@@ -32,9 +32,10 @@ from points_model import train_points_model
 logger = logging.getLogger(__name__)
 
 EV_MIN        = 0.05   # minimalna wartość oczekiwana zakładu
-STAT_ODDS     = (1.40, 2.60)   # REB/AST z Kalshi: linie główne ~50% → kurs ~1,9–2,1 po prowizji
-STAT_LABEL    = {"PTS": "pkt", "REB": "zb.", "AST": "as."}
-OPP_FEATURE   = {"PTS": "opp_def_rtg", "REB": "opp_reb_allowed", "AST": "opp_ast_allowed"}
+STAT_ODDS     = (1.40, 2.60)   # REB/AST/FG3M z Kalshi: linie główne ~50% → kurs ~1,9–2,1 po prowizji
+STAT_LABEL    = {"PTS": "pkt", "REB": "zb.", "AST": "as.", "FG3M": "3pt"}
+OPP_FEATURE   = {"PTS": "opp_def_rtg", "REB": "opp_reb_allowed", "AST": "opp_ast_allowed",
+                 "FG3M": "opp_fg3a_allowed"}
 MAX_STALE_DAYS = 2     # dane starsze niż tyle dni → brak kuponu (laptop nie zsynchronizował)
 
 try:
