@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-17T04:05:33.775322",
-  "game_date": "2026-11-16",
+  "generated_at": "2026-11-17T16:34:07.162595",
+  "game_date": "2026-11-17",
   "today_coupon": null,
   "no_games_reason": "no_props_today",
   "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
@@ -1282,19 +1282,7 @@
           }
         ]
       },
-      "coupon": {
-        "date": "2026-11-16",
-        "model_version": "reb-2026-11-16",
-        "stat": "REB",
-        "paper_trading": true,
-        "injury_report": true,
-        "n_out": 60,
-        "n_predictions": 14,
-        "picks": [],
-        "total_picks": 0,
-        "simulated_stake_per_pick": 10.0,
-        "simulated_total_stake": 0.0
-      },
+      "coupon": null,
       "history": [
         {
           "game": "Oklahoma City Thunder @ Sacramento Kings",
@@ -2571,40 +2559,7 @@
           }
         ]
       },
-      "coupon": {
-        "date": "2026-11-16",
-        "model_version": "ast-2026-11-16",
-        "stat": "AST",
-        "paper_trading": true,
-        "injury_report": true,
-        "n_out": 60,
-        "n_predictions": 12,
-        "picks": [
-          {
-            "game": "Phoenix Suns @ Denver Nuggets",
-            "player": "Jamal Murray",
-            "bet": "over",
-            "stat": "AST",
-            "line": 5.5,
-            "odds": 2.564,
-            "bookmaker": "kalshi",
-            "pts_predicted": 6.8,
-            "p_over": 0.631,
-            "confidence": 63,
-            "ev": 0.6186,
-            "p_market": 0.33499999999999996,
-            "top_features": [
-              "ast_ewm",
-              "min_avg_10",
-              "opp_ast_allowed"
-            ],
-            "reasoning": "model 6.8 as. vs linia 5.5 (kalshi), ewm 6.4, min 36.4, opp_ast_allowed 25.5, EV +61.9%"
-          }
-        ],
-        "total_picks": 1,
-        "simulated_stake_per_pick": 10.0,
-        "simulated_total_stake": 10.0
-      },
+      "coupon": null,
       "history": [
         {
           "game": "Phoenix Suns @ Denver Nuggets",
