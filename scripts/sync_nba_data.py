@@ -8,7 +8,7 @@ pobiera laptop, a Actions czyta je z brancha `data`.
 Co robi:
   1. history.load_logs(refresh_current=True) — 4 zapytania (bieżący sezon P/T, RS/PO);
      zakończone sezony pobierane tylko, jeśli brakuje ich w data/raw.
-  2. kalshi.update_history() — nowe rozliczone rynki Kalshi (PTS/REB/AST) → data/raw/kalshi_lines.csv.gz
+  2. kalshi.update_history() — nowe rozliczone rynki Kalshi (PTS/REB/AST/FG3M) → data/raw/kalshi_lines.csv.gz
      + raporty kontuzji NBA z godziny przed każdym meczem → data/raw/injury_reports.csv.gz
      (błąd Kalshi / raportów nie blokuje synchronizacji logów).
   3. Buduje commit z samymi plikami data/raw/*.csv.gz (bez rodzica) i wypycha go
