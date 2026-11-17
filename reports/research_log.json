@@ -1,5 +1,19 @@
 [
   {
+    "date": "2026-11-17",
+    "name": "Kupon dnia: jeden typ na mecz z największą pewnością modelu",
+    "status": "no_edge",
+    "question": "Czy wybór w każdym meczu typu z największą pewnością modelu (EV ≥ 0, kurs 1,40–3,00) zarabia na liniach Kalshi?",
+    "result": "Dev: 788 typów, trafność 58,6%, ROI −0,5% (CI −6,4%…+5,5%). Holdout: 378 typów, trafność 56,1% przy deklarowanej pewności 75%, ROI −10,2% (CI −18,2%…−2,1%). Model jest zbyt pewny siebie; reguła przegrywa."
+  },
+  {
+    "date": "2026-11-17",
+    "name": "Model trafionych trójek (FG3M) vs Kalshi",
+    "status": "no_edge",
+    "question": "Czy model trójek przewiduje lepiej niż ceny Kalshi KXNBA3PT?",
+    "result": "Δ log-loss +0,005 (CI 0,001–0,009) na 4476 liniach: najbliżej rynku ze wszystkich statystyk, ale wciąż gorzej. MAE 1,177 vs 1,204 dla samej linii."
+  },
+  {
     "date": "2026-11-13",
     "name": "Poprzedni sezon, wiek i zmiana roli",
     "status": "forecast_only",
