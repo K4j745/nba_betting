@@ -1,0 +1,87 @@
+{
+  "generated": "2026-11-17",
+  "predictions": "eval_stats_2026-11-17_predictions.csv",
+  "rule": "jeden typ na mecz: spośród linii z EV ≥ 0% i kursem 1.4–3.0 największa pewność modelu",
+  "stats": [
+    "AST",
+    "FG3M",
+    "PTS",
+    "REB"
+  ],
+  "main": {
+    "dev": {
+      "picks": 788,
+      "games": 788,
+      "hit_rate": 0.586,
+      "mean_confidence": 0.669,
+      "mean_odds": 1.711,
+      "roi": -0.005,
+      "by_stat": {
+        "PTS": 401,
+        "REB": 168,
+        "AST": 147,
+        "FG3M": 72
+      },
+      "roi_ci95": [
+        -0.0643,
+        0.055
+      ]
+    },
+    "holdout": {
+      "picks": 378,
+      "games": 378,
+      "hit_rate": 0.561,
+      "mean_confidence": 0.754,
+      "mean_odds": 1.622,
+      "roi": -0.1024,
+      "by_stat": {
+        "PTS": 143,
+        "AST": 107,
+        "REB": 69,
+        "FG3M": 59
+      },
+      "roi_ci95": [
+        -0.1815,
+        -0.0205
+      ]
+    }
+  },
+  "alternatives_dev": {
+    "max_ev": {
+      "picks": 788,
+      "games": 788,
+      "hit_rate": 0.491,
+      "mean_confidence": 0.606,
+      "mean_odds": 2.02,
+      "roi": -0.0271,
+      "by_stat": {
+        "PTS": 398,
+        "REB": 192,
+        "AST": 155,
+        "FG3M": 43
+      },
+      "roi_ci95": [
+        -0.0999,
+        0.0433
+      ]
+    },
+    "confidence_ev5": {
+      "picks": 738,
+      "games": 738,
+      "hit_rate": 0.572,
+      "mean_confidence": 0.665,
+      "mean_odds": 1.762,
+      "roi": -0.0075,
+      "by_stat": {
+        "PTS": 389,
+        "REB": 148,
+        "AST": 142,
+        "FG3M": 59
+      },
+      "roi_ci95": [
+        -0.0717,
+        0.0566
+      ]
+    }
+  }
+}

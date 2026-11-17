@@ -37,6 +37,7 @@ from tracker import ResultTracker
 import injuries
 import kalshi
 import live
+import daily
 import headshots
 import upcoming
 
@@ -282,8 +283,8 @@ def save_upcoming(odds_fetcher, out) -> None:
         logger.error("Zawodnicy na najbliższe mecze: %s", e)
 
 
-def run_stat_coupons(game_date: str, out, stats=("REB", "AST"), db_path: str = DB_PATH) -> dict:
-    """Kupony zbiórek/asyst z głównych linii Kalshi. Błąd jednej statystyki nie przerywa pipeline'u."""
+def run_stat_coupons(game_date: str, out, stats=("REB", "AST", "FG3M"), db_path: str = DB_PATH) -> dict:
+    """Kupony zbiórek/asyst/trójek z głównych linii Kalshi. Błąd jednej statystyki nie przerywa pipeline'u."""
     res = {}
     for stat in stats:
         try:
@@ -446,14 +447,14 @@ def _verdict(tabs: dict) -> dict | None:
 
 def _stat_tabs(today: str, db_path: str = DB_PATH, report_dir: str = "reports") -> dict:
     """
-    Zakładki dashboardu Punkty / Zbiórki / Asysty:
-      kalshi_eval — model vs ceny Kalshi z najnowszego reports/eval_stats_*.json (PTS, REB, AST),
+    Zakładki dashboardu Punkty / Zbiórki / Asysty / Trójki:
+      kalshi_eval — model vs ceny Kalshi z najnowszego reports/eval_stats_*.json (PTS, REB, AST, FG3M),
       coupon/history/kpi — kupony REB/AST (stat_coupons) zweryfikowane z logów.
     """
     reports = sorted(Path(report_dir).glob("eval_stats_*.json"))
     ev = json.loads(reports[-1].read_text(encoding="utf-8")) if reports else {}
     tabs = {}
-    for stat in ("PTS", "REB", "AST"):
+    for stat in ("PTS", "REB", "AST", "FG3M"):
         tab = {"kalshi_eval": None}
         st = ev.get("stats", {}).get(stat)
         if st:
@@ -689,6 +690,18 @@ def export_dashboard_data(
     conn.close()
 
     tabs = _stat_tabs(today, db_path=db_path)
+    try:                                    # kupon dnia: jeden typ na mecz ze wszystkich modeli
+        daily_hist = daily.history(db_path, before=today)
+        done = [h for h in daily_hist if h["result"]]
+        bt = sorted(Path("reports").glob("daily_*.json"))
+        daily_tab = {**daily.build(today, db_path), "history": daily_hist[-100:][::-1],
+                     "backtest": json.loads(bt[-1].read_text(encoding="utf-8"))["main"] if bt else None,
+                     "kpi": {"picks": len(done), "wins": sum(h["result"] == "WIN" for h in done),
+                             "pnl": round(sum(h["profit"] for h in done), 2),
+                             "roi": round(sum(h["profit"] for h in done) / len(done), 4) if done else None}}
+    except Exception as e:                  # brak logów / bazy: strona bez kuponu dnia
+        logger.error("Kupon dnia: %s", e)
+        daily_tab = None
     data = {
         "generated_at":    _dt.now().isoformat(),
         "game_date":       today,
@@ -712,6 +725,7 @@ def export_dashboard_data(
         "verdict":          _verdict(tabs),
         "research_log":     _research_log(),
         "upcoming":         upcoming.load(),
+        "daily":            daily_tab,
     }
     headshots.attach(data)
 

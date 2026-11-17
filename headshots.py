@@ -38,6 +38,8 @@ def _names(data: dict):
             yield p.get("player")
         for r in (tab or {}).get("history") or []:
             yield r.get("player")
+    for r in ((data.get("daily") or {}).get("picks") or []) + ((data.get("daily") or {}).get("history") or []):
+        yield r.get("player")
     for g in (data.get("upcoming") or {}).get("games", []):
         for players in (g.get("teams") or {}).values():
             for p in players:

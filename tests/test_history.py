@@ -21,13 +21,13 @@ def _logs():
                 SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, TEAM_ID=tid,
                 TEAM_ABBREVIATION=abbr[tid],
                 MATCHUP=f"{abbr[tid]} {'vs.' if home else '@'} {abbr[opp]}",
-                MIN=240, FGA=80, FTA=20, OREB=10, TOV=12, REB=45, AST=25, PF=20,
+                MIN=240, FGA=80, FG3A=30, FTA=20, OREB=10, TOV=12, REB=45, AST=25, PF=20,
                 PTS=100 + 10 * i if tid == BOS else 100,
             ))
         player_rows.append(dict(
             SEASON="2024-25", IS_PLAYOFFS=0, GAME_ID=gid, GAME_DATE=d, PLAYER_ID=7,
             PLAYER_NAME="Test Player", TEAM_ID=LAL, TEAM_ABBREVIATION="LAL",
-            MATCHUP="LAL vs. BOS", MIN=30, PTS=10 * (i + 1), FGA=15, FTA=4, FG3A=5, TOV=2,
+            MATCHUP="LAL vs. BOS", MIN=30, PTS=10 * (i + 1), FGA=15, FTA=4, FG3A=5, FG3M=i, TOV=2,
             FGM=6, FTM=3, OREB=1, DREB=4, REB=5 + i, AST=3, STL=1, BLK=0, PF=2,
         ))
     return pd.DataFrame(player_rows), pd.DataFrame(team_rows)
@@ -153,6 +153,16 @@ def test_rebound_and_assist_features_use_previous_games(feats):
     assert feats["opp_reb_allowed"].isna().sum() == 3
 
 
+def test_three_point_features_use_previous_games(feats):
+    # FG3M = 0, 1, 2, 3 przy FG3A = 5 i 30 min
+    assert np.isnan(feats.loc[0, "fg3m_avg_3"])
+    assert feats.loc[2, "fg3m_avg_3"] == pytest.approx(0.5)
+    assert feats.loc[3, "fg3_pct_20"] == pytest.approx(3 / 15)
+    assert feats.loc[3, "fg3a_per36_10"] == pytest.approx(36 * 15 / 90)
+    # rywal (BOS) oddaje 30 prób za 3 przy 90,8 posiadania
+    assert feats.loc[3, "opp_fg3a_allowed"] == pytest.approx(100 * 30 / 90.8, rel=1e-3)
+
+
 def test_foul_profile_uses_previous_games(feats):
     # mecze 1–3: po FTA i PF stałe w fikscie → na meczu 3 tylko dwa poprzednie mecze
     r = feats.loc[2]
@@ -172,7 +182,9 @@ def test_prior_season_table_moves_to_next_season_and_main_team():
     from history import prior_season_table
     df = pd.DataFrame({"PLAYER_ID": [1] * 5, "SEASON": ["2024-25"] * 5, "GAME_ID": list("abcde"),
                        "TEAM_ID": [10, 10, 10, 20, 20], "MIN": [30, 30, 30, 20, 0],
-                       "REB": [9, 9, 9, 6, 0], "AST": [3, 3, 3, 3, 0]})
+                       "REB": [9, 9, 9, 6, 0], "AST": [3, 3, 3, 3, 0],
+                       "FG3M": [2, 2, 2, 0, 0]})
     t = prior_season_table(df).iloc[0]
     assert t["SEASON"] == "2025-26" and t["n_prev"] == 4          # mecz z 0 min pominięty
     assert t["prev_team"] == 10 and abs(t["prev_reb"] - 8.25) < 1e-9
+    assert abs(t["prev_fg3m"] - 1.5) < 1e-9

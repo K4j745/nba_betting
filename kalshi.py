@@ -2,7 +2,7 @@
 """
 Kalshi — darmowe, publiczne (bez klucza) ceny rynków na statystyki zawodników NBA.
 
-Serie: KXNBAPTS (punkty), KXNBAREB (zbiórki), KXNBAAST (asysty). Rynek = „Gracz: N+”
+Serie: KXNBAPTS (punkty), KXNBAREB (zbiórki), KXNBAAST (asysty), KXNBA3PT (trójki). Rynek = „Gracz: N+”
 (floor_strike = N − 0,5, czyli over N − 0,5). Cena YES ∈ [0, 1] = prawdopodobieństwo rynku;
 bierzemy środek bid/ask, tylko gdy spread ≤ MAX_SPREAD (rzadkie rynki z bid 0,05 / ask 0,99
 nic nie mówią). Kalshi jest dostępne tylko w USA — tu służy jako ODNIESIENIE rynkowe.
@@ -37,7 +37,7 @@ from history import RAW_DIR, norm_name
 logger = logging.getLogger(__name__)
 
 API          = "https://api.elections.kalshi.com/trade-api/v2"
-SERIES       = {"PTS": "KXNBAPTS", "REB": "KXNBAREB", "AST": "KXNBAAST"}
+SERIES       = {"PTS": "KXNBAPTS", "REB": "KXNBAREB", "AST": "KXNBAAST", "FG3M": "KXNBA3PT"}
 HISTORY_PATH = RAW_DIR / "kalshi_lines.csv.gz"
 MAX_SPREAD   = 0.10
 TIP_OFFSET   = timedelta(hours=3)       # occurrence_datetime − start meczu

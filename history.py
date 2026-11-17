@@ -44,7 +44,7 @@ TEAM_WINDOW   = 15            # mecze drużyny do DEF_RTG / pace
 REST_CAP      = 10            # dni odpoczynku obcinamy (przerwa między sezonami ≠ informacja)
 ABSENCE_DAYS  = 14            # nieobecny = grał dla drużyny w ostatnich 14 dniach, a dziś go nie ma
 MIN_HALFLIFE  = 2             # półokres minut (w meczach); statystyki: STAT_HALFLIFE
-STAT_HALFLIFE = {"PTS": 31, "REB": 46, "AST": 24}
+STAT_HALFLIFE = {"PTS": 31, "REB": 46, "AST": 24}   # FG3M bez tych cech (DECAY tylko PTS/REB/AST)
 ROTATION_MIN  = 15.0          # … i średnio ≥ 15 min w ostatnich 10 meczach (zawodnik rotacji)
 HOME_COURT    = 2.0           # przewaga własnego parkietu w punktach (do oczekiwanej różnicy)
 
@@ -139,9 +139,9 @@ def team_game_table(team_logs: pd.DataFrame) -> pd.DataFrame:
     """Jeden wiersz na drużynę-mecz z posiadaniami i punktami straconymi."""
     t = team_logs.copy()
     t["POSS"] = t["FGA"] + 0.44 * t["FTA"] - t["OREB"] + t["TOV"]
-    opp = t[["GAME_ID", "TEAM_ID", "PTS", "POSS", "REB", "AST", "FTA"]].rename(
+    opp = t[["GAME_ID", "TEAM_ID", "PTS", "POSS", "REB", "AST", "FTA", "FG3A"]].rename(
         columns={"TEAM_ID": "OPP_ID", "PTS": "PTS_ALLOWED", "POSS": "OPP_POSS",
-                 "REB": "REB_ALLOWED", "AST": "AST_ALLOWED", "FTA": "FTA_ALLOWED"}
+                 "REB": "REB_ALLOWED", "AST": "AST_ALLOWED", "FTA": "FTA_ALLOWED", "FG3A": "FG3A_ALLOWED"}
     )
     t = t.merge(opp, on="GAME_ID")
     t = t[t["TEAM_ID"] != t["OPP_ID"]]
@@ -149,7 +149,7 @@ def team_game_table(team_logs: pd.DataFrame) -> pd.DataFrame:
     return t[[
         "GAME_ID", "GAME_DATE", "TEAM_ID", "TEAM_ABBREVIATION", "OPP_ID",
         "MIN", "FGA", "FTA", "TOV", "PTS", "PTS_ALLOWED", "GAME_POSS",
-        "REB_ALLOWED", "AST_ALLOWED", "FTA_ALLOWED", "PF",
+        "REB_ALLOWED", "AST_ALLOWED", "FTA_ALLOWED", "FG3A_ALLOWED", "PF",
     ]].rename(columns={"MIN": "TEAM_MIN", "FGA": "TEAM_FGA", "FTA": "TEAM_FTA", "TOV": "TEAM_TOV",
                        "PF": "TEAM_PF"})
 
@@ -171,6 +171,8 @@ def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
     # rzuty osobiste rywali i własne faule na 100 posiadań („agresywna” obrona)
     out["fta_allowed"] = 100 * roll("FTA_ALLOWED") / roll("GAME_POSS")
     out["pf_rate"] = 100 * roll("TEAM_PF") / roll("GAME_POSS")
+    # próby za 3 rywali na 100 posiadań (cecha dla modelu trójek)
+    out["fg3a_allowed"] = 100 * roll("FG3A_ALLOWED") / roll("GAME_POSS")
     out["pace"] = g["GAME_POSS"].transform(lambda s: s.rolling(TEAM_WINDOW, min_periods=3).mean())
     return out.sort_values("GAME_DATE")
 
@@ -180,7 +182,7 @@ def team_form(team_games: pd.DataFrame) -> pd.DataFrame:
 # ─────────────────────────────────────────────────────────────────────────────
 # Statystyki meczu (dla przyszłych meczów = NaN)
 STAT_COLS = [
-    "MIN", "PTS", "FGM", "FGA", "FTM", "FTA", "FG3A", "OREB", "DREB", "REB",
+    "MIN", "PTS", "FGM", "FGA", "FTM", "FTA", "FG3M", "FG3A", "OREB", "DREB", "REB",
     "AST", "STL", "BLK", "TOV", "PF", "USG", "GMSC",
 ]
 
@@ -282,9 +284,9 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     df["pts_avg_vs_opp"] = gh["PTS"].transform(lambda s: s.shift(1).rolling(5, min_periods=1).mean())
     df["h2h_games"]      = gh.cumcount().clip(upper=5)
 
-    # ── Zbiórki i asysty: odpowiedniki cech punktowych (modele REB / AST)
+    # ── Zbiórki, asysty i trójki: odpowiedniki cech punktowych (modele REB / AST / FG3M)
     gs = df.groupby(["PLAYER_ID", "SEASON"], group_keys=False)
-    for st in ("REB", "AST"):
+    for st in ("REB", "AST", "FG3M"):
         lo = st.lower()
         for n in (3, 5, 10, 20):
             df[f"{lo}_avg_{n}"] = _roll_mean(g, st, n)
@@ -296,6 +298,12 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
         df[f"season_{lo}_avg"] = gs[st].transform(lambda s: s.shift(1).expanding().mean())
         df[f"{lo}_avg_vs_opp"] = gh[st].transform(lambda s: s.shift(1).rolling(5, min_periods=1).mean())
     df["oreb_avg_10"] = _roll_mean(g, "OREB", 10)
+    # trójki: wolumen prób i skuteczność (20 meczów, bo skuteczność za 3 jest bardzo szumna)
+    fg3a10 = g["FG3A"].transform(lambda s: s.shift(1).rolling(10, min_periods=1).sum())
+    df["fg3a_per36_10"] = np.where(min10 > 0, 36 * fg3a10 / min10, np.nan)
+    m20 = lambda col: g[col].transform(lambda s: s.shift(1).rolling(20, min_periods=1).sum())
+    a20 = m20("FG3A")
+    df["fg3_pct_20"] = np.where(a20 > 0, m20("FG3M") / a20, np.nan)
 
     # ── foul_baiter: ile zawodnik chodzi na linię i jak sam fauluje
     sum10 = lambda col: g[col].transform(lambda s: s.shift(1).rolling(10, min_periods=1).sum())
@@ -329,6 +337,7 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     df["vac_min_delta"] = df["vac_min"] - _roll_mean(g, "vac_min", 5)
     df["vac_reb_delta"] = df["vac_reb"] - _roll_mean(g, "vac_reb", 5)
     df["vac_ast_delta"] = df["vac_ast"] - _roll_mean(g, "vac_ast", 5)
+    df["vac_fga_delta"] = df["vac_fga"] - _roll_mean(g, "vac_fga", 5)
     df = df.drop(columns=[c for c in df.columns if c.endswith("_post")])
 
     # ── Rywal i własna drużyna: stan sprzed dnia meczu
@@ -337,10 +346,11 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     opp = form.rename(columns={"TEAM_ID": "OPP_ID", "def_rtg": "opp_def_rtg", "pace": "opp_pace",
                                "off_rtg": "opp_off_rtg", "reb_allowed": "opp_reb_allowed",
                                "ast_allowed": "opp_ast_allowed", "fta_allowed": "opp_fta_allowed",
+                               "fg3a_allowed": "opp_fg3a_allowed",
                                "pf_rate": "opp_pf_rate"})
     df = pd.merge_asof(df, opp, on="GAME_DATE", by="OPP_ID", allow_exact_matches=False)
     own = form.rename(columns={"def_rtg": "team_def_rtg", "pace": "team_pace", "off_rtg": "team_off_rtg"}) \
-        .drop(columns=["reb_allowed", "ast_allowed", "fta_allowed", "pf_rate"])
+        .drop(columns=["reb_allowed", "ast_allowed", "fta_allowed", "pf_rate", "fg3a_allowed"])
     df = pd.merge_asof(df, own, on="GAME_DATE", by="TEAM_ID", allow_exact_matches=False)
 
     # foul_baiter × rywal, który dużo fauluje (poziom drużyny: krycia nie znamy przed meczem)
@@ -358,7 +368,7 @@ def make_features(games: pd.DataFrame, team_games: pd.DataFrame) -> pd.DataFrame
     # ── Poprzedni sezon (zamknięty przed każdym meczem bieżącego)
     df = df.merge(prior_season_table(df), on=["PLAYER_ID", "SEASON"], how="left")
     df["has_prev"] = (df["n_prev"].fillna(0) >= PRIOR_MIN_GAMES).astype(int)
-    for c in ("prev_min", "prev_reb", "prev_ast"):
+    for c in ("prev_min", "prev_reb", "prev_ast", "prev_fg3m"):
         df[c] = df[c].where(df["has_prev"] == 1)
     df["team_changed"] = ((df["has_prev"] == 1) & (df["TEAM_ID"] != df["prev_team"])).astype(int)
     df = df.drop(columns=["n_prev", "prev_team"])
@@ -375,7 +385,7 @@ def prior_season_table(df: pd.DataFrame) -> pd.DataFrame:
     played = df[df["MIN"] > 0]
     agg = played.groupby(["PLAYER_ID", "SEASON"]).agg(
         n_prev=("GAME_ID", "size"), prev_min=("MIN", "mean"),
-        prev_reb=("REB", "mean"), prev_ast=("AST", "mean")).reset_index()
+        prev_reb=("REB", "mean"), prev_ast=("AST", "mean"), prev_fg3m=("FG3M", "mean")).reset_index()
     team = (played.groupby(["PLAYER_ID", "SEASON", "TEAM_ID"]).size().rename("n").reset_index()
             .sort_values("n").drop_duplicates(["PLAYER_ID", "SEASON"], keep="last")
             .rename(columns={"TEAM_ID": "prev_team"})[["PLAYER_ID", "SEASON", "prev_team"]])
@@ -504,7 +514,8 @@ EFFICIENCY_FEATURE_COLS = ["ts_10", "ts_season", "gmsc_avg_10"]
 # Poprzedni sezon (2026-11-13): MAE w pierwszych 20 meczach sezonu −0,1…−0,9% (REB 5/5 sezonów,
 # AST 3/5) — prior_role.py; bez przewagi nad Kalshi na dev
 PRIOR_FEATURE_COLS = {"REB": ["prev_reb", "prev_min", "has_prev", "team_changed"],
-                      "AST": ["prev_ast", "prev_min", "has_prev", "team_changed"]}
+                      "AST": ["prev_ast", "prev_min", "has_prev", "team_changed"],
+                      "FG3M": ["prev_fg3m", "prev_min", "has_prev", "team_changed"]}
 
 _SHARED_CONTEXT = [
     "min_avg_5", "min_avg_10", "min_last", "usg_avg_10", "fga_avg_10", "pts_avg_10",
@@ -523,11 +534,16 @@ REB_BASE_FEATURE_COLS_OLD = _SHARED_CONTEXT + _stat_cols("reb") + ["oreb_avg_10"
 AST_BASE_FEATURE_COLS_OLD = _SHARED_CONTEXT + _stat_cols("ast") + ["opp_ast_allowed"]
 REB_BASE_FEATURE_COLS = REB_BASE_FEATURE_COLS_OLD + PRIOR_FEATURE_COLS["REB"]
 AST_BASE_FEATURE_COLS = AST_BASE_FEATURE_COLS_OLD + PRIOR_FEATURE_COLS["AST"]
+# Trójki (2026-11-17): rozkład jak REB/AST (NB), wolumen prób + skuteczność + rywal + poprzedni sezon
+FG3M_BASE_FEATURE_COLS = (_SHARED_CONTEXT + _stat_cols("fg3m")
+                          + ["fg3a_avg_10", "fg3a_per36_10", "fg3_pct_20", "opp_fg3a_allowed"]
+                          + PRIOR_FEATURE_COLS["FG3M"])
 # Statystyka → (cechy bazowe, cechy absencji). Punkty bez zmian.
 TARGETS = {
     "PTS": (None, None),   # uzupełniane niżej (BASE/ABSENCE_FEATURE_COLS)
     "REB": (REB_BASE_FEATURE_COLS, ["n_out", "vac_min", "vac_min_delta", "vac_reb", "vac_reb_delta"]),
     "AST": (AST_BASE_FEATURE_COLS, ["n_out", "vac_min", "vac_min_delta", "vac_ast", "vac_ast_delta"]),
+    "FG3M": (FG3M_BASE_FEATURE_COLS, ["n_out", "vac_min", "vac_min_delta", "vac_fga", "vac_fga_delta"]),
 }
 FOUL_FEATURE_COLS = ["ft_rate_10", "fta_per36_10", "pf_per36_10", "opp_fta_allowed", "opp_pf_rate",
                      "foul_matchup"]
