@@ -68,6 +68,9 @@
   --negative-dim: rgba(255, 133, 119, 0.16);
   --warning:      #f4c25a;           /* mała próba, uwagi */
   --warning-dim:  rgba(244, 194, 90, 0.16);
+  --row-fill:     10%;               /* tło wiersza historii: wygrana / przegrana */
+  --row-fill-hover: 16%;
+  --badge-fill-row: 14%;             /* znacznik na zabarwionym wierszu: słabsze wypełnienie, by utrzymać 4,5:1 */
   --badge-fill:   20%;               /* moc wypełnienia znaczników OVER/UNDER i wyniku (kontrast ≥ 4,5:1) */
   --positive-badge: var(--positive); --negative-badge: var(--negative);
   --accent:       #f4f6fb;           /* biel: element aktywny (zakładka, filtr) */
@@ -103,6 +106,9 @@
   --negative-dim: rgba(179, 38, 30, 0.11);
   --warning:      #8a5a00;
   --warning-dim:  rgba(176, 116, 0, 0.14);
+  --row-fill:     8%;
+  --row-fill-hover: 13%;
+  --badge-fill-row: 18%;
   --badge-fill:   18%;
   --positive-badge: color-mix(in srgb, var(--positive) 80%, #000);   /* przyciemnione, by na wypełnieniu mieć ≥ 4,5:1 */
   --negative-badge: color-mix(in srgb, var(--negative) 80%, #000);
@@ -269,6 +275,9 @@ td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align:
 tr:last-child td { border-bottom: none; }
 tbody tr td:first-child { border-radius: var(--r-inner) 0 0 var(--r-inner); }
 tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
+tbody tr.row-win td  { background: color-mix(in srgb, var(--positive) var(--row-fill), transparent); }
+tbody tr.row-loss td { background: color-mix(in srgb, var(--negative) var(--row-fill), transparent); }
+tr.row-win, tr.row-loss { --badge-fill: var(--badge-fill-row); }
 .player-name { font-weight: 600; }
 td:has(> .player-name) { min-width: 190px; }
 .who { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -455,6 +464,8 @@ details.fold[open] > summary { margin-bottom: 6px; }
   .btn-icon:hover { background: var(--surface-3); border-color: var(--accent-text); }
   .filter-btn:hover:not(.active) { background: var(--surface-3); color: var(--text); }
   tbody tr:hover td { background: var(--surface-2); }
+  tbody tr.row-win:hover td  { background: color-mix(in srgb, var(--positive) var(--row-fill-hover), transparent); }
+  tbody tr.row-loss:hover td { background: color-mix(in srgb, var(--negative) var(--row-fill-hover), transparent); }
   .lab-item:hover, .player:hover { background: var(--surface-2); }
   details.fold > summary:hover .icon { color: var(--accent-text); }
 }
@@ -939,6 +950,9 @@ function betBadge(bet) {
     : '<span class="badge-bet badge-under"><span class="badge-tri" aria-hidden="true">▼</span>UNDER</span>';
 }
 
+/* Wiersz historii zabarwiony wynikiem zakładu */
+function rowCls(r) { return r === 'WIN' ? ' class="row-win"' : r === 'LOSS' ? ' class="row-loss"' : ''; }
+
 function resultBadge(r) {
   if (r === 'WIN')  return '<span class="badge-result badge-win">wygrana</span>';
   if (r === 'LOSS') return '<span class="badge-result badge-loss">przegrana</span>';
@@ -1090,7 +1104,7 @@ function renderStatTab(d) {
     ? `<div class="empty-state"><div class="empty-icon">${icon('chart')}</div><div class="empty-title">Brak historii</div>
        <div class="empty-body">Wyniki pojawią się, gdy logi meczów trafią do repo (branch data).</div></div>`
     : `<table><thead><tr><th>Data</th><th>Zawodnik · mecz</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>Zysk / strata</th></tr></thead>
-       <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
+       <tbody>${h.map(r => `<tr${rowCls(r.result)}><td class="mono">${r.date}</td>
          <td><div class="player-name">${r.player}</div><div class="game-label">${gameLabel(r.game)}</div></td>
          <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
          <td class="mono">${r.actual ?? '—'}</td>
@@ -1577,7 +1591,7 @@ function renderHistory(history, days) {
   const rows = filtered.slice(0, 100).map(r => {
     const profitCls = (r.profit || 0) >= 0 ? 'pnl-pos' : 'pnl-neg';
     const pnlStr = r.profit != null ? (r.profit >= 0 ? '+' : '') + r.profit.toFixed(2) + ' PLN' : '—';
-    return `<tr>
+    return `<tr${rowCls(r.result)}>
       <td class="mono">${r.date}</td>
       <td><div class="player-name">${r.player}</div><div class="game-label">${gameLabel(r.game)}</div></td>
       <td>${betBadge(r.bet)}</td>
