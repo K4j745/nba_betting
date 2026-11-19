@@ -68,6 +68,8 @@
   --negative-dim: rgba(255, 133, 119, 0.16);
   --warning:      #f4c25a;           /* mała próba, uwagi */
   --warning-dim:  rgba(244, 194, 90, 0.16);
+  --badge-fill:   20%;               /* moc wypełnienia znaczników OVER/UNDER i wyniku (kontrast ≥ 4,5:1) */
+  --positive-badge: var(--positive); --negative-badge: var(--negative);
   --accent:       #f4f6fb;           /* biel: element aktywny (zakładka, filtr) */
   --on-accent:    #0d1b3e;           /* tekst na akcencie */
   --nav-active-bg: var(--brand);     /* aktywna zakładka w panelu: czerwona pigułka… */
@@ -101,6 +103,9 @@
   --negative-dim: rgba(179, 38, 30, 0.11);
   --warning:      #8a5a00;
   --warning-dim:  rgba(176, 116, 0, 0.14);
+  --badge-fill:   18%;
+  --positive-badge: color-mix(in srgb, var(--positive) 80%, #000);   /* przyciemnione, by na wypełnieniu mieć ≥ 4,5:1 */
+  --negative-badge: color-mix(in srgb, var(--negative) 80%, #000);
   --accent:       #0d1b3e;
   --on-accent:    #ffffff;
   --nav-active-bg: var(--brand);
@@ -285,12 +290,15 @@ td:has(> .player-name) { min-width: 190px; }
 .game-label  { font-size: var(--fs-small); color: var(--muted); }
 
 .badge-bet, .badge-result {
-  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px;
-  font-size: var(--fs-label); font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
 }
-.badge-over, .badge-win  { background: var(--positive-dim); color: var(--positive); }
-.badge-under, .badge-loss { background: var(--negative-dim); color: var(--negative); }
-.badge-bet .icon { width: 14px; height: 14px; stroke-width: 2.5; margin-left: -3px; }
+/* Typ zakładu w stylu tablicy wyników: krój nagłówków, trójkąt, ramka i wypełnienie w kolorze */
+.badge-bet { gap: 6px; font-family: var(--font-display); font-size: var(--fs-lead); font-weight: 800; letter-spacing: .06em; line-height: 1.1; }
+.badge-tri { font-size: .8em; line-height: 1; }
+.badge-over, .badge-win  { color: var(--positive-badge); border-color: var(--positive); background: color-mix(in srgb, var(--positive) var(--badge-fill), transparent); }
+.badge-under, .badge-loss { color: var(--negative-badge); border-color: var(--negative); background: color-mix(in srgb, var(--negative) var(--badge-fill), transparent); }
 .badge-push { background: var(--surface-3); color: var(--muted); }
 
 .ev-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
@@ -952,8 +960,8 @@ function who(name, game, id) {
 
 function betBadge(bet) {
   return bet === 'over'
-    ? `<span class="badge-bet badge-over">${icon('arrow-up')}OVER</span>`
-    : `<span class="badge-bet badge-under">${icon('arrow-down')}UNDER</span>`;
+    ? '<span class="badge-bet badge-over"><span class="badge-tri" aria-hidden="true">▲</span>OVER</span>'
+    : '<span class="badge-bet badge-under"><span class="badge-tri" aria-hidden="true">▼</span>UNDER</span>';
 }
 
 function resultBadge(r) {
