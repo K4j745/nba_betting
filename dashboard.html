@@ -1188,7 +1188,7 @@ function renderDaily(dl, gameDate) {
     ? `<div class="empty-state"><div class="empty-icon">${icon('chart')}</div><div class="empty-title">Brak historii</div>
        <div class="empty-body">Wyniki pojawią się dzień po pierwszym kuponie dnia, gdy logi meczów trafią do repo.</div></div>`
     : `<table><thead><tr><th>Data</th><th>Zawodnik · Mecz</th><th>Stat.</th><th>Typ</th><th>Linia</th><th>Kurs</th><th>Faktycznie</th><th>Wynik</th><th>P&amp;L</th></tr></thead>
-       <tbody>${h.map(r => `<tr><td class="mono">${r.date}</td>
+       <tbody>${h.map(r => `<tr${rowCls(r.result)}><td class="mono">${r.date}</td>
          <td>${who(r.player, r.game, r.player_id)}</td><td>${esc(STAT_SHORT[r.stat] || r.stat)}</td>
          <td>${betBadge(r.bet)}</td><td class="mono">${r.line}</td><td class="mono">${r.odds}</td>
          <td class="mono">${r.actual ?? '—'}</td>
