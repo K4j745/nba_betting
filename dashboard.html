@@ -68,9 +68,9 @@
   --negative-dim: rgba(255, 133, 119, 0.16);
   --warning:      #f4c25a;           /* mała próba, uwagi */
   --warning-dim:  rgba(244, 194, 90, 0.16);
-  --row-fill:     10%;               /* tło wiersza historii: wygrana / przegrana */
-  --row-fill-hover: 16%;
-  --badge-fill-row: 14%;             /* znacznik na zabarwionym wierszu: słabsze wypełnienie, by utrzymać 4,5:1 */
+  --row-fill:     18%;               /* tło wiersza historii: wygrana / przegrana */
+  --row-fill-hover: 23%;
+  --badge-fill-row: 6%;              /* znacznik na zabarwionym wierszu: słabsze wypełnienie, by utrzymać 4,5:1 */
   --badge-fill:   20%;               /* moc wypełnienia znaczników OVER/UNDER i wyniku (kontrast ≥ 4,5:1) */
   --positive-badge: var(--positive); --negative-badge: var(--negative);
   --accent:       #f4f6fb;           /* biel: element aktywny (zakładka, filtr) */
@@ -106,9 +106,9 @@
   --negative-dim: rgba(179, 38, 30, 0.11);
   --warning:      #8a5a00;
   --warning-dim:  rgba(176, 116, 0, 0.14);
-  --row-fill:     8%;
-  --row-fill-hover: 13%;
-  --badge-fill-row: 18%;
+  --row-fill:     12%;
+  --row-fill-hover: 17%;
+  --badge-fill-row: 14%;
   --badge-fill:   18%;
   --positive-badge: color-mix(in srgb, var(--positive) 80%, #000);   /* przyciemnione, by na wypełnieniu mieć ≥ 4,5:1 */
   --negative-badge: color-mix(in srgb, var(--negative) 80%, #000);
@@ -278,6 +278,7 @@ tbody tr td:last-child  { border-radius: 0 var(--r-inner) var(--r-inner) 0; }
 tbody tr.row-win td  { background: color-mix(in srgb, var(--positive) var(--row-fill), transparent); }
 tbody tr.row-loss td { background: color-mix(in srgb, var(--negative) var(--row-fill), transparent); }
 tr.row-win, tr.row-loss { --badge-fill: var(--badge-fill-row); }
+tr.row-win .pnl-pos { color: var(--positive-badge); } tr.row-loss .pnl-neg { color: var(--negative-badge); }
 .player-name { font-weight: 600; }
 td:has(> .player-name) { min-width: 190px; }
 .who { display: flex; align-items: center; gap: 10px; min-width: 0; }
