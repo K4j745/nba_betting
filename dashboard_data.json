@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-20T02:31:30.890028",
-  "game_date": "2026-11-19",
+  "generated_at": "2026-11-20T15:50:34.815023",
+  "game_date": "2026-11-20",
   "today_coupon": null,
   "no_games_reason": "no_props_today",
   "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
@@ -1333,100 +1333,7 @@
           }
         ]
       },
-      "coupon": {
-        "date": "2026-11-19",
-        "model_version": "reb-2026-11-19",
-        "stat": "REB",
-        "paper_trading": true,
-        "injury_report": true,
-        "n_out": 0,
-        "n_predictions": 49,
-        "picks": [
-          {
-            "game": "New York Knicks @ Minnesota Timberwolves",
-            "player": "Trey Lyles",
-            "bet": "under",
-            "stat": "REB",
-            "line": 5.5,
-            "odds": 2.222,
-            "bookmaker": "kalshi",
-            "pts_predicted": 3.7,
-            "p_over": 0.202,
-            "confidence": 80,
-            "ev": 0.7739,
-            "p_market": 0.605,
-            "top_features": [
-              "reb_ewm",
-              "min_avg_10",
-              "opp_reb_allowed"
-            ],
-            "reasoning": "model 3.7 zb. vs linia 5.5 (kalshi), ewm 4.2, min 20.9, opp_reb_allowed 41.5, EV +77.4%"
-          },
-          {
-            "game": "Portland Trail Blazers @ Milwaukee Bucks",
-            "player": "Scoot Henderson",
-            "bet": "under",
-            "stat": "REB",
-            "line": 3.5,
-            "odds": 1.724,
-            "bookmaker": "kalshi",
-            "pts_predicted": 1.9,
-            "p_over": 0.156,
-            "confidence": 84,
-            "ev": 0.4546,
-            "p_market": 0.45999999999999996,
-            "top_features": [
-              "reb_ewm",
-              "min_avg_10",
-              "opp_reb_allowed"
-            ],
-            "reasoning": "model 1.9 zb. vs linia 3.5 (kalshi), ewm 1.6, min 23.5, opp_reb_allowed 47.0, EV +45.5%"
-          },
-          {
-            "game": "Golden State Warriors @ Memphis Grizzlies",
-            "player": "Isaiah Stewart",
-            "bet": "under",
-            "stat": "REB",
-            "line": 3.5,
-            "odds": 1.923,
-            "bookmaker": "kalshi",
-            "pts_predicted": 2.4,
-            "p_over": 0.245,
-            "confidence": 75,
-            "ev": 0.451,
-            "p_market": 0.5449999999999999,
-            "top_features": [
-              "reb_ewm",
-              "min_avg_10",
-              "opp_reb_allowed"
-            ],
-            "reasoning": "model 2.4 zb. vs linia 3.5 (kalshi), ewm 3.0, min 18.1, opp_reb_allowed 42.9, EV +45.1%"
-          },
-          {
-            "game": "Los Angeles Clippers @ San Antonio Spurs",
-            "player": "Victor Wembanyama",
-            "bet": "under",
-            "stat": "REB",
-            "line": 13.5,
-            "odds": 1.724,
-            "bookmaker": "kalshi",
-            "pts_predicted": 10.9,
-            "p_over": 0.248,
-            "confidence": 75,
-            "ev": 0.2959,
-            "p_market": 0.475,
-            "top_features": [
-              "reb_ewm",
-              "min_avg_10",
-              "opp_reb_allowed"
-            ],
-            "reasoning": "model 10.9 zb. vs linia 13.5 (kalshi), ewm 12.2, min 28.9, opp_reb_allowed 43.5, EV +29.6%"
-          }
-        ],
-        "total_picks": 4,
-        "simulated_stake_per_pick": 10.0,
-        "simulated_total_stake": 40.0
-      },
+      "coupon": null,
       "history": [
         {
           "game": "Los Angeles Clippers @ San Antonio Spurs",
@@ -1448,9 +1355,9 @@
           ],
           "reasoning": "model 10.9 zb. vs linia 13.5 (kalshi), ewm 12.2, min 28.9, opp_reb_allowed 43.5, EV +29.6%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 11.0,
+          "result": "WIN",
+          "profit": 0.724
         },
         {
           "game": "Golden State Warriors @ Memphis Grizzlies",
@@ -1472,9 +1379,9 @@
           ],
           "reasoning": "model 2.4 zb. vs linia 3.5 (kalshi), ewm 3.0, min 18.1, opp_reb_allowed 42.9, EV +45.1%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 4.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Portland Trail Blazers @ Milwaukee Bucks",
@@ -1496,9 +1403,9 @@
           ],
           "reasoning": "model 1.9 zb. vs linia 3.5 (kalshi), ewm 1.6, min 23.5, opp_reb_allowed 47.0, EV +45.5%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 7.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "New York Knicks @ Minnesota Timberwolves",
@@ -1520,9 +1427,9 @@
           ],
           "reasoning": "model 3.7 zb. vs linia 5.5 (kalshi), ewm 4.2, min 20.9, opp_reb_allowed 41.5, EV +77.4%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 5.0,
+          "result": "WIN",
+          "profit": 1.222
         },
         {
           "game": "Boston Celtics @ Denver Nuggets",
@@ -2846,10 +2753,10 @@
         }
       ],
       "kpi": {
-        "picks": 55,
-        "wins": 28,
-        "pnl": 1.12,
-        "roi": 0.0205
+        "picks": 59,
+        "wins": 30,
+        "pnl": 1.07,
+        "roi": 0.0182
       }
     },
     "AST": {
@@ -2967,80 +2874,7 @@
           }
         ]
       },
-      "coupon": {
-        "date": "2026-11-19",
-        "model_version": "ast-2026-11-19",
-        "stat": "AST",
-        "paper_trading": true,
-        "injury_report": true,
-        "n_out": 0,
-        "n_predictions": 49,
-        "picks": [
-          {
-            "game": "Portland Trail Blazers @ Milwaukee Bucks",
-            "player": "Jaime Jaquez Jr.",
-            "bet": "over",
-            "stat": "AST",
-            "line": 1.5,
-            "odds": 2.381,
-            "bookmaker": "kalshi",
-            "pts_predicted": 3.1,
-            "p_over": 0.792,
-            "confidence": 79,
-            "ev": 0.8864,
-            "p_market": 0.39,
-            "top_features": [
-              "ast_ewm",
-              "min_avg_10",
-              "opp_ast_allowed"
-            ],
-            "reasoning": "model 3.1 as. vs linia 1.5 (kalshi), ewm 3.5, min 26.8, opp_ast_allowed 22.9, EV +88.6%"
-          },
-          {
-            "game": "Golden State Warriors @ Memphis Grizzlies",
-            "player": "Charles Bassey",
-            "bet": "under",
-            "stat": "AST",
-            "line": 1.5,
-            "odds": 1.923,
-            "bookmaker": "kalshi",
-            "pts_predicted": 0.7,
-            "p_over": 0.162,
-            "confidence": 84,
-            "ev": 0.6107,
-            "p_market": 0.54,
-            "top_features": [
-              "ast_ewm",
-              "min_avg_10",
-              "opp_ast_allowed"
-            ],
-            "reasoning": "model 0.7 as. vs linia 1.5 (kalshi), ewm 0.6, min 16.6, opp_ast_allowed 24.5, EV +61.1%"
-          },
-          {
-            "game": "New York Knicks @ Minnesota Timberwolves",
-            "player": "OG Anunoby",
-            "bet": "over",
-            "stat": "AST",
-            "line": 1.5,
-            "odds": 2.222,
-            "bookmaker": "kalshi",
-            "pts_predicted": 1.7,
-            "p_over": 0.481,
-            "confidence": 48,
-            "ev": 0.0696,
-            "p_market": 0.4,
-            "top_features": [
-              "ast_ewm",
-              "min_avg_10",
-              "opp_ast_allowed"
-            ],
-            "reasoning": "model 1.7 as. vs linia 1.5 (kalshi), ewm 1.6, min 33.7, opp_ast_allowed 23.6, EV +7.0%"
-          }
-        ],
-        "total_picks": 3,
-        "simulated_stake_per_pick": 10.0,
-        "simulated_total_stake": 30.0
-      },
+      "coupon": null,
       "history": [
         {
           "game": "New York Knicks @ Minnesota Timberwolves",
@@ -3062,9 +2896,9 @@
           ],
           "reasoning": "model 1.7 as. vs linia 1.5 (kalshi), ewm 1.6, min 33.7, opp_ast_allowed 23.6, EV +7.0%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 2.0,
+          "result": "WIN",
+          "profit": 1.222
         },
         {
           "game": "Golden State Warriors @ Memphis Grizzlies",
@@ -3086,9 +2920,9 @@
           ],
           "reasoning": "model 0.7 as. vs linia 1.5 (kalshi), ewm 0.6, min 16.6, opp_ast_allowed 24.5, EV +61.1%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 1.0,
+          "result": "WIN",
+          "profit": 0.923
         },
         {
           "game": "Portland Trail Blazers @ Milwaukee Bucks",
@@ -3110,9 +2944,9 @@
           ],
           "reasoning": "model 3.1 as. vs linia 1.5 (kalshi), ewm 3.5, min 26.8, opp_ast_allowed 22.9, EV +88.6%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 2.0,
+          "result": "WIN",
+          "profit": 1.381
         },
         {
           "game": "Phoenix Suns @ Sacramento Kings",
@@ -4412,10 +4246,10 @@
         }
       ],
       "kpi": {
-        "picks": 54,
-        "wins": 28,
-        "pnl": 1.58,
-        "roi": 0.0292
+        "picks": 57,
+        "wins": 31,
+        "pnl": 5.1,
+        "roi": 0.0895
       }
     },
     "FG3M": {
@@ -4533,100 +4367,7 @@
           }
         ]
       },
-      "coupon": {
-        "date": "2026-11-19",
-        "model_version": "fg3m-2026-11-19",
-        "stat": "FG3M",
-        "paper_trading": true,
-        "injury_report": true,
-        "n_out": 0,
-        "n_predictions": 46,
-        "picks": [
-          {
-            "game": "Los Angeles Clippers @ San Antonio Spurs",
-            "player": "Derrick Jones Jr.",
-            "bet": "over",
-            "stat": "FG3M",
-            "line": 0.5,
-            "odds": 2.222,
-            "bookmaker": "kalshi",
-            "pts_predicted": 1.3,
-            "p_over": 0.73,
-            "confidence": 73,
-            "ev": 0.6222,
-            "p_market": 0.425,
-            "top_features": [
-              "fg3m_ewm",
-              "min_avg_10",
-              "opp_fg3a_allowed"
-            ],
-            "reasoning": "model 1.3 3pt vs linia 0.5 (kalshi), ewm 1.7, min 28.5, opp_fg3a_allowed 32.5, EV +62.2%"
-          },
-          {
-            "game": "New York Knicks @ Minnesota Timberwolves",
-            "player": "Landry Shamet",
-            "bet": "under",
-            "stat": "FG3M",
-            "line": 2.5,
-            "odds": 2.174,
-            "bookmaker": "kalshi",
-            "pts_predicted": 1.9,
-            "p_over": 0.304,
-            "confidence": 70,
-            "ev": 0.513,
-            "p_market": 0.585,
-            "top_features": [
-              "fg3m_ewm",
-              "min_avg_10",
-              "opp_fg3a_allowed"
-            ],
-            "reasoning": "model 1.9 3pt vs linia 2.5 (kalshi), ewm 2.2, min 26.4, opp_fg3a_allowed 34.8, EV +51.3%"
-          },
-          {
-            "game": "Portland Trail Blazers @ Milwaukee Bucks",
-            "player": "Scoot Henderson",
-            "bet": "under",
-            "stat": "FG3M",
-            "line": 5.5,
-            "odds": 1.429,
-            "bookmaker": "kalshi",
-            "pts_predicted": 1.4,
-            "p_over": 0.004,
-            "confidence": 100,
-            "ev": 0.4232,
-            "p_market": 0.33999999999999997,
-            "top_features": [
-              "fg3m_ewm",
-              "min_avg_10",
-              "opp_fg3a_allowed"
-            ],
-            "reasoning": "model 1.4 3pt vs linia 5.5 (kalshi), ewm 1.1, min 23.5, opp_fg3a_allowed 41.3, EV +42.3%"
-          },
-          {
-            "game": "Golden State Warriors @ Memphis Grizzlies",
-            "player": "Cameron Boozer",
-            "bet": "over",
-            "stat": "FG3M",
-            "line": 0.5,
-            "odds": 1.639,
-            "bookmaker": "kalshi",
-            "pts_predicted": 1.9,
-            "p_over": 0.837,
-            "confidence": 84,
-            "ev": 0.3722,
-            "p_market": 0.54,
-            "top_features": [
-              "fg3m_ewm",
-              "min_avg_10",
-              "opp_fg3a_allowed"
-            ],
-            "reasoning": "model 1.9 3pt vs linia 0.5 (kalshi), ewm 2.0, min 30.5, opp_fg3a_allowed 37.4, EV +37.2%"
-          }
-        ],
-        "total_picks": 4,
-        "simulated_stake_per_pick": 10.0,
-        "simulated_total_stake": 40.0
-      },
+      "coupon": null,
       "history": [
         {
           "game": "Golden State Warriors @ Memphis Grizzlies",
@@ -4648,9 +4389,9 @@
           ],
           "reasoning": "model 1.9 3pt vs linia 0.5 (kalshi), ewm 2.0, min 30.5, opp_fg3a_allowed 37.4, EV +37.2%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 0.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Portland Trail Blazers @ Milwaukee Bucks",
@@ -4672,9 +4413,9 @@
           ],
           "reasoning": "model 1.4 3pt vs linia 5.5 (kalshi), ewm 1.1, min 23.5, opp_fg3a_allowed 41.3, EV +42.3%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 5.0,
+          "result": "WIN",
+          "profit": 0.429
         },
         {
           "game": "New York Knicks @ Minnesota Timberwolves",
@@ -4696,9 +4437,9 @@
           ],
           "reasoning": "model 1.9 3pt vs linia 2.5 (kalshi), ewm 2.2, min 26.4, opp_fg3a_allowed 34.8, EV +51.3%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 2.0,
+          "result": "WIN",
+          "profit": 1.174
         },
         {
           "game": "Los Angeles Clippers @ San Antonio Spurs",
@@ -4720,9 +4461,9 @@
           ],
           "reasoning": "model 1.3 3pt vs linia 0.5 (kalshi), ewm 1.7, min 28.5, opp_fg3a_allowed 32.5, EV +62.2%",
           "date": "2026-11-19",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 0.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Phoenix Suns @ Sacramento Kings",
@@ -4918,10 +4659,10 @@
         }
       ],
       "kpi": {
-        "picks": 8,
-        "wins": 2,
-        "pnl": -3.91,
-        "roi": -0.4889
+        "picks": 12,
+        "wins": 4,
+        "pnl": -4.31,
+        "roi": -0.359
       }
     }
   },
@@ -13917,35 +13658,28 @@
     ]
   },
   "daily": {
-    "date": "2026-11-19",
-    "picks": [
+    "date": "2026-11-20",
+    "picks": [],
+    "n_candidates": 0,
+    "rule": "jeden typ na mecz: spośród linii z EV ≥ 0% i kursem 1.4–3.0 największa pewność modelu",
+    "history": [
       {
-        "game": "Portland Trail Blazers @ Milwaukee Bucks",
-        "player": "Scoot Henderson",
-        "player_id": 1630703,
-        "stat": "FG3M",
-        "bet": "under",
-        "line": 5.5,
-        "odds": 1.429,
+        "game": "Los Angeles Clippers @ San Antonio Spurs",
+        "player": "Kris Dunn",
+        "player_id": 1627739,
+        "stat": "AST",
+        "bet": "over",
+        "line": 1.5,
+        "odds": 2.857,
         "bookmaker": "kalshi",
-        "mu": 1.4,
-        "confidence": 0.996,
-        "ev": 0.4231,
-        "reasoning": "model 1.4 3pt vs linia 5.5 (kalshi), pewność 100%, EV +42.3%"
-      },
-      {
-        "game": "New York Knicks @ Minnesota Timberwolves",
-        "player": "Jaden McDaniels",
-        "player_id": 1630183,
-        "stat": "FG3M",
-        "bet": "under",
-        "line": 3.5,
-        "odds": 1.471,
-        "bookmaker": "kalshi",
-        "mu": 1.5,
-        "confidence": 0.931,
-        "ev": 0.3699,
-        "reasoning": "model 1.5 3pt vs linia 3.5 (kalshi), pewność 93%, EV +37.0%"
+        "mu": 3.4,
+        "confidence": 0.83,
+        "ev": 1.3699,
+        "reasoning": "model 3.4 as. vs linia 1.5 (kalshi), pewność 83%, EV +137.0%",
+        "date": "2026-11-19",
+        "actual": 2.0,
+        "result": "WIN",
+        "profit": 1.857
       },
       {
         "game": "Golden State Warriors @ Memphis Grizzlies",
@@ -13959,28 +13693,48 @@
         "mu": 0.7,
         "confidence": 0.838,
         "ev": 0.6107,
-        "reasoning": "model 0.7 as. vs linia 1.5 (kalshi), pewność 84%, EV +61.1%"
+        "reasoning": "model 0.7 as. vs linia 1.5 (kalshi), pewność 84%, EV +61.1%",
+        "date": "2026-11-19",
+        "actual": 1.0,
+        "result": "WIN",
+        "profit": 0.923
       },
       {
-        "game": "Los Angeles Clippers @ San Antonio Spurs",
-        "player": "Kris Dunn",
-        "player_id": 1627739,
-        "stat": "AST",
-        "bet": "over",
-        "line": 1.5,
-        "odds": 2.857,
+        "game": "New York Knicks @ Minnesota Timberwolves",
+        "player": "Jaden McDaniels",
+        "player_id": 1630183,
+        "stat": "FG3M",
+        "bet": "under",
+        "line": 3.5,
+        "odds": 1.471,
         "bookmaker": "kalshi",
-        "mu": 3.4,
-        "confidence": 0.83,
-        "ev": 1.3699,
-        "reasoning": "model 3.4 as. vs linia 1.5 (kalshi), pewność 83%, EV +137.0%"
-      }
-    ],
-    "n_candidates": 288,
-    "n_games": 4,
-    "rule": "jeden typ na mecz: spośród linii z EV ≥ 0% i kursem 1.4–3.0 największa pewność modelu",
-    "paper_trading": true,
-    "history": [
+        "mu": 1.5,
+        "confidence": 0.931,
+        "ev": 0.3699,
+        "reasoning": "model 1.5 3pt vs linia 3.5 (kalshi), pewność 93%, EV +37.0%",
+        "date": "2026-11-19",
+        "actual": 4.0,
+        "result": "LOSS",
+        "profit": -1.0
+      },
+      {
+        "game": "Portland Trail Blazers @ Milwaukee Bucks",
+        "player": "Scoot Henderson",
+        "player_id": 1630703,
+        "stat": "FG3M",
+        "bet": "under",
+        "line": 5.5,
+        "odds": 1.429,
+        "bookmaker": "kalshi",
+        "mu": 1.4,
+        "confidence": 0.996,
+        "ev": 0.4231,
+        "reasoning": "model 1.4 3pt vs linia 5.5 (kalshi), pewność 100%, EV +42.3%",
+        "date": "2026-11-19",
+        "actual": 5.0,
+        "result": "WIN",
+        "profit": 0.429
+      },
       {
         "game": "Phoenix Suns @ Sacramento Kings",
         "player": "Darius Acuff Jr.",
@@ -15731,10 +15485,10 @@
       }
     },
     "kpi": {
-      "picks": 89,
-      "wins": 43,
-      "pnl": -15.45,
-      "roi": -0.1736
+      "picks": 93,
+      "wins": 46,
+      "pnl": -13.24,
+      "roi": -0.1424
     }
   },
   "player_ids": {
@@ -15777,8 +15531,8 @@
     "Ivica Zubac": 1627826,
     "Brice Sensabaugh": 1641729,
     "Derrick White": 1628401,
-    "Trey Lyles": 1626168,
     "Victor Wembanyama": 1641705,
+    "Trey Lyles": 1626168,
     "Jordan Walsh": 1641775,
     "Domantas Sabonis": 1627734,
     "Mo Bamba": 1628964,
@@ -15821,9 +15575,9 @@
     "Kyshawn George": 1642273,
     "Moritz Wagner": 1629021,
     "Franz Wagner": 1630532,
-    "Jaime Jaquez Jr.": 1631170,
-    "Charles Bassey": 1629646,
     "OG Anunoby": 1628384,
+    "Charles Bassey": 1629646,
+    "Jaime Jaquez Jr.": 1631170,
     "Jake LaRavia": 1631222,
     "Gui Santos": 1630611,
     "Josh Green": 1630182,
@@ -15854,8 +15608,8 @@
     "Reed Sheppard": 1642263,
     "Jase Richardson": 1642859,
     "James Harden": 201935,
-    "Derrick Jones Jr.": 1627884,
     "Landry Shamet": 1629013,
+    "Derrick Jones Jr.": 1627884,
     "Dillon Brooks": 1628415,
     "Jaden McDaniels": 1630183,
     "Paul George": 202331,
