@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-26T03:42:06.270269",
-  "game_date": "2026-11-25",
+  "generated_at": "2026-11-26T17:25:41.547419",
+  "game_date": "2026-11-26",
   "today_coupon": null,
   "no_games_reason": "no_props_today",
   "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
@@ -6064,7 +6064,7 @@
     "games": []
   },
   "daily": {
-    "date": "2026-11-25",
+    "date": "2026-11-26",
     "picks": [],
     "n_candidates": 0,
     "rule": "jeden typ na mecz: spośród linii z EV ≥ 0% i kursem 1.4–3.0 największa pewność modelu",
