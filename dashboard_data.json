@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-27T03:43:07.884000",
-  "game_date": "2026-11-26",
+  "generated_at": "2026-11-27T17:03:43.845254",
+  "game_date": "2026-11-27",
   "today_coupon": null,
-  "no_games_reason": "nba_data_stale",
-  "status_message": "Logi NBA są nieaktualne (laptop nie zsynchronizował danych) — kursy zapisane, kupon pominięty.",
+  "no_games_reason": "no_props_today",
+  "status_message": "Brak meczów / propsów na dziś (API nie zwróciło zakładów na punkty zawodników).",
   "kpi": {
     "win_rate": 0.2885,
     "roi_30d": -0.4735,
@@ -1406,9 +1406,9 @@
           ],
           "reasoning": "model 2.4 zb. vs linia 3.5 (kalshi), ewm 1.6, min 26.2, opp_reb_allowed 44.9, EV +14.3%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 2.0,
+          "result": "WIN",
+          "profit": 0.515
         },
         {
           "game": "Dallas Mavericks @ Utah Jazz",
@@ -1430,9 +1430,9 @@
           ],
           "reasoning": "model 4.3 zb. vs linia 7.5 (kalshi), ewm 4.1, min 20.1, opp_reb_allowed 43.9, EV +61.4%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 8.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Boston Celtics @ Golden State Warriors",
@@ -1454,9 +1454,9 @@
           ],
           "reasoning": "model 5.5 zb. vs linia 9.5 (kalshi), ewm 6.4, min 18.2, opp_reb_allowed 43.7, EV +63.7%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 9.0,
+          "result": "WIN",
+          "profit": 0.786
         },
         {
           "game": "Orlando Magic @ Washington Wizards",
@@ -1478,9 +1478,9 @@
           ],
           "reasoning": "model 4.1 zb. vs linia 1.5 (kalshi), ewm 4.1, min 36.0, opp_reb_allowed 46.6, EV +79.4%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 1.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Denver Nuggets @ Chicago Bulls",
@@ -1502,9 +1502,9 @@
           ],
           "reasoning": "model 4.9 zb. vs linia 7.5 (kalshi), ewm 4.6, min 28.7, opp_reb_allowed 43.5, EV +96.9%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 8.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "New Orleans Pelicans @ San Antonio Spurs",
@@ -3212,10 +3212,10 @@
         }
       ],
       "kpi": {
-        "picks": 71,
-        "wins": 33,
-        "pnl": -4.48,
-        "roi": -0.0631
+        "picks": 76,
+        "wins": 35,
+        "pnl": -6.18,
+        "roi": -0.0813
       }
     },
     "AST": {
@@ -3355,9 +3355,9 @@
           ],
           "reasoning": "model 6.8 as. vs linia 7.5 (kalshi), ewm 7.2, min 34.3, opp_ast_allowed 27.2, EV +26.3%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 7.0,
+          "result": "WIN",
+          "profit": 1.0
         },
         {
           "game": "Boston Celtics @ Golden State Warriors",
@@ -3379,9 +3379,9 @@
           ],
           "reasoning": "model 5.7 as. vs linia 3.5 (kalshi), ewm 6.0, min 25.4, opp_ast_allowed 25.4, EV +30.3%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 3.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Denver Nuggets @ Chicago Bulls",
@@ -3403,9 +3403,9 @@
           ],
           "reasoning": "model 9.8 as. vs linia 7.5 (kalshi), ewm 9.3, min 36.7, opp_ast_allowed 27.1, EV +54.4%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 11.0,
+          "result": "WIN",
+          "profit": 1.222
         },
         {
           "game": "Indiana Pacers @ New York Knicks",
@@ -3427,9 +3427,9 @@
           ],
           "reasoning": "model 7.1 as. vs linia 9.5 (kalshi), ewm 8.1, min 32.7, opp_ast_allowed 25.2, EV +79.4%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 8.0,
+          "result": "WIN",
+          "profit": 1.273
         },
         {
           "game": "Orlando Magic @ Washington Wizards",
@@ -3451,9 +3451,9 @@
           ],
           "reasoning": "model 8.2 as. vs linia 11.5 (kalshi), ewm 8.2, min 34.2, opp_ast_allowed 26.7, EV +112.7%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 11.0,
+          "result": "WIN",
+          "profit": 1.564
         },
         {
           "game": "New Orleans Pelicans @ San Antonio Spurs",
@@ -5113,10 +5113,10 @@
         }
       ],
       "kpi": {
-        "picks": 69,
-        "wins": 37,
-        "pnl": 5.18,
-        "roi": 0.0751
+        "picks": 74,
+        "wins": 41,
+        "pnl": 9.24,
+        "roi": 0.1248
       }
     },
     "FG3M": {
@@ -5256,9 +5256,9 @@
           ],
           "reasoning": "model 3.0 3pt vs linia 4.5 (kalshi), ewm 3.3, min 31.9, opp_fg3a_allowed 35.1, EV +13.0%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 4.0,
+          "result": "WIN",
+          "profit": 0.429
         },
         {
           "game": "Boston Celtics @ Golden State Warriors",
@@ -5280,9 +5280,9 @@
           ],
           "reasoning": "model 1.8 3pt vs linia 1.5 (kalshi), ewm 1.7, min 22.4, opp_fg3a_allowed 42.0, EV +24.0%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 0.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Denver Nuggets @ Chicago Bulls",
@@ -5304,9 +5304,9 @@
           ],
           "reasoning": "model 2.5 3pt vs linia 4.5 (kalshi), ewm 2.6, min 35.6, opp_fg3a_allowed 34.4, EV +60.9%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 6.0,
+          "result": "LOSS",
+          "profit": -1.0
         },
         {
           "game": "Indiana Pacers @ New York Knicks",
@@ -5328,9 +5328,9 @@
           ],
           "reasoning": "model 2.3 3pt vs linia 3.5 (kalshi), ewm 2.2, min 26.2, opp_fg3a_allowed 38.8, EV +74.0%",
           "date": "2026-11-22",
-          "actual": null,
-          "result": null,
-          "profit": null
+          "actual": 3.0,
+          "result": "WIN",
+          "profit": 1.222
         },
         {
           "game": "Boston Celtics @ Sacramento Kings",
@@ -5886,10 +5886,10 @@
         }
       ],
       "kpi": {
-        "picks": 23,
-        "wins": 12,
-        "pnl": 0.82,
-        "roi": 0.0357
+        "picks": 27,
+        "wins": 14,
+        "pnl": 0.47,
+        "roi": 0.0174
       }
     }
   },
@@ -16845,7 +16845,7 @@
     ]
   },
   "daily": {
-    "date": "2026-11-26",
+    "date": "2026-11-27",
     "picks": [],
     "n_candidates": 0,
     "rule": "jeden typ na mecz: spośród linii z EV ≥ 0% i kursem 1.4–3.0 największa pewność modelu",
@@ -16864,9 +16864,9 @@
         "ev": 0.6086,
         "reasoning": "model 2.5 3pt vs linia 4.5 (kalshi), pewność 87%, EV +60.9%",
         "date": "2026-11-22",
-        "actual": null,
-        "result": null,
-        "profit": null
+        "actual": 6.0,
+        "result": "LOSS",
+        "profit": -1.0
       },
       {
         "game": "Indiana Pacers @ New York Knicks",
@@ -16882,9 +16882,9 @@
         "ev": 1.4262,
         "reasoning": "model 1.7 3pt vs linia 3.5 (kalshi), pewność 90%, EV +142.6%",
         "date": "2026-11-22",
-        "actual": null,
-        "result": null,
-        "profit": null
+        "actual": 3.0,
+        "result": "WIN",
+        "profit": 1.703
       },
       {
         "game": "Dallas Mavericks @ Utah Jazz",
@@ -16900,9 +16900,9 @@
         "ev": 0.6137,
         "reasoning": "model 4.3 zb. vs linia 7.5 (kalshi), pewność 90%, EV +61.4%",
         "date": "2026-11-22",
-        "actual": null,
-        "result": null,
-        "profit": null
+        "actual": 8.0,
+        "result": "LOSS",
+        "profit": -1.0
       },
       {
         "game": "Orlando Magic @ Washington Wizards",
@@ -16918,9 +16918,9 @@
         "ev": 0.4933,
         "reasoning": "model 2.9 as. vs linia 5.5 (kalshi), pewność 91%, EV +49.3%",
         "date": "2026-11-22",
-        "actual": null,
-        "result": null,
-        "profit": null
+        "actual": 5.0,
+        "result": "WIN",
+        "profit": 0.639
       },
       {
         "game": "Boston Celtics @ Golden State Warriors",
@@ -16936,9 +16936,9 @@
         "ev": 0.6367,
         "reasoning": "model 5.5 zb. vs linia 9.5 (kalshi), pewność 92%, EV +63.7%",
         "date": "2026-11-22",
-        "actual": null,
-        "result": null,
-        "profit": null
+        "actual": 9.0,
+        "result": "WIN",
+        "profit": 0.786
       },
       {
         "game": "Detroit Pistons @ Atlanta Hawks",
@@ -18690,10 +18690,10 @@
       }
     },
     "kpi": {
-      "picks": 105,
-      "wins": 52,
-      "pnl": -16.07,
-      "roi": -0.153
+      "picks": 110,
+      "wins": 55,
+      "pnl": -14.94,
+      "roi": -0.1358
     }
   },
   "player_ids": {
